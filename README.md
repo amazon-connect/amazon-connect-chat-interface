@@ -1,6 +1,6 @@
 # Amazon Connect Chat Interface
 ## Overview
-Amazon Connect Chat Interface is a light interface for getting started with Amazon Connect chat. This package contains
+Amazon Connect Chat Interface is a light interface to create a customer widget for getting started with Amazon Connect chat. This package contains
 some lightweight components to render chat out of the box in your website, with a thin layer on top of [ChatJS](https://github.com/amazon-connect/amazon-connect-chatjs)
 to manage your chat session.
 
