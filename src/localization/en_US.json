@@ -1,0 +1,34 @@
+{
+
+
+  "connect-main-initialization-msg": "Initializing...",
+  "connect-main.initialization-failed-msg": "Initialization Failed",
+  
+
+  "connect-settings-change-language-title": "change-language",
+
+  "connect-chat-contact-status-connected": "Chat connected",
+  "connect-chat-contact-status-missed": "Missed contact",
+  "connect-chat-contact-status-acw": "After Contact Work",
+  "connect-chat-contact-status-incoming": "Incoming chat",
+  "connect-chat-contact-status-disconnected": "Disconnected",
+  "connect-chat-contact-status-connecting": "Connecting",
+  "connect-chat-contact-status-ended": "After Contact Work",
+  "connect-chat-contact-status-accepted": "Accepted",
+  "connect-chat-contact-status-error": "Failed to connect",
+
+
+  "page.home": "Logo",
+  "page.softphone": "Softphone",
+  "page.chat": "Chat",
+  "page.settings": "Settings",
+  "language.english": "English",
+  "language.france": "France",
+
+  "contact.connected": "Connected",
+  "contact.missed": "Missed Contact",
+  "contact.ack": "After Contact work",
+
+  "header.changeStatus": "Change Status",
+  "home.description": "Select the phone or chat icons above to start an outbound contact."
+}

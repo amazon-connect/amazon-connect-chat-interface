@@ -1,0 +1,15 @@
+[
+  {
+    "id": "agent.status",
+    "defaultMessage": "CUSTOMER UI",
+    "file": "src/components/Header/Header.js",
+    "start": {
+      "line": 27,
+      "column": 10
+    },
+    "end": {
+      "line": 27,
+      "column": 77
+    }
+  }
+]

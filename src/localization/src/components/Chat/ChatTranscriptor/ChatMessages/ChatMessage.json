@@ -1,0 +1,41 @@
+[
+  {
+    "id": "connect-chat-transport-status-sending",
+    "defaultMessage": "Sending at",
+    "file": "src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js",
+    "start": {
+      "line": 106,
+      "column": 14
+    },
+    "end": {
+      "line": 109,
+      "column": 16
+    }
+  },
+  {
+    "id": "connect-chat-transport-status-sent",
+    "defaultMessage": "Sent at",
+    "file": "src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js",
+    "start": {
+      "line": 118,
+      "column": 16
+    },
+    "end": {
+      "line": 121,
+      "column": 18
+    }
+  },
+  {
+    "id": "connect-chat-transport-status-sendFailed",
+    "defaultMessage": "Failed to send!",
+    "file": "src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js",
+    "start": {
+      "line": 132,
+      "column": 12
+    },
+    "end": {
+      "line": 135,
+      "column": 14
+    }
+  }
+]

@@ -1,0 +1,630 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> styles should match snapshots:  default 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  white-space: nowrap;
+  color: #111111;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-width: 0px;
+  border-style: solid;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: Arial,Helvetica,"sans-serif";
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 260px;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  color: undefined;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  font-size: 0.875rem;
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.1);
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+.c0 > img,
+.c0 .loader {
+  margin-right: undefined;
+  position: relative;
+  top: 1px;
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+<button
+  className="c0"
+  disabled={false}
+  type="default"
+>
+  Default
+</button>
+`;
+
+exports[`<Button /> styles should match snapshots:  disabled 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  white-space: nowrap;
+  color: #111111;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-width: 0px;
+  border-style: solid;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: Arial,Helvetica,"sans-serif";
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 260px;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  color: undefined;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  font-size: 0.875rem;
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.1);
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+.c0 > img,
+.c0 .loader {
+  margin-right: undefined;
+  position: relative;
+  top: 1px;
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+<button
+  className="c0"
+  disabled={true}
+  type="default"
+>
+  Disabled
+</button>
+`;
+
+exports[`<Button /> styles should match snapshots:  primary 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  white-space: nowrap;
+  color: #111111;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-width: 0px;
+  border-style: solid;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: Arial,Helvetica,"sans-serif";
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 260px;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  background: linear-gradient(#538000,#538000 80%,#649a00);
+  border-color: #538000 #538000 #538000;
+  color: #FFFFFF;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  font-size: 0.875rem;
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.1);
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+.c0 > img,
+.c0 .loader {
+  margin-right: undefined;
+  position: relative;
+  top: 1px;
+}
+
+.c0:hover {
+  background: linear-gradient(#649a00,#649a00);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #538000 #538000 #538000;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#538000,#538000 80%,#649a00);
+}
+
+<button
+  className="c0"
+  disabled={false}
+  type="primary"
+>
+  Primary
+</button>
+`;
+
+exports[`<Button /> styles should match snapshots:  secondary 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  white-space: nowrap;
+  color: #111111;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-width: 0px;
+  border-style: solid;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: Arial,Helvetica,"sans-serif";
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 260px;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  background: linear-gradient(#538000,#538000 80%,#649a00);
+  border-color: #538000 #538000 #538000;
+  color: #FFFFFF;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  font-size: 0.875rem;
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.1);
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+.c0 > img,
+.c0 .loader {
+  margin-right: undefined;
+  position: relative;
+  top: 1px;
+}
+
+.c0:hover {
+  background: linear-gradient(#649a00,#649a00);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #538000 #538000 #538000;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#538000,#538000 80%,#649a00);
+}
+
+<button
+  className="c0"
+  disabled={false}
+  type="primary"
+>
+  Secondary
+</button>
+`;
+
+exports[`<Button /> styles should match snapshots:  small 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  white-space: nowrap;
+  color: #111111;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-width: 0px;
+  border-style: solid;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: Arial,Helvetica,"sans-serif";
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 260px;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  color: undefined;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 0.8125rem;
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+.c0 > img,
+.c0 .loader {
+  margin-right: undefined;
+  position: relative;
+  top: 1px;
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+<button
+  className="c0"
+  disabled={false}
+  type="default"
+>
+  Small
+</button>
+`;
+
+exports[`<Button /> styles should match snapshots:  tertiary 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  white-space: nowrap;
+  color: #111111;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-width: 0px;
+  border-style: solid;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: Arial,Helvetica,"sans-serif";
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 260px;
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+  border-color: #fff #fff #fff;
+  background: linear-gradient(#329AD6,#329AD6 80%,#47a4da);
+  border-color: #329AD6 #329AD6 #329AD6;
+  color: #FFFFFF;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  font-size: 0.875rem;
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.1);
+}
+
+.c0:hover {
+  background: linear-gradient(#fff,#f9f9f9);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #fff #fff #fff;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
+}
+
+.c0 > img,
+.c0 .loader {
+  margin-right: undefined;
+  position: relative;
+  top: 1px;
+}
+
+.c0:hover {
+  background: linear-gradient(#47a4da,#5cafde);
+}
+
+.c0:focus {
+  box-shadow: 0 0 2px 0 #E77600;
+  outline: none;
+}
+
+.c0:active {
+  border-color: #329AD6 #329AD6 #329AD6;
+}
+
+.c0:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  outline: none;
+  pointer-events: none;
+}
+
+.c0:disabled:hover {
+  background: linear-gradient(#329AD6,#329AD6 80%,#47a4da);
+}
+
+<button
+  className="c0"
+  disabled={false}
+  type="tertiary"
+>
+  Action
+</button>
+`;

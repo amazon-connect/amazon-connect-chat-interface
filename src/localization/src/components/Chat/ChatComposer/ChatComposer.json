@@ -1,0 +1,15 @@
+[
+  {
+    "id": "connect.chat.composer.hintText",
+    "defaultMessage": "Type a message",
+    "file": "src/components/Chat/ChatComposer/ChatComposer.js",
+    "start": {
+      "line": 113,
+      "column": 16
+    },
+    "end": {
+      "line": 116,
+      "column": 18
+    }
+  }
+]

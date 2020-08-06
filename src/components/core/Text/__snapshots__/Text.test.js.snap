@@ -1,0 +1,173 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Text /> can style a tag as something else 1`] = `
+.c0 {
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 700;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h1
+  className="c0"
+>
+  H1 tag that looks like H2
+</h1>
+`;
+
+exports[`<Text /> can style inline 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  display: inline;
+  color: inherit;
+  margin: 0;
+}
+
+.c0:last-child {
+  margin: 0;
+}
+
+<p
+  className="c0"
+>
+  I am inline
+</p>
+`;
+
+exports[`<Text /> styles should match snapshots:  h1 1`] = `
+.c0 {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h1
+  className="c0"
+>
+  H1
+</h1>
+`;
+
+exports[`<Text /> styles should match snapshots:  h2 1`] = `
+.c0 {
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 700;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h2
+  className="c0"
+>
+  H2
+</h2>
+`;
+
+exports[`<Text /> styles should match snapshots:  h3 1`] = `
+.c0 {
+  font-size: 17px;
+  line-height: 1.255;
+  font-weight: 700;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h3
+  className="c0"
+>
+  H3
+</h3>
+`;
+
+exports[`<Text /> styles should match snapshots:  h4 1`] = `
+.c0 {
+  font-size: 17px;
+  line-height: 1.255;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h4
+  className="c0"
+>
+  H4
+</h4>
+`;
+
+exports[`<Text /> styles should match snapshots:  h5 1`] = `
+.c0 {
+  font-size: 13px;
+  line-height: 1.465;
+  font-weight: 700;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h5
+  className="c0"
+>
+  H5
+</h5>
+`;
+
+exports[`<Text /> styles should match snapshots:  h6 1`] = `
+.c0 {
+  font-size: 11px;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  text-transform: uppercase;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+<h6
+  className="c0"
+>
+  H6
+</h6>
+`;
+
+exports[`<Text /> styles should match snapshots:  p 1`] = `
+.c0 {
+  font-size: 1em;
+  line-height: 1.465;
+  font-weight: normal;
+  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
+  padding: 0;
+  color: inherit;
+  margin: 0;
+}
+
+.c0:last-child {
+  margin: 0;
+}
+
+<p
+  className="c0"
+>
+  P
+</p>
+`;

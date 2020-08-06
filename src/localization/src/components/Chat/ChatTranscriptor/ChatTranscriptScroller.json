@@ -1,0 +1,15 @@
+[
+  {
+    "id": "connect-chat-transcriptor-loading-msg",
+    "defaultMessage": "Loading previous messages...",
+    "file": "src/components/Chat/ChatTranscriptor/ChatTranscriptScroller.js",
+    "start": {
+      "line": 130,
+      "column": 12
+    },
+    "end": {
+      "line": 133,
+      "column": 14
+    }
+  }
+]
