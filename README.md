@@ -9,20 +9,20 @@ Usage of this package in your website is described at https://github.com/amazon-
 ## Building the package
 
 Importing this file into your project will place a `ChatInterface` object on the window, which contains a method to `initiateChat`.
-To init chat, you will pass in some details about your Connect instance, the requesting user, and the API Gateway generated 
+To initiate the chat, you will pass in some details about your Connect instance, the requesting user, and the API Gateway generated 
 via the [getting started process](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI#prebuilt-chat-widget).
 
 ### Local
-To make local modifications to this package and test them on your webpage, simply make your edits and run `npm run dev-build` to produce the
+To make local modifications to this package and test them on your webpage, simply make your edits and run `npm install && run dev-build` to produce the
 Webpack built file and the sourcemaps. You can import these in the same fashion as the getting started examples.
 
 ### Production
-To build the production version of this package, simply run `npm run build`. These will generate a minified built file, with console logs stripped and other Webpack optimizations.
+To build the production version of this package, simply run `npm install && npm run build`. These will generate a minified built file, with console logs stripped and other Webpack optimizations.
 Import this into your package as is described in the GitHub examples.
 
 ## Customization
 ### Theme
-To customize theme, determine which aspect(s) of the chat interface you would like to modify, make your changes and build the file as described above.
+To customize the theme, determine which aspect(s) of the chat interface you would like to modify, make your changes and build the file as described above.
 
 Occasionally, a component will pull a style value from `src/theme/defaultTheme.js`, so it is important to be aware of this source of customization.
 
@@ -47,11 +47,11 @@ const HeaderWrapper = styled.div`
 
 **Before**:
 
-<img src="./screenshots/red-header.png" width=250px>
+<img src="./screenshots/default-blue-header.png" width=250px>
 
 **After**:
 
-<img src="./screenshots/default-blue-header.png" width=250px>
+<img src="./screenshots/red-header.png" width=250px>
 
 ### Chat Transcriptor (src/components/Chat/ChatTranscriptor)
 The Chat Transcriptor is responsible for rendering the transcript of the Chat in the widget. It handles typing events, sent messages, received messages, and scrolling.

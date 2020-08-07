@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 'use strict';
 
 // Do this as the first thing so that any code reading it knows the right env.

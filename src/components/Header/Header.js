@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
