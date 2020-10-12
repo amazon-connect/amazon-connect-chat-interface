@@ -11,7 +11,7 @@ class ChatInterface {
   clientConfig = {
     contactFlowId: "",
     instanceId: "",
-    region: "us-west-2",
+    region: "",
     stage: "prod",
     contactAttributes: {}
   }
