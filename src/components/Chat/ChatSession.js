@@ -12,13 +12,14 @@ const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 class ChatJSClient {
   session = null;
 
-  constructor(chatDetails) {
+  constructor(chatDetails,region, stage) {
     // Creating a chatSession object with Chat.JS
     // Other operations (connecting, sending message, ...) are then done by interacting
     // with the chatSession object (this.session)
     this.session = connect.ChatSession.create({
       chatDetails: chatDetails.startChatResult,
-      type: "CUSTOMER"
+      type: "CUSTOMER",
+      options: {region: region}
     });
   }
 
