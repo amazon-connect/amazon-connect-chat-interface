@@ -20,8 +20,15 @@ export const ContentType = {
         CHAT_ENDED: "application/vnd.amazonaws.connect.event.chat.ended"
     },
     MESSAGE_CONTENT_TYPE: {
-        TEXT_PLAIN: "text/plain"
+        TEXT_PLAIN: "text/plain",
+        INTERACTIVE_MESSAGE: "application/vnd.amazonaws.connect.message.interactive"
     }
+};
+
+export const InteractiveMessageType = {
+    LIST_PICKER: "ListPicker",
+    TIME_PICKER: "TimePicker",
+    PANEL: "Panel"
 };
 
 export const Status = {

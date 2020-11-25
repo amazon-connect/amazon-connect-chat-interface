@@ -59,7 +59,6 @@ function Header({ headerConfig }){
   }
 }
 
-
 export default class Chat extends Component {
   constructor(props) {
     super(props);
@@ -136,6 +135,7 @@ export default class Chat extends Component {
           loadPreviousTranscript={() => chatSession.loadPreviousTranscript()}
           transcript={this.state.transcript}
           typingParticipants={this.state.typingParticipants}
+          addMessage={(data) => chatSession.addOutgoingMessage(data)}
           contactStatus={this.state.contactStatus}
           contactId={chatSession.contactId}
           transcriptConfig={transcriptConfig}

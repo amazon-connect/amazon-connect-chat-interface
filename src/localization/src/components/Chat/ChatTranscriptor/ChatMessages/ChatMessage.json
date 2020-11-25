@@ -4,11 +4,11 @@
     "defaultMessage": "Sending at",
     "file": "src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js",
     "start": {
-      "line": 106,
+      "line": 112,
       "column": 14
     },
     "end": {
-      "line": 109,
+      "line": 115,
       "column": 16
     }
   },
@@ -17,11 +17,11 @@
     "defaultMessage": "Sent at",
     "file": "src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js",
     "start": {
-      "line": 118,
+      "line": 124,
       "column": 16
     },
     "end": {
-      "line": 121,
+      "line": 127,
       "column": 18
     }
   },
@@ -30,11 +30,11 @@
     "defaultMessage": "Failed to send!",
     "file": "src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js",
     "start": {
-      "line": 132,
+      "line": 138,
       "column": 12
     },
     "end": {
-      "line": 135,
+      "line": 141,
       "column": 14
     }
   }
