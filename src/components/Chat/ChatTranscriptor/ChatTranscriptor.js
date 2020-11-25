@@ -5,15 +5,15 @@ import React, { PureComponent } from "react";
 import PT from "prop-types";
 import styled from "styled-components";
 import { modelUtils } from "../datamodel/Utils";
-import { PARTICIPANT_MESSAGE, Direction } from "../datamodel/Model";
+import { Direction, PARTICIPANT_MESSAGE  } from "../datamodel/Model";
 import renderHTML from 'react-render-html';
 import {
   MessageBox,
   ParticipantMessage,
   ParticipantTyping,
 } from "./ChatMessages/ChatMessage";
-import ChatTranscriptScroller from "./ChatTranscriptScroller";
 import { SystemMessage } from "./ChatMessages/SystemMessage";
+import ChatTranscriptScroller from "./ChatTranscriptScroller";
 import { CONTACT_STATUS } from "connect-constants";
 
 
@@ -24,10 +24,7 @@ const TranscriptBody = styled.div`
 const TranscriptWrapper = styled(ChatTranscriptScroller)`
   order: 2;
   flex: 1 1 0;
-  background: ${props =>
-    (props.type === CONTACT_STATUS.ACW ||
-      props.type === CONTACT_STATUS.CONNECTED) &&
-    props.theme.palette.white};
+  background: ${props => props.theme.chatTranscriptor.background};
 `;
 
 const defaultTranscriptConfig = {
@@ -37,7 +34,6 @@ const defaultTranscriptConfig = {
       return <ParticipantMessage {...props} />;
     }
   },
-
   systemMessageConfig: {
     render: ({...props}) => {
       return <SystemMessage {...props} />;
@@ -64,111 +60,99 @@ export default class ChatTranscriptor extends PureComponent {
     });
   };
 
-  renderMessage = itemDetails => {
-    var itemId = itemDetails.id;
-    var version = itemDetails.version;
-    var key = itemId + "." + version;
-    console.log(itemDetails);
+  renderMessage = (itemDetails, isLatestMessage) => {
+    const itemId = itemDetails.id;
+    const version = itemDetails.version;
+    const key = itemId + "." + version;
 
     const transcriptConfig = Object.assign({}, defaultTranscriptConfig, this.props.transcriptConfig);
+    let config = {
+      render: transcriptConfig.render,
+      isHTML: transcriptConfig.isHTML,
+    };
 
-    const {participantMessageConfig, systemMessageConfig, render, isHTML} = transcriptConfig;
+    let content = null;
+    let additionalProps = {};
+
+    if(config.render) {
+      content = config.render({
+        key: key,
+        messageDetails: itemDetails
+      });
+    }
+
+    let textAlign = "left";
 
     if (itemDetails.type === PARTICIPANT_MESSAGE) {
-      console.log("renderMessage itemDetails ParticipantMessage");
-      let content = "";
-
-      if(render){
-        content = render({
-          key: key,
-          messageDetails: itemDetails
-        });
+      config = Object.assign({}, config, transcriptConfig.participantMessageConfig);
+      additionalProps = {
+        mediaOperations: {
+          addMessage: this.props.addMessage
+        },
+        isLatestMessage
       }
-
-      if(!content && participantMessageConfig && participantMessageConfig.render){
-        content = participantMessageConfig.render({
-          key: key,
-          messageDetails: itemDetails
-        })
-      }
-
-      return <MessageBox key={itemId}>
-        {(participantMessageConfig.isHTML || isHTML) && renderHTML(content)}
-        {!(participantMessageConfig.isHTML || isHTML) && content}
-      </MessageBox>
-
-     
     } else if (modelUtils.isRecognizedEvent(itemDetails.content.type)) {
-      console.log("renderMessage itemDetails SystemMessage");
-
-
-      let content = "";
-
-      if(render){
-        content = render({
-          key: key,
-          itemDetails: itemDetails
-        });
-      }
-
-
-      if(!content && systemMessageConfig && systemMessageConfig.render){
-
-        content = systemMessageConfig.render({
-          key: key,
-          itemDetails: itemDetails
-        });
-      }
-
-
-      if(systemMessageConfig.isHTML || isHTML){
-        return renderHTML(content);
-      }
-      return content;
+      config = Object.assign({}, config, transcriptConfig.systemMessageConfig);
+      textAlign = "center";
     } else {
       return <React.Fragment />;
     }
+    if(!content && config && config.render){
+      content = config.render({
+        key: key,
+        messageDetails: itemDetails,
+        ...additionalProps
+      });
+    }
+
+    return (
+        <MessageBox key={key} textAlign={textAlign}>
+          {config.isHTML ? renderHTML(content) : content}
+        </MessageBox>
+    );
   };
 
   renderTyping = participantTypingDetails => {
     var participantId =
-      participantTypingDetails.participantId;
+        participantTypingDetails.participantId;
     var displayName = participantTypingDetails.displayName;
     var direction = participantTypingDetails.direction;
     return (
-      <ParticipantTyping
-        key={participantId}
-        displayName={displayName}
-        direction={direction}
-      />
+        <ParticipantTyping
+            key={participantId}
+            displayName={displayName}
+            direction={direction}
+        />
     );
   };
 
   render() {
     const lastSentMessage = this.props.transcript
-      .filter(({ type, transportDetails }) => (
-        type === PARTICIPANT_MESSAGE &&
-        transportDetails.direction === Direction.Outgoing
-      )).pop();
+        .filter(({ type, transportDetails }) => (
+            (type === PARTICIPANT_MESSAGE) &&
+            transportDetails.direction === Direction.Outgoing
+        )).pop();
+
+    const lastMessageIndex = this.props.transcript.length - 1;
 
     return (
-      <TranscriptWrapper
-        contactId={this.props.contactId}
-        type={this.props.contactStatus}
-        loadPreviousTranscript={this.loadTranscript}
-        lastSentMessageId={lastSentMessage ? lastSentMessage.id : null}
-      >
-        {(this.props.contactStatus === CONTACT_STATUS.CONNECTED ||
-          this.props.contactStatus === CONTACT_STATUS.ACW ||
-          this.props.contactStatus === CONTACT_STATUS.ENDED) && (
-            <TranscriptBody>
-              {this.props.transcript.map(item => this.renderMessage(item))}
-              {this.props.typingParticipants.map(typing =>
-                this.renderTyping(typing)
-              )}
-            </TranscriptBody>
+        <TranscriptWrapper
+            contactId={this.props.contactId}
+            type={this.props.contactStatus}
+            loadPreviousTranscript={this.loadTranscript}
+            lastSentMessageId={lastSentMessage ? lastSentMessage.id : null}
+        >
+          {(this.props.contactStatus === CONTACT_STATUS.CONNECTED ||
+              this.props.contactStatus === CONTACT_STATUS.ACW ||
+              this.props.contactStatus === CONTACT_STATUS.ENDED) && (
+              <TranscriptBody>
+                {this.props.transcript.map((item, idx) => this.renderMessage(item, idx === lastMessageIndex))}
+                {this.props.typingParticipants.map(typing =>
+                    this.renderTyping(typing)
+                )}
+              </TranscriptBody>
           )}
-      </TranscriptWrapper>
+        </TranscriptWrapper>
     );
   }
 }

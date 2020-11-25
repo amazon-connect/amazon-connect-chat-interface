@@ -9,6 +9,7 @@ import { Status, Direction } from "../../datamodel/Model";
 import { FormattedMessage } from "react-intl";
 import { Icon, TypingLoader } from "connect-core";
 import { ContentType } from "../../datamodel/Model";
+import { InteractiveMessage } from "./InteractiveMessage";
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding}
@@ -16,6 +17,7 @@ export const MessageBox = styled.div`
   word-break: break-word;
   white-space: pre-line;
   overflow: auto;
+  text-align: ${props => props.textAlign};
 `;
 const Header = styled.div`
   overflow: auto;
@@ -39,11 +41,12 @@ const Body = styled.div`
   ${props =>
       props.messageStyle ? props.messageStyle : ""};
 
-  padding: ${props => props.theme.spacing.base};
+  padding: ${props => props.removePadding ? 0 : props.theme.spacing.base};
   margin-top: ${props => props.theme.spacing.mini};
   border-radius: 5px;
   position: relative;
   &:after{
+    display: ${props => props.hideDirectionArrow ? "none" : "block" };
     ${props =>
       props.direction === Direction.Outgoing
         ? `
@@ -65,6 +68,7 @@ const Body = styled.div`
       border-left: 10px solid transparent;
       border-right: 12px solid transparent;
       border-bottom: 9px solid ${props.theme.chatTranscriptor.incomingMsgBg};`}
+  }
 `;
 const ErrorText = styled.div`
   color: ${({ theme }) => theme.palette.red};
@@ -82,7 +86,9 @@ export class ParticipantMessage extends PureComponent {
   static propTypes = {
     messageDetails: PT.object.isRequired,
     incomingMsgStyle:  PT.object,
+    mediaOperations: PT.object,
     outgoingMsgStyle: PT.object,
+    isLatestMessage: PT.bool,
   };
 
   timestampToDisplayable(timestamp) {
@@ -148,20 +154,39 @@ export class ParticipantMessage extends PureComponent {
   }
 
   render() {
-    var messageDirection = this.props.messageDetails.transportDetails.direction;
+    let {direction, error} = this.props.messageDetails.transportDetails;
+    const messageStyle = direction === Direction.Outgoing ? this.props.outgoingMsgStyle : this.props.incomingMsgStyle;
+
+    const bodyStyleConfig = {};
+    if (this.props.isLatestMessage &&
+        this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
+      bodyStyleConfig.hideDirectionArrow = true;
+      bodyStyleConfig.removePadding = true;
+    }
+
     return (
-      <React.Fragment>
-        <Header>{this.renderHeader()}</Header>
-        <Body direction={messageDirection} messageStyle={messageDirection === Direction.Outgoing ? this.props.outgoingMsgStyle : this.props.incomingMsgStyle}>{this.renderBody()}</Body>
-      </React.Fragment>
+        <React.Fragment>
+          <Header>{this.renderHeader()}</Header>
+          <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig}>
+            {this.renderContent()}
+          </Body>
+        </React.Fragment>
     );
   }
 
-  renderBody() {
+  renderContent() {
     var content = this.props.messageDetails.content.data;
-    if (this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN) {
-      return <PlainTextMessage content={content} />;
+    let textContent = content;
+    if(this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
+      const {data, templateType} = JSON.parse(content);
+      if(this.props.isLatestMessage) {
+        return <InteractiveMessage content={data.content} templateType={templateType}
+                                   addMessage={this.props.mediaOperations.addMessage}
+                                   />
+      }
+      textContent = data.content.title;
     }
+    return <PlainTextMessage content={textContent}/>;
   }
 }
 

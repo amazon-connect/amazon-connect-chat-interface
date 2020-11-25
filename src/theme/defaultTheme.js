@@ -156,6 +156,7 @@ export default {
   spacing,
   globals,
   fonts,
+  fontsSize,
   screen,
   color,
 
