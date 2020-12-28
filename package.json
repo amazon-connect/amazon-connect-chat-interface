@@ -5,7 +5,8 @@
   "dependencies": {
     "@babel/runtime": "7.9.2",
     "@svgr/webpack": "^5.4.0",
-    "amazon-connect-chatjs": "^1.0",
+    "@types/jest": "^26.0.19",
+    "amazon-connect-chatjs": "^1.1.0",
     "react": "^16.6.3",
     "react-app-polyfill": "^0.1.3",
     "react-dom": "^16.6.3",
@@ -18,13 +19,14 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "npm run coverage && node scripts/build.js",
     "release": "node scripts/build.js",
     "dev-build": "NODE_ENV=development npx webpack --config configuration/webpack.config.dev.js",
     "clean": "rm -rf build/ node_modules build",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "build-storybook": "build-storybook",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "coverage": "node scripts/test.js --coverage"
   },
   "eslintConfig": {
     "extends": "react-app"

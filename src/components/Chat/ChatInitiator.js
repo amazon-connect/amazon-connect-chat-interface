@@ -1,14 +1,14 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import 'whatwg-fetch';
+import request from '../../utils/fetchRequest';
 
 function safeParse(jsonString, defaultValue) {
-    try {
-        return JSON.parse(jsonString);
-    } catch (e) {
-        return defaultValue;
-    } 
+  try {
+    return JSON.parse(jsonString);
+  } catch (e) {
+    return defaultValue;
+  }
 }
 
 /**
@@ -25,35 +25,41 @@ function safeParse(jsonString, defaultValue) {
  * @param {string} input.initialMessage - optional initial message to start chat
  * @param {string} input.region
  * @param {string} input.contactAttributes
+ * @param {object} input.headers
  * @returns {Promise} Promise object that resolves to chatDetails objects
  */
 export function initiateChat(input) {
+  const initiateChatRequest = {
+    InstanceId: input.instanceId,
+    ContactFlowId: input.contactFlowId,
+    ParticipantDetails: {
+      DisplayName: input.name
+    },
+    Username: input.username,
+  };
 
-    const initiateChatRequest = {
-      InstanceId: input.instanceId,
-      ContactFlowId: input.contactFlowId,
-      ParticipantDetails: {
-        DisplayName: input.name
-      },
-      Username: input.username,
+  const attributes = safeParse(input.contactAttributes, null);
+  if (attributes) {
+    initiateChatRequest.Attributes = attributes;
+  }
+
+  if (input.initialMessage) {
+    initiateChatRequest.InitialMessage = {
+      ContentType: "text/plain",
+      Content: input.initialMessage
     };
+  }
 
-    const attributes = safeParse(input.contactAttributes, null);
-    if (attributes) {
-      initiateChatRequest.Attributes = attributes;
-    }
+  let headers = new Headers();
 
-    if (input.initialMessage) {
-      initiateChatRequest.InitialMessage = {
-        ContentType: "text/plain",
-        Content: input.initialMessage
-      };
-    }
+  if (input.headers) {
+    headers = input.headers;
+  }
 
-    return window.fetch(input.apiGatewayEndpoint, {
-      method: 'post',
-      body: JSON.stringify(initiateChatRequest)
-    })
-      .then(rawResponse => rawResponse.json())
-      .then(res => res.data);
+  return request(input.apiGatewayEndpoint, {
+    headers,
+    method: 'post',
+    body: JSON.stringify(initiateChatRequest)
+  })
+    .then(res => res.json.data);
 };
