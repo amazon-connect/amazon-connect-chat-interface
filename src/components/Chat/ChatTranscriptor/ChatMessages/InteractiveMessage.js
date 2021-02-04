@@ -59,7 +59,7 @@ InteractiveMessage.propTypes = {
 };
  
 export function InteractiveMessage({ content, templateType, addMessage }) {
-  const [ responseSelected, setResponseSelected] = useState(false);
+  const [, setResponseSelected] = useState(false);
  
   function onAddMessage(data){
     addMessage(data);
