@@ -21,7 +21,6 @@ export class LanguageProvider extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("LanguageProvider called...", props);
     this.state = {
       selectedLanguage: this.getLanguageDetails(localStorage.getItem(LANGUAGE_KEY)) || this.getLanguageDetails("en_US")
     };

@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
  
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
 import PT from "prop-types";
 import { Text } from "connect-core";
 import { InteractiveMessageType } from "../../datamodel/Model";
@@ -59,7 +59,7 @@ InteractiveMessage.propTypes = {
 };
  
 export function InteractiveMessage({ content, templateType, addMessage }) {
-  const [ responseSelected, setResponseSelected] = useState(false);
+  const [, setResponseSelected] = useState(false);
  
   function onAddMessage(data){
     addMessage(data);
