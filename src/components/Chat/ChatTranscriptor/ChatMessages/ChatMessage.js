@@ -154,7 +154,7 @@ export class ParticipantMessage extends PureComponent {
   }
 
   render() {
-    let {direction, error} = this.props.messageDetails.transportDetails;
+    let { direction } = this.props.messageDetails.transportDetails;
     const messageStyle = direction === Direction.Outgoing ? this.props.outgoingMsgStyle : this.props.incomingMsgStyle;
 
     const bodyStyleConfig = {};
