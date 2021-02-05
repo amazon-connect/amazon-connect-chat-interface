@@ -5,7 +5,7 @@ import React from 'react';
 import messages_en from '../localization/en_US.json';
 import messages_fr from '../localization/fr_FR.json';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import { LANGUAGE_KEY, LANGUAGES } from '../constants/global';
+import { LANGUAGES } from '../constants/global';
 
 // add for all languages
 export const labels = {
@@ -22,7 +22,7 @@ export class LanguageProvider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLanguage: this.getLanguageDetails(localStorage.getItem(LANGUAGE_KEY)) || this.getLanguageDetails("en_US")
+      selectedLanguage: this.getLanguageDetails("en_US")
     };
     this.loadLanguages();
   }
@@ -31,18 +31,17 @@ export class LanguageProvider extends React.Component {
     return LANGUAGES.find(function (lan) {
       return lan.id === language;
     });
-  }
+  };
 
   loadLanguages = () => {
     let elLocaleData = require('react-intl/locale-data/en');
     addLocaleData(elLocaleData);
-  }
+  };
 
   changeLanguage = (languageObject) => {
     this.setState({ selectedLanguage: languageObject });
     console.log(languageObject);
     this.loadLanguages();
-    localStorage.setItem(LANGUAGE_KEY, languageObject.id);
   };
 
   render() {

@@ -4,7 +4,7 @@
 import "amazon-connect-chatjs";
 import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
-import { ContentType, PARTICIPANT_MESSAGE, Direction, Status } from "./datamodel/Model";
+import { ContentType, PARTICIPANT_TYPES, PARTICIPANT_MESSAGE, Direction, Status } from "./datamodel/Model";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 
@@ -30,7 +30,6 @@ class ChatJSClient {
   }
 
   disconnect() {
-    localStorage.removeItem("chatInput");
     return this.session.disconnectParticipant();
   }
 
@@ -91,6 +90,14 @@ class ChatSession {
   client = null;
   contactId = null;
   contactStatus = CONTACT_STATUS.DISCONNECTED;
+
+  /**
+   * Flag set when an outgoing message from the Customer is in flight.
+   * Until the request completes, we will not render a Customer message over the websocket.
+   *
+   * @type {boolean}
+   */
+  isOutgoingMessageInFlight = false;
 
   _eventHandlers = {
     'transcript-changed': [],
@@ -158,8 +165,8 @@ class ChatSession {
     });
   }
 
-  endChat() {
-    this.client.disconnect();
+  async endChat() {
+    await this.client.disconnect();
     this._updateContactStatus(CONTACT_STATUS.DISCONNECTED);
     this._triggerEvent("chat-disconnected");
     this._triggerEvent("chat-closed");
@@ -183,6 +190,8 @@ class ChatSession {
 
     this._addItemsToTranscript([message]);
 
+    this.isOutgoingMessageInFlight = true;
+
     this.client
       .sendMessage(data)
       .then((response) => {
@@ -195,9 +204,13 @@ class ChatSession {
             response
           )
         );
+
+        this.isOutgoingMessageInFlight = false;
         return response;
       })
       .catch((error) => {
+        this.isOutgoingMessageInFlight = false;
+
         this._failMessage(message);
       });
   }
@@ -313,7 +326,12 @@ class ChatSession {
       }else{
         this._triggerEvent("outgoing-message", data);
       }
-      this._addItemsToTranscript([item]);
+
+      const shouldBypassAddItemToTranscript = this.isOutgoingMessageInFlight === true && item.participantRole === PARTICIPANT_TYPES.CUSTOMER;
+
+      if (!shouldBypassAddItemToTranscript) {
+        this._addItemsToTranscript([item]);
+      }
 
     } else {
       console.log("_handleIncomingData NOT NOT item created");

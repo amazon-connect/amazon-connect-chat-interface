@@ -1,9 +1,6 @@
 {
   "plugins": [
-    ["react-intl", {
-        "messagesDir": "./src/localization/",
-        "extractSourceLocation": true
-    }]
+    "emotion"
   ],
   "presets": [
     "react-app"

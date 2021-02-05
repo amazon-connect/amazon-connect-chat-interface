@@ -26,6 +26,7 @@ const HeaderWrapper = styled.div`
   padding: 20px;
   color: #fff;
   border-radius: 3px;
+  flex-shrink: 0;
 `
 const WelcomeText  = styled(Text)`
   padding-bottom: 10px;

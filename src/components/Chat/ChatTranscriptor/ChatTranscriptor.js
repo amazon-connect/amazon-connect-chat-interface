@@ -23,7 +23,7 @@ const TranscriptBody = styled.div`
 
 const TranscriptWrapper = styled(ChatTranscriptScroller)`
   order: 2;
-  flex: 1 1 0;
+  flex: 1 1 auto;
   background: ${props => props.theme.chatTranscriptor.background};
 `;
 
