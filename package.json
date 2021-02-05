@@ -4,6 +4,7 @@
   "homepage": "chat",
   "dependencies": {
     "@babel/runtime": "7.9.2",
+    "@emotion/core": "^10.0.35",
     "@svgr/webpack": "^5.4.0",
     "@types/jest": "^26.0.19",
     "amazon-connect-chatjs": "^1.1.0",
