@@ -2,31 +2,64 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ChatComposer from './ChatComposer';
 import { ThemeProvider } from '../../../theme';
+import { render, fireEvent } from "@testing-library/react"
+import { ContentType } from "../datamodel/Model";
+import { IntlProvider } from "react-intl";
+import { KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 
-// Dummy messages
-const messages = [
-  {
-    id: 1,
-    message: "Welcome bro",
-    from: "agent"
-  }, {
-    id: 2,
-    message: "Hello bro",
-    from: "customer"
-  },
-  {
-    id: 3,
-    message: "Visit this for more info https://reactjs.org/docs/dom-elements.html",
-    from: "agent"
-  }
-]
+const mockAttachmentsFile = {
+  name: "testUpload.pdf",
+  type: ContentType.ATTACHMENT_CONTENT_TYPE.PDF,
+  size: 1
+};
 
-describe('<ChatComposer />', () => {
-  test("Style should match the snapshot", () => {
-    const tree = createTree(<ThemeProvider><ChatComposer messages={messages} /></ThemeProvider>);
-    expect(tree).toMatchSnapshot();
-  });
+let mockComposer;
+let mockProps;
+
+function renderElement(props) {
+  mockComposer = render(<ThemeProvider>
+      <IntlProvider locale="en">
+      <ChatComposer {...props}/>
+  </IntlProvider>
+  </ThemeProvider>);
+}
+
+beforeEach(()=>{
+  const onTyping = jest.fn().mockResolvedValue(undefined);
+  const addMessage = jest.fn().mockResolvedValue(undefined);
+  const addAttachment = jest.fn().mockResolvedValue(undefined);
+  mockProps = {onTyping: onTyping, addAttachment: addAttachment, addMessage: addMessage, contactId: "12344", contactStatus:"connected", typedMessage: "", composerConfig: { attachmentsEnabled: true }};
+});
+
+test("Style should match the snapshot", () => {
+  renderElement(mockProps);
+  expect(mockComposer).toMatchSnapshot();
+});
+
+test("Should not be able to see the paperclip icon without permission", () => {
+  mockProps.composerConfig.attachmentsEnabled = false;
+  renderElement(mockProps);
+  expect(mockComposer.queryByTestId("customer-chat-file-select")).toBeNull();
+});
+
+test("Should be able to send an attachment", () => {
+  renderElement(mockProps);
+  const fileInput = mockComposer.getByTestId("customer-chat-file-select");
+  fireEvent.change(fileInput, {target: { files: [ mockAttachmentsFile ]}});
+  const textInput = mockComposer.getByTestId("customer-chat-text-input");
+  fireEvent.keyDown(textInput, { key: KEYBOARD_KEY_CONSTANTS.ENTER});
+  expect(mockProps.addAttachment).toHaveBeenCalledTimes(1);
+  expect(mockProps.addAttachment).toHaveBeenCalledWith(mockProps.contactId, {...mockAttachmentsFile});
+});
+
+test("Should be able to unselect an attachment", () => {
+  renderElement(mockProps);
+  const fileInput = mockComposer.getByTestId("customer-chat-file-select");
+  fireEvent.change(fileInput, {target: { files: [ mockAttachmentsFile ]}});
+  const textInput = mockComposer.getByTestId("customer-chat-text-input");
+  fireEvent.keyDown(textInput, { key: KEYBOARD_KEY_CONSTANTS.DELETE});
+  fireEvent.keyDown(textInput, { key: KEYBOARD_KEY_CONSTANTS.ENTER});
+  expect(mockProps.addAttachment).toHaveBeenCalledTimes(0);
 });

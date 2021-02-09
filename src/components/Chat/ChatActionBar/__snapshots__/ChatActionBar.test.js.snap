@@ -148,8 +148,10 @@ exports[`<ChatActionBar /> Style should match the snapshot 1`] = `
     >
       <button
         className="c3 c4"
+        data-selected={false}
         disabled={false}
         onClick={[Function]}
+        selected={false}
         type="default"
       >
         <span>

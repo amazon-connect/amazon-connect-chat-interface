@@ -98,7 +98,9 @@ exports[`<Button /> styles should match snapshots:  default 1`] = `
 
 <button
   className="c0"
+  data-selected={false}
   disabled={false}
+  selected={false}
   type="default"
 >
   Default
@@ -203,7 +205,9 @@ exports[`<Button /> styles should match snapshots:  disabled 1`] = `
 
 <button
   className="c0"
+  data-selected={false}
   disabled={true}
+  selected={false}
   type="default"
 >
   Disabled
@@ -308,7 +312,9 @@ exports[`<Button /> styles should match snapshots:  primary 1`] = `
 
 <button
   className="c0"
+  data-selected={false}
   disabled={false}
+  selected={false}
   type="primary"
 >
   Primary
@@ -413,7 +419,9 @@ exports[`<Button /> styles should match snapshots:  secondary 1`] = `
 
 <button
   className="c0"
+  data-selected={false}
   disabled={false}
+  selected={false}
   type="primary"
 >
   Secondary
@@ -517,7 +525,9 @@ exports[`<Button /> styles should match snapshots:  small 1`] = `
 
 <button
   className="c0"
+  data-selected={false}
   disabled={false}
+  selected={false}
   type="default"
 >
   Small
@@ -622,7 +632,9 @@ exports[`<Button /> styles should match snapshots:  tertiary 1`] = `
 
 <button
   className="c0"
+  data-selected={false}
   disabled={false}
+  selected={false}
   type="tertiary"
 >
   Action

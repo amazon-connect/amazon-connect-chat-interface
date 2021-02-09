@@ -5,10 +5,9 @@ import React, { PureComponent } from "react";
 import styled from "styled-components";
 import PT from "prop-types";
 import Linkify from "react-linkify";
-import { Status, Direction } from "../../datamodel/Model";
+import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
 import { FormattedMessage } from "react-intl";
 import { Icon, TypingLoader } from "connect-core";
-import { ContentType } from "../../datamodel/Model";
 import { InteractiveMessage } from "./InteractiveMessage";
 
 export const MessageBox = styled.div`
@@ -82,118 +81,178 @@ const StatusText = styled.span`
   padding-right: ${({ theme }) => theme.spacing.mini};
 `;
 
+const TransportErrorMessage = styled.div`
+  margin-left: ${props => props.theme.chatTranscriptor.msgStatusWidth};
+  padding: ${({ theme }) => theme.spacing.small} ${({ theme }) => theme.spacing.small} ${({ theme }) => theme.spacing.micro};
+  
+  span {
+    color: ${({ theme }) => theme.palette.red};
+  }  
+`;
+
+TransportErrorMessage.RetryButton = styled.a`
+  margin-left: ${({ theme }) => theme.spacing.micro};
+`;
+
+
 export class ParticipantMessage extends PureComponent {
   static propTypes = {
     messageDetails: PT.object.isRequired,
-    incomingMsgStyle:  PT.object,
-    mediaOperations: PT.object,
+    incomingMsgStyle: PT.object,
     outgoingMsgStyle: PT.object,
-    isLatestMessage: PT.bool,
+    mediaOperations: PT.object,
+    isLatestMessage: PT.bool
   };
 
   timestampToDisplayable(timestamp) {
-    var d = new Date(0);
+    const d = new Date(0);
     d.setUTCSeconds(timestamp);
     return d.toLocaleTimeString([], {hour: 'numeric', minute: 'numeric'});
   }
 
   renderHeader() {
-    var displayName =
-      this.props.messageDetails.displayName;
-    var transportDetails = this.props.messageDetails.transportDetails;
-    var isOutgoingMsg = this.props.messageDetails.transportDetails.direction === Direction.Outgoing;
-    var statusStringPrefix = "connect-chat-transport-status-";
-    var transportStatusElement = <React.Fragment />;
+    const displayName = this.props.messageDetails.displayName;
+    const transportDetails = this.props.messageDetails.transportDetails;
+    const isOutgoingMsg = this.props.messageDetails.transportDetails.direction === Direction.Outgoing;
+    const statusStringPrefix = "connect-chat-transport-status-";
+    let transportStatusElement = <React.Fragment/>;
     switch (transportDetails.status) {
       case Status.Sending:
         transportStatusElement = (
-          <React.Fragment>
-            <StatusText>
-              <FormattedMessage
-                id={statusStringPrefix + "sending"}
-                defaultMessage="Sending at"
-              />
-            </StatusText>
-          </React.Fragment>
+            <React.Fragment>
+              <StatusText>
+                <FormattedMessage
+                    id={statusStringPrefix + "sending"}
+                    defaultMessage="Sending"
+                />
+              </StatusText>
+            </React.Fragment>
         );
         break;
       case Status.SendSuccess:
         transportStatusElement = (
-          <React.Fragment>
-            {isOutgoingMsg && <StatusText>
+            <React.Fragment>
+              {isOutgoingMsg && <StatusText>
                 <FormattedMessage
-                  id={statusStringPrefix + "sent"}
-                  defaultMessage="Sent at"
+                    id={statusStringPrefix + "sent"}
+                    defaultMessage="Sent at"
                 />
               </StatusText>
-            }            
-            {this.timestampToDisplayable(transportDetails.sentTime)}
-          </React.Fragment>
+              }
+              {this.timestampToDisplayable(transportDetails.sentTime)}
+            </React.Fragment>
         );
         break;
       case Status.SendFailed:
         transportStatusElement = (
-          <ErrorText>
-            <Icon />
-            <FormattedMessage
-              id={statusStringPrefix + "sendFailed"}
-              defaultMessage="Failed to send! "
-            />
-          </ErrorText>
+            <ErrorText>
+              <Icon/>
+              <FormattedMessage
+                  id={statusStringPrefix + "sendFailed"}
+                  defaultMessage="Failed to send! "
+              />
+            </ErrorText>
         );
         break;
       default:
-        transportStatusElement = <React.Fragment />;
+        transportStatusElement = <React.Fragment/>;
     }
     return (
-      <React.Fragment>
-        <Header.Sender>{displayName}</Header.Sender>
-        <Header.Status>{transportStatusElement}</Header.Status>
-      </React.Fragment>
+        <React.Fragment>
+          <Header.Sender>{displayName}</Header.Sender>
+          <Header.Status>{transportStatusElement}</Header.Status>
+        </React.Fragment>
     );
   }
 
   render() {
-    let { direction } = this.props.messageDetails.transportDetails;
+    let {direction, error} = this.props.messageDetails.transportDetails;
     const messageStyle = direction === Direction.Outgoing ? this.props.outgoingMsgStyle : this.props.incomingMsgStyle;
 
+    //Hack to simulate ChatJS response with attachment content types
     const bodyStyleConfig = {};
     if (this.props.isLatestMessage &&
         this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
       bodyStyleConfig.hideDirectionArrow = true;
       bodyStyleConfig.removePadding = true;
     }
+    let content, contentType;
+    if (this.props.messageDetails.type === ATTACHMENT_MESSAGE) {
+      //Use Attachments data as content if available
+      //If an attachment message does not have this data, it means the upload was rejected
+      if (this.props.messageDetails.Attachments && this.props.messageDetails.Attachments.length > 0) {
+        content = this.props.messageDetails.Attachments[0];
+        contentType = content.ContentType;
+      } else {
+        content = {
+          AttachmentName: this.props.messageDetails.content.name
+        };
+        contentType = this.props.messageDetails.content.type
+      }
+    } else {
+      content = this.props.messageDetails.content.data;
+      contentType = this.props.messageDetails.content.type
+    }
 
     return (
         <React.Fragment>
           <Header>{this.renderHeader()}</Header>
           <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig}>
-            {this.renderContent()}
+            {this.renderContent(content, contentType)}
           </Body>
+          {error && this.renderTransportError(error)}
         </React.Fragment>
     );
   }
 
-  renderContent() {
-    var content = this.props.messageDetails.content.data;
+  renderContent(content, contentType) {
+    if (this.props.messageDetails.type === ATTACHMENT_MESSAGE) {
+      return <AttachmentMessage content={content}
+                                downloadAttachment={this.props.mediaOperations.downloadAttachment}/>;
+    }
     let textContent = content;
-    if(this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
+    if (contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
       const {data, templateType} = JSON.parse(content);
-      if(this.props.isLatestMessage) {
+      if (this.props.isLatestMessage) {
         return <InteractiveMessage content={data.content} templateType={templateType}
                                    addMessage={this.props.mediaOperations.addMessage}
-                                   />
+                                   textInputRef={this.props.textInputRef}/>
       }
       textContent = data.content.title;
     }
     return <PlainTextMessage content={textContent}/>;
+  }
+
+  renderTransportError(error) {
+    if (!error || !error.message) {
+      return null;
+    }
+    return (
+        <TransportErrorMessage>
+          <span>{error.message}</span>
+          {error.retry && this.renderRetryButton(error.retry)}
+        </TransportErrorMessage>
+    );
+  }
+
+  renderRetryButton(callback) {
+    const onRetry = (e) => {
+      e.preventDefault();
+      callback();
+    };
+
+    return (
+        <TransportErrorMessage.RetryButton href={'Retry'} tabIndex={0} onClick={onRetry} onKeyPress={onRetry}>
+          Retry
+        </TransportErrorMessage.RetryButton>
+    );
   }
 }
 
 class PlainTextMessage extends PureComponent {
   render() {
     return (
-      <Linkify properties={{ target: "_blank" }}>{this.props.content}</Linkify>
+        <Linkify properties={{ target: "_blank" }}>{this.props.content}</Linkify>
     );
   }
 }
@@ -217,6 +276,38 @@ export class ParticipantTyping extends PureComponent {
           />
         </Body>
       </ParticipantTypingBox>
+    );
+  }
+}
+
+class AttachmentMessage extends PureComponent {
+  downloadAttachment = (e) => {
+    e.preventDefault();
+    if(!this.props.content.AttachmentId){ return; }
+    this.props.downloadAttachment(this.props.content.AttachmentId)
+        .then(blob => {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.setAttribute("download", this.props.content.AttachmentName);
+          link.click();
+        });
+  }
+
+  renderContent(){
+    if(this.props.content.Status === AttachmentStatus.APPROVED){
+      return <a href={this.props.content.AttachmentName} onClick={this.downloadAttachment}
+                onKeyPress={this.downloadAttachment}>{this.props.content.AttachmentName}</a>
+    }
+    return this.props.content.AttachmentName;
+  }
+
+  render() {
+    if(!this.props.content){ return; }
+
+    return (
+        <div>
+          {this.renderContent()}
+        </div>
     );
   }
 }

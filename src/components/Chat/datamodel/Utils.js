@@ -7,7 +7,6 @@ import {
   ItemDetails,
   TransportDetails,
   ContentType,
-  PARTICIPANT_MESSAGE,
   PARTICIPANT_TYPES
 } from "./Model";
 
@@ -46,33 +45,38 @@ function createItemFromIncoming(item, thisParticipant) {
   transportDetails.status = Status.SendSuccess;
   transcriptItem.transportDetails = transportDetails;
   transcriptItem.version = 0;
+  transcriptItem.Attachments = item.Attachments;
   return transcriptItem;
 }
 
-function createMessageFromSendMessageResponse(oldMessage, response) {
-  var newMessage = new ItemDetails();
-  Object.assign(newMessage, oldMessage);
-  newMessage.id = response.data.Id;
-  newMessage.transportDetails.status = Status.SendSuccess;
-  newMessage.transportDetails.sentTime = new Date(response.data.AbsoluteTime).getTime() / 1000;
-  return newMessage;
+function createTranscriptItemFromSuccessResponse(oldTranscriptItem, response) {
+  const newTranscriptItem = new ItemDetails();
+  Object.assign(newTranscriptItem, oldTranscriptItem);
+
+  if(response.data && response.data.Id){
+    newTranscriptItem.id = response.data.Id;
+  }
+
+  newTranscriptItem.transportDetails = {
+    ...oldTranscriptItem.transportDetails,
+    status: Status.SendSuccess,
+    sentTime: new Date(response.data.AbsoluteTime || Date.now()).getTime() / 1000
+  };
+  return newTranscriptItem;
 }
 
-function createMessageFromOutgoing(data, thisParticipant) {
-  var transcriptItem = new ItemDetails();
-  var content = {};
-  var transportDetails = {};
-  content.data = data.text;
-  content.type = ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN;
+function createOutgoingTranscriptItem(type, content, participant){
+  const transcriptItem = new ItemDetails();
+  const transportDetails = {};
+  transcriptItem.type = type;
   transcriptItem.content = content;
-  transcriptItem.participantId = thisParticipant.participantId;
-  transcriptItem.participantRole = PARTICIPANT_TYPES.AGENT;
-  transcriptItem.displayName = thisParticipant.displayName;
+  transcriptItem.participantId = participant.participantId;
+  transcriptItem.participantRole = PARTICIPANT_TYPES.CUSTOMER;
+  transcriptItem.displayName = participant.displayName;
   transportDetails.status = Status.Sending;
   transportDetails.direction = Direction.Outgoing;
   transportDetails.sentTime = _timestampNow();
   transcriptItem.transportDetails = transportDetails;
-  transcriptItem.type = PARTICIPANT_MESSAGE;
   transcriptItem.id = _generateLocalId();
   transcriptItem.version = 0;
   return transcriptItem;
@@ -116,13 +120,18 @@ function createTypingParticipant(typingDataItem, thisParticipantId) {
   return participantTypingDetails;
 }
 
+function isAttachmentContentType(contentType) {
+  return contentType && Object.values(ContentType.ATTACHMENT_CONTENT_TYPE).includes(contentType.toLowerCase());
+}
+
 var modelUtils = {
   createItemFromIncoming: createItemFromIncoming,
-  createMessageFromOutgoing: createMessageFromOutgoing,
+  createOutgoingTranscriptItem: createOutgoingTranscriptItem,
   createFailedItem: createFailedItem,
   createTypingParticipant: createTypingParticipant,
   isRecognizedEvent: isRecognizedEvent,
-  createMessageFromSendMessageResponse: createMessageFromSendMessageResponse
+  createTranscriptItemFromSuccessResponse: createTranscriptItemFromSuccessResponse,
+  isAttachmentContentType: isAttachmentContentType,
 };
 
 export { modelUtils };

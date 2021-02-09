@@ -129,6 +129,7 @@ export default class Button extends PureComponent {
     disabled: PT.bool,
     href: PT.string,
     iconSize: PT.oneOf(['small', 'medium', "mini"]),
+    selected: PT.bool
   }
 
   static defaultProps = {
@@ -137,7 +138,8 @@ export default class Button extends PureComponent {
     disabled: false,
     href: undefined,
     loaderColor: '#fff',
-    iconSize: "small"
+    iconSize: "small",
+    selected: false
   }
 
   render() {
@@ -151,10 +153,10 @@ export default class Button extends PureComponent {
       );
     }
     return (
-      <StyledButton {...this.props} disabled={this.props.loading || this.props.disabled}>
-        {this.props.loading && <Loader color={this.props.loaderColor}/>} 
+      <StyledButton {...this.props} data-selected={this.props.selected} disabled={this.props.loading || this.props.disabled}>
+        {this.props.loading && <Loader color={this.props.loaderColor}/>}
         {this.props.icon && !this.props.loading && <Icon src={this.props.icon} type={this.props.iconSize}/>}
-        {this.props.children} 
+        {this.props.children}
       </StyledButton>
     );
   }

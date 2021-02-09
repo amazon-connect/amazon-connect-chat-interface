@@ -12,6 +12,7 @@ import EventBus from "./eventbus"
 import "./ChatInterface"
 import { defaultTheme } from "connect-theme";
 import { FlexRowContainer } from "connect-theme/Helpers";
+import { CHAT_FEATURE_TYPES } from "./constants";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ class ChatContainer extends Component {
     console.log("ChatContainer called...", props);
     this.state = {
       chatSession: null,
+      composerConfig: {},
       status: "NotInitiated"
     };
 
@@ -87,7 +89,13 @@ class ChatContainer extends Component {
       const chatDetails = await initiateChat(input);
       const chatSession = await this.openChatSession(chatDetails, input.name, input.region, input.stage);
 
-      this.setState({ status: "Initiated", chatSession: chatSession });
+      this.setState({
+        status: "Initiated",
+        chatSession: chatSession,
+        composerConfig: {
+          attachmentsEnabled: (input.featurePermissions && input.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS]) || (chatDetails.featurePermissions && chatDetails.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS])
+        }
+      });
       success && success(chatSession);
     } catch (error) {
       this.setState({ status: "InitiateFailed" });
@@ -133,7 +141,7 @@ class ChatContainer extends Component {
         </Wrapper>
       );
     }
-    return <Chat chatSession={this.state.chatSession} onEnded={this.resetState} {...this.props} />;
+    return <Chat chatSession={this.state.chatSession} composerConfig={this.state.composerConfig} onEnded={this.resetState} {...this.props} />;
   }
 }
 

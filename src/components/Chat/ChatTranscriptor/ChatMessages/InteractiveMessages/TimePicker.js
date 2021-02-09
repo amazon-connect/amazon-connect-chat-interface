@@ -238,12 +238,12 @@ export default function TimePicker({ content, addMessage }) {
       <ResponsesSection>
         <DatePicker>
           {showDateControls &&
-          <DatePicker.PrevDateButton disabled={datePageIndex === 0} onKeyPress={showEarlierDate} onClick={showEarlierDate}>
+          <DatePicker.PrevDateButton disabled={datePageIndex === 0} onKeyPress={showEarlierDate} onClick={showEarlierDate} data-testid={`time-picker-prev-date-button`}>
             <Chevron direction={"left"}/>
           </DatePicker.PrevDateButton>}
           <span>{dateString}</span>
           {showDateControls &&
-          <DatePicker.NextDateButton disabled={datePageIndex === availableDates.length - 1} onClick={showLaterDate}>
+          <DatePicker.NextDateButton disabled={datePageIndex === availableDates.length - 1} onClick={showLaterDate} data-testid={`time-picker-next-date-button`}>
             <Chevron direction={"right"}/>
           </DatePicker.NextDateButton>}
         </DatePicker>
@@ -253,12 +253,12 @@ export default function TimePicker({ content, addMessage }) {
         <TimeslotControls>
           {selectedTimeslot != null &&
           <>
-            <ResetSelectionButton onClick={resetSelection}>
+            <ResetSelectionButton onClick={resetSelection} data-testid={`time-picker-reset-selection-button`}>
               <svg viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
                 <path d="M13 1.3L11.7 0 6.5 5.2 1.3 0 0 1.3l5.2 5.2L0 11.7 1.3 13l5.2-5.2 5.2 5.2 1.3-1.3-5.2-5.2z" fillRule="evenodd"/>
               </svg>
             </ResetSelectionButton>
-            <ConfirmSelectionButton disabled={selectedTimeslot == null} onClick={confirmSelection}>Confirm</ConfirmSelectionButton>
+            <ConfirmSelectionButton disabled={selectedTimeslot == null} onClick={confirmSelection} data-testid={`time-picker-confirm-selection-button`}>Confirm</ConfirmSelectionButton>
           </>}
             {showTimeslotPaginationButtons &&
             <>

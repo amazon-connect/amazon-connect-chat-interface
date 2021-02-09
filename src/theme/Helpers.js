@@ -17,7 +17,52 @@ const FlexColumnContainer = styled.div`
   align-items: ${props => props.center ? "center": "normal"}; 
 `
 
+const FlexVerticalCenterContainer = styled.div `
+  display: flex;
+  align-items: center;
+`;
+ 
+const FlexColumnSpaceBetweenContainer = styled.div `
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+ 
+const Mask = styled.div `
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+  outline: none;
+  background-color: ${props => props.theme.palette.white};
+  z-index: ${props => props.theme.zIndex.level_2};
+`;
+ 
+const HiddenText = styled.span `
+  position: absolute;
+  pointer-events: none;
+  color: transparent;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+ 
+const HiddenLevelOneHeading = styled.h1 `
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  color: transparent;
+  overflow: hidden;
+`;
+
 export {
   FlexColumnContainer,
-  FlexRowContainer
+  FlexRowContainer,
+  FlexVerticalCenterContainer,
+  FlexColumnSpaceBetweenContainer,
+  Mask,
+  HiddenText,
+  HiddenLevelOneHeading
 }

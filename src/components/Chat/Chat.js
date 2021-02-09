@@ -60,6 +60,8 @@ function Header({ headerConfig }){
   }
 }
 
+const textInputRef = React.createRef();
+
 export default class Chat extends Component {
   constructor(props) {
     super(props);
@@ -77,6 +79,7 @@ export default class Chat extends Component {
 
   static propTypes = {
     chatSession: PT.object.isRequired,
+    composerConfig: PT.object,
     onEnded: PT.func
   };
 
@@ -134,19 +137,23 @@ export default class Chat extends Component {
 
         <ChatTranscriptor
           loadPreviousTranscript={() => chatSession.loadPreviousTranscript()}
+          addMessage={(data) => chatSession.addOutgoingMessage(data)}
+          downloadAttachment={(attachmentId) => chatSession.downloadAttachment(attachmentId)}
           transcript={this.state.transcript}
           typingParticipants={this.state.typingParticipants}
-          addMessage={(data) => chatSession.addOutgoingMessage(data)}
           contactStatus={this.state.contactStatus}
           contactId={chatSession.contactId}
           transcriptConfig={transcriptConfig}
+          textInputRef={textInputRef}
         />
         <ChatComposer
           contactStatus={this.state.contactStatus}
           contactId={chatSession.contactId}
           addMessage={(contactId, data) => chatSession.addOutgoingMessage(data)}
+          addAttachment={(contactId, attachment) => chatSession.addOutgoingAttachment(attachment)}
           onTyping={() => chatSession.sendTypingEvent()}
           composerConfig={composerConfig}
+          textInputRef={textInputRef}
         />
         {<ChatActionBar
           onEndChat={() => this.endChat()}

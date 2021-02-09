@@ -1,3 +1,4 @@
+
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
@@ -5,7 +6,7 @@ import React, { PureComponent } from "react";
 import PT from "prop-types";
 import styled from "styled-components";
 import { modelUtils } from "../datamodel/Utils";
-import { Direction, PARTICIPANT_MESSAGE  } from "../datamodel/Model";
+import { Direction, PARTICIPANT_MESSAGE, ATTACHMENT_MESSAGE  } from "../datamodel/Model";
 import renderHTML from 'react-render-html';
 import {
   MessageBox,
@@ -34,6 +35,13 @@ const defaultTranscriptConfig = {
       return <ParticipantMessage {...props} />;
     }
   },
+
+  attachmentMessageConfig: {
+    render: ({...props}) => {
+      return <ParticipantMessage {...props} />;
+    }
+  },
+
   systemMessageConfig: {
     render: ({...props}) => {
       return <SystemMessage {...props} />;
@@ -87,9 +95,18 @@ export default class ChatTranscriptor extends PureComponent {
       config = Object.assign({}, config, transcriptConfig.participantMessageConfig);
       additionalProps = {
         mediaOperations: {
-          addMessage: this.props.addMessage
+          addMessage: this.props.addMessage,
+          downloadAttachment: this.props.downloadAttachment
         },
+        textInputRef: this.props.textInputRef,
         isLatestMessage
+      }
+    } else if (itemDetails.type === ATTACHMENT_MESSAGE) {
+      config = Object.assign({}, config, transcriptConfig.attachmentMessageConfig);
+      additionalProps = {
+        mediaOperations: {
+          downloadAttachment: this.props.downloadAttachment
+        }
       }
     } else if (modelUtils.isRecognizedEvent(itemDetails.content.type)) {
       config = Object.assign({}, config, transcriptConfig.systemMessageConfig);
@@ -129,7 +146,7 @@ export default class ChatTranscriptor extends PureComponent {
   render() {
     const lastSentMessage = this.props.transcript
         .filter(({ type, transportDetails }) => (
-            (type === PARTICIPANT_MESSAGE) &&
+            (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) &&
             transportDetails.direction === Direction.Outgoing
         )).pop();
 

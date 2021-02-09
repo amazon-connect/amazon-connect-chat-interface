@@ -7,7 +7,7 @@
     "@emotion/core": "^10.0.35",
     "@svgr/webpack": "^5.4.0",
     "@types/jest": "^26.0.19",
-    "amazon-connect-chatjs": "^1.1.0",
+    "amazon-connect-chatjs": "^1.1.4",
     "core-js": "^3.8.3",
     "react": "^16.6.3",
     "react-app-polyfill": "^0.1.3",
@@ -16,13 +16,14 @@
     "react-linkify": "~0.2.0",
     "react-router-dom": "^4.3.1",
     "react-spinners": "^0.10.4",
+    "react-textarea-autosize": "^8.3.0",
     "styled-components": "^4.1.1",
     "whatwg-fetch": "^3.2.0",
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
     "build": "npm run coverage && node scripts/build.js",
-    "release": "node scripts/build.js",
+    "release": "npm run build",
     "dev-build": "NODE_ENV=development npx webpack --config configuration/webpack.config.dev.js",
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
@@ -73,6 +74,7 @@
       "^connect-constants$": "<rootDir>/src/constants/global",
       "^connect-hooks$": "<rootDir>/src/hooks",
       "^connect-images$": "<rootDir>/src/assets/images",
+      "^connect-prop-types$": "<rootDir>/src/propTypes",
       "^connect-theme$": "<rootDir>/src/theme",
       "^connect-theme/(.*)$": "<rootDir>/src/theme/$1",
       "^connect-app-context/(.*)$": "<rootDir>/src/context/$1",
@@ -150,6 +152,8 @@
     "webpack": "^4.20.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
-    "webpack-manifest-plugin": "2.0.4"
+    "webpack-manifest-plugin": "2.0.4",
+    "@testing-library/dom": "^7.26.6",
+    "@testing-library/react": "^11.1.2"
   }
 }
