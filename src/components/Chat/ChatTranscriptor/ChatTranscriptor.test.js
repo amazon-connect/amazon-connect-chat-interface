@@ -49,7 +49,9 @@ function renderElement(props) {
         <ChatTranscriptor {...props}/>
     </ThemeProvider>,);
 }
- 
+
+global.URL.createObjectURL = jest.fn();
+
 beforeEach(()=>{
     const downloadAttachment = jest.fn().mockResolvedValue(undefined);
     mockProps = {downloadAttachment: downloadAttachment, contactId: "12344", contactStatus:"connected", customerName: "Customer", transcript: mockAttachmentsTranscript, typingParticipants: []};
