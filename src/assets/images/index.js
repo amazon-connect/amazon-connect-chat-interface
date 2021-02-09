@@ -27,7 +27,8 @@ export { default as icon_disconnected_contact_dk} from "./ico_disconnected_dk.sv
 export { default as icon_hamburger_lt} from "./ico_meatballs_lt.svg"
 export { default as icon_hamburger_dk} from "./ico_meatballs_dk.svg"
 
-
+export { default as icon_paperclip} from "./ico-paperclip.svg"
+export { default as icon_close} from "./ico-ccp-close.svg"
 
 export { default as icon_nextCcntact_lt} from "./ico_nextContact_lt.svg"
 export { default as icon_settings_lt} from "./ico_settings_lt.svg"

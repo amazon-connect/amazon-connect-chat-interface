@@ -13,7 +13,8 @@ class ChatInterface {
     instanceId: "",
     region: "",
     stage: "prod",
-    contactAttributes: {}
+    contactAttributes: {},
+    featurePermissions: {}
   }
 
   initiateChat(input, success, failure) {

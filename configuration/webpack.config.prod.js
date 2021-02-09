@@ -219,6 +219,7 @@ module.exports = {
       'connect-constants':  paths.appSrc +'/constants/global',
       'connect-hooks':  paths.appSrc +'/hooks',
       'connect-images': paths.appSrc +'/assets/images',
+      'connect-prop-types': paths.appSrc+'/propTypes',
       'connect-theme': paths.appSrc +'/theme',
       'connect-app-context':  paths.appSrc +'/context'
     },

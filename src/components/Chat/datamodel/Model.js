@@ -3,6 +3,7 @@
 
 export const PARTICIPANT_MESSAGE = "MESSAGE";
 export const CHAT_EVENT = "EVENT";
+export const ATTACHMENT_MESSAGE = "ATTACHMENT";
 
 export const PARTICIPANT_TYPES = {
     AGENT: "AGENT",
@@ -21,9 +22,47 @@ export const ContentType = {
     },
     MESSAGE_CONTENT_TYPE: {
         TEXT_PLAIN: "text/plain",
+        APPLICATION_PDF: "application/pdf",
+        IMAGE_JPG: "image/jpeg",
+        IMAGE_PNG: "image/png",
+        APPLICATION_DOC: "application/msword",
+        APPLICATION_DOCX: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        APPLICATION_XLS: "application/vnd.ms-excel",
+        APPLICATION_XLSX: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        TEXT_CSV: "text/csv",
+        APPLICATION_PPT: "application/vnd.ms-powerpoint",
+        APPLICATION_PPTX: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        AUDIO_WAV: "audio/wav",
+        AUDIO_X_WAV: "audio/x-wav", //Firefox
+        AUDIO_VND_WAVE: "audio/vnd.wave", //IE
         INTERACTIVE_MESSAGE: "application/vnd.amazonaws.connect.message.interactive"
     }
 };
+
+ContentType.ATTACHMENT_CONTENT_TYPE = {
+    TXT: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+    PDF: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_PDF,
+    JPG: ContentType.MESSAGE_CONTENT_TYPE.IMAGE_JPG,
+    PNG: ContentType.MESSAGE_CONTENT_TYPE.IMAGE_PNG,
+    DOC: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_DOC,
+    DOCX: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_DOCX,
+    XLS: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_XLS,
+    XLSX: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_XLSX,
+    CSV: ContentType.MESSAGE_CONTENT_TYPE.TEXT_CSV,
+    PPT: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_PPT,
+    PPTX: ContentType.MESSAGE_CONTENT_TYPE.APPLICATION_PPTX,
+    WAV: ContentType.MESSAGE_CONTENT_TYPE.AUDIO_WAV,
+    X_WAV: ContentType.MESSAGE_CONTENT_TYPE.AUDIO_X_WAV,
+    VND_WAVE: ContentType.MESSAGE_CONTENT_TYPE.AUDIO_VND_WAVE
+};
+
+//OpenXML content types do not show up in custom files list unless file extension is explicitly provided
+export const ATTACHMENT_ACCEPT_CONTENT_TYPES = [
+    ...Object.values(ContentType.ATTACHMENT_CONTENT_TYPE),
+    ".docx",
+    ".xlsx",
+    ".pptx"
+];
 
 export const InteractiveMessageType = {
     LIST_PICKER: "ListPicker",
@@ -39,11 +78,25 @@ export const Status = {
     // Delivered?
 };
 
+export const AttachmentStatus = {
+    APPROVED: "APPROVED",
+    REJECTED: "REJECTED"
+};
+
 export const Direction = {
     Outgoing: "Outgoing",
     Incoming: "Incoming"
 };
 
+export const AttachmentErrorType = {
+    AccessDeniedException: "AccessDeniedException",
+    InternalServerException: "InternalServerException",
+    ThrottlingException: "ThrottlingException",
+    ValidationException: "ValidationException",
+    ServiceQuotaExceededException: "ServiceQuotaExceededException",
+    ResourceNotFoundException: "ResourceNotFoundException",
+    ConflictException: "ConflictException"
+};
 export class TransportDetails {
     constructor(input) {
         var args = input || {};

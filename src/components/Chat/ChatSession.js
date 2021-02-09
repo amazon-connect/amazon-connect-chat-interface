@@ -4,7 +4,16 @@
 import "amazon-connect-chatjs";
 import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
-import { ContentType, PARTICIPANT_TYPES, PARTICIPANT_MESSAGE, Direction, Status } from "./datamodel/Model";
+import {
+  ContentType,
+  PARTICIPANT_MESSAGE,
+  Direction,
+  Status,
+  ATTACHMENT_MESSAGE,
+  AttachmentErrorType,
+  PARTICIPANT_TYPES
+} from "./datamodel/Model";
+
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 
@@ -71,13 +80,21 @@ class ChatJSClient {
     });
   }
 
-  sendMessage(data) {
+  sendMessage(content) {
     // Right now we are assuming only text messages,
     // later we will have to add functionality for other types.
     return this.session.sendMessage({
-      message: data.text,
+      message: content.data,
       contentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN
     });
+  }
+
+  sendAttachment(attachment) {
+    return this.session.sendAttachment({ attachment });
+  }
+ 
+  downloadAttachment(attachmentId){
+    return this.session.downloadAttachment({ attachmentId });
   }
 }
 
@@ -182,8 +199,9 @@ class ChatSession {
   }
 
   addOutgoingMessage(data) {
-    var message = modelUtils.createMessageFromOutgoing(
-      data,
+    const message = modelUtils.createOutgoingTranscriptItem(
+      PARTICIPANT_MESSAGE,
+    { data: data.text, type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN },
       this.thisParticipant
     );
     console.log("addOutgoingMessage, messageItem is:", message);
@@ -193,13 +211,13 @@ class ChatSession {
     this.isOutgoingMessageInFlight = true;
 
     this.client
-      .sendMessage(data)
+      .sendMessage(message.content)
       .then((response) => {
         console.log("send success");
         console.log(response);
         this._replaceItemInTranscript(
           message,
-          modelUtils.createMessageFromSendMessageResponse(
+          modelUtils.createTranscriptItemFromSuccessResponse(
             message,
             response
           )
@@ -213,6 +231,51 @@ class ChatSession {
 
         this._failMessage(message);
       });
+  }
+
+  addOutgoingAttachment(attachment) {
+    const transcriptItem = modelUtils.createOutgoingTranscriptItem(
+        ATTACHMENT_MESSAGE,
+        attachment,
+        this.thisParticipant
+    );
+    this._addItemsToTranscript([transcriptItem]);
+    return this.sendAttachment(transcriptItem);
+  }
+ 
+  sendAttachment(transcriptItem) {
+    const {participantId, displayName} = this.thisParticipant;
+    return this.client
+        .sendAttachment(transcriptItem.content)
+        .then(response => {
+          console.log("RESPONSE", response);
+          console.log("sendAttachment response:", response);
+          this.transcript.splice(this.transcript.indexOf(transcriptItem), 1);
+          return response;
+        }).catch(error => {
+          transcriptItem.transportDetails.error = {
+            type: error.type,
+            message: error.message,
+          };
+          if(error.type !== AttachmentErrorType.ValidationException){
+            transcriptItem.transportDetails.error.message = "Attachment failed to send";
+            transcriptItem.transportDetails.error.retry = () => {
+              const newTranscriptItem = modelUtils.createOutgoingTranscriptItem(
+                  ATTACHMENT_MESSAGE,
+                  transcriptItem.content,
+                  { displayName, participantId }
+              );
+              newTranscriptItem.id = transcriptItem.id;
+              this._replaceItemInTranscript(transcriptItem, newTranscriptItem);
+              this.sendAttachment(newTranscriptItem);
+            }
+          }
+          this._failMessage(transcriptItem);
+        });
+  }
+ 
+  downloadAttachment(attachmentId) {
+    return this.client.downloadAttachment(attachmentId)
   }
 
   loadPreviousTranscript() {
