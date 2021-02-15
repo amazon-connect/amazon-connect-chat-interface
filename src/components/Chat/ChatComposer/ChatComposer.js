@@ -160,7 +160,7 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
   }, [attachment]);
 
   function hasSameContent(event) {
-    return event.target.textContent === message;
+    return event.target.innerText === message;
   }
 
   function onInput(event) {
