@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from "react";
-import { LanguageProvider } from "./context/LanguageContext";
 import { ThemeProvider } from "./theme";
 import styled from "styled-components";
 
@@ -31,12 +30,9 @@ const Page = styled.div`
 
 const AppProvider = props => {
   return (
-    <LanguageProvider>
-      <ThemeProvider theme={Object.assign({}, defaultTheme, props.themeConfig)}>
-        {props.children}
-      </ThemeProvider>
-    </LanguageProvider>
-
+    <ThemeProvider theme={Object.assign({}, defaultTheme, props.themeConfig)}>
+      {props.children}
+    </ThemeProvider>
   );
 };
 
