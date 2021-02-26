@@ -71,8 +71,6 @@ module.exports = {
   appPath: resolveApp('.'),
   storybook: resolveApp('.storybook'),
   appBuild: resolveApp('build/dist'),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveModule(resolveApp, 'src/index'),
   libIndexJs: resolveModule(resolveApp, 'src/lib/index'),
   appPackageJson: resolveApp('package.json'),

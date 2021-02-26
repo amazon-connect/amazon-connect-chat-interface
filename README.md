@@ -4,7 +4,7 @@ Amazon Connect Chat Interface is a light interface to create a customer widget f
 some lightweight components to render chat out of the box in your website, with a thin layer on top of [ChatJS](https://github.com/amazon-connect/amazon-connect-chatjs)
 to manage your chat session.
 
-Usage of this package in your website is described at https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI#prebuilt-chat-widget.
+An example of how you can add this package to an html page is described in the [public](public/) folder. You can see other examples in this [GitHub repo](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI#prebuilt-chat-widget) as well.
 
 ## Building the package
 
@@ -13,7 +13,7 @@ To initiate the chat, you will pass in some details about your Connect instance,
 via the [getting started process](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI#prebuilt-chat-widget).
 
 ### Local
-To make local modifications to this package and test them on your webpage, simply make your edits and run `npm install && run dev-build` to produce the
+To make local modifications to this package and test them on your webpage, simply make your edits and run `npm install && npm run dev-build` to produce the
 Webpack built file and the sourcemaps. You can import these in the same fashion as the getting started examples.
 
 ### Production

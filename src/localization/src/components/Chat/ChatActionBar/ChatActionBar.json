@@ -1,5 +1,5 @@
 [
-  {
+  { 
     "id": "Chat.EndChat",
     "defaultMessage": "End chat",
     "file": "src/components/Chat/ChatActionBar/ChatActionBar.js",
