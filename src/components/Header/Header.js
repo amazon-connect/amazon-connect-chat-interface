@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { Component } from "react";
-import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 
 const FlexLayout = styled.div`
@@ -27,7 +26,7 @@ export default class Header extends Component {
     return (
       <HeaderWrapper>
         <div>
-          <FormattedMessage id="agent.status" defaultMessage="CUSTOMER UI" />
+          <span>CUSTOMER UI</span>
         </div>
       </HeaderWrapper>
     );

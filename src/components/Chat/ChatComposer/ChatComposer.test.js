@@ -6,7 +6,6 @@ import ChatComposer from './ChatComposer';
 import { ThemeProvider } from '../../../theme';
 import { render, fireEvent } from "@testing-library/react"
 import { ContentType } from "../datamodel/Model";
-import { IntlProvider } from "react-intl";
 import { KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 
 const mockAttachmentsFile = {
@@ -20,9 +19,7 @@ let mockProps;
 
 function renderElement(props) {
   mockComposer = render(<ThemeProvider>
-      <IntlProvider locale="en">
       <ChatComposer {...props}/>
-  </IntlProvider>
   </ThemeProvider>);
 }
 

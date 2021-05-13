@@ -6,7 +6,6 @@ import styled from "styled-components";
 import PT from "prop-types";
 import Linkify from "react-linkify";
 import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
-import { FormattedMessage } from "react-intl";
 import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
 
@@ -114,17 +113,13 @@ export class ParticipantMessage extends PureComponent {
     const displayName = this.props.messageDetails.displayName;
     const transportDetails = this.props.messageDetails.transportDetails;
     const isOutgoingMsg = this.props.messageDetails.transportDetails.direction === Direction.Outgoing;
-    const statusStringPrefix = "connect-chat-transport-status-";
     let transportStatusElement = <React.Fragment/>;
     switch (transportDetails.status) {
       case Status.Sending:
         transportStatusElement = (
             <React.Fragment>
               <StatusText>
-                <FormattedMessage
-                    id={statusStringPrefix + "sending"}
-                    defaultMessage="Sending"
-                />
+                <span>Sending</span>
               </StatusText>
             </React.Fragment>
         );
@@ -133,10 +128,9 @@ export class ParticipantMessage extends PureComponent {
         transportStatusElement = (
             <React.Fragment>
               {isOutgoingMsg && <StatusText>
-                <FormattedMessage
-                    id={statusStringPrefix + "sent"}
-                    defaultMessage="Sent at"
-                />
+                <span>
+                    Sent at
+                </span>
               </StatusText>
               }
               {this.timestampToDisplayable(transportDetails.sentTime)}
@@ -147,10 +141,9 @@ export class ParticipantMessage extends PureComponent {
         transportStatusElement = (
             <ErrorText>
               <Icon/>
-              <FormattedMessage
-                  id={statusStringPrefix + "sendFailed"}
-                  defaultMessage="Failed to send! "
-              />
+              <span>
+                  Failed to send!
+              </span>
             </ErrorText>
         );
         break;

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { useRef, useState, useEffect } from "react";
-import { FormattedMessage } from "react-intl";
 import PT from "prop-types";
 import styled from "styled-components";
 import { defaultTheme } from "../../../theme";
@@ -127,10 +126,9 @@ export default function ChatTranscriptScroller({
         <LoaderWrapper>
           <Loader size={20} color={defaultTheme.color.primary} />
           <Text>
-            <FormattedMessage
-              id="connect-chat-transcriptor-loading-msg"
-              defaultMessage="Loading previous messages..."
-            />
+            <span>
+              Loading previous messages...
+            </span>
           </Text>
         </LoaderWrapper>
       }
