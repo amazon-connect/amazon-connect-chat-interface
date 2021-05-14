@@ -61,16 +61,16 @@
                     alert('you must enter a name & username');
                     document.getElementById("contactDetails").reset();
                 } else {
-                    var contactFlowId = "fbf2227a-4065-47bc-8c83-223de44439ad";
-                    var instanceId = "15ac7c68-30b6-4973-8a9f-fd28d03e51c2";
-                    var apiGatewayEndpoint = "https://ko1lcbw402.execute-api.us-west-2.amazonaws.com/Prod";
+                    var contactFlowId = "12345678-1234-1234-1234-123456789012"; // TODO: Fill in
+                    var instanceId = "12345678-1234-1234-1234-123456789012"; // TODO: Fill in
+                    var apiGatewayEndpoint = "https://<api-id>.execute-api.<region>.amazonaws.com/<stage>/"; // TODO: Fill in with the API Gateway endpoint created by your CloudFormation template
 
                     console.log("this is the first name:" + customerName);
                     document.getElementById("contactDetails").reset();
 
                     connect.ChatInterface.initiateChat({
                         name: customerName,
-                        region: "us-west-2", // TODO: fill in
+                        region: "<region>", // TODO: fill in
                         apiGatewayEndpoint: apiGatewayEndpoint,
                         contactAttributes: JSON.stringify({
                             "customerName": customerName

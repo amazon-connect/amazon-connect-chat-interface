@@ -22,7 +22,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build && cp build/dist/static/js/amazon-connect-chat-interface.js local-testing/ && git add -A ."
+      "pre-commit": "npm run build && cp build/dist/static/js/amazon-connect-chat-interface.js local-testing/ && git add local-testing/amazon-connect-chat-interface.js"
     }
   },
   "scripts": {
