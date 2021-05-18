@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT-0
 ''
 import React, { Component } from "react";
-import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 import { Button, Loader } from "connect-core";
 import Chat from "./Chat";
@@ -132,10 +131,7 @@ class ChatContainer extends Component {
               type="tertiary"
               onClick={this.resetState}
             >
-              <FormattedMessage
-                id="Chat.BackToInit"
-                defaultMessage="Go Back"
-              />
+              <span>Go Back</span>
             </Button>
           </ButtonWrapper>
         </Wrapper>
