@@ -15,7 +15,7 @@ export const ContentType = {
         TYPING: "application/vnd.amazonaws.connect.event.typing",
         PARTICIPANT_JOINED: "application/vnd.amazonaws.connect.event.participant.joined",
         PARTICIPANT_LEFT: "application/vnd.amazonaws.connect.event.participant.left",
-        TRANSFER_SUCCEEDED: "application/vnd.amazonaws.connect.event.transfer.succeed",
+        TRANSFER_SUCCEEDED: "application/vnd.amazonaws.connect.event.transfer.succeeded",
         TRANSFER_FAILED: "application/vnd.amazonaws.connect.event.transfer.failed",
         CONNECTION_ACKNOWLEDGED: "application/vnd.amazonaws.connect.event.connection.acknowledged",
         CHAT_ENDED: "application/vnd.amazonaws.connect.event.chat.ended"
