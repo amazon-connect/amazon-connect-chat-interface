@@ -7,16 +7,27 @@ import throttle from "lodash/throttle";
 import PT from "prop-types";
 import { CONTACT_STATUS, KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 import TextareaAutosize from 'react-textarea-autosize';
+import SendMessageButton from './SendMessageButton';
 
 import { ATTACHMENT_ACCEPT_CONTENT_TYPES } from "../datamodel/Model";
 
 const ChatComposerWrapper = styled.div`
+  position: relative;
   display: flex;
   order: 3;
   background: ${props => props.theme.palette.white};
   border: 0.5px solid ${props => props.theme.palette.lightGray};
   border-left: 0;
   border-right: 0;
+`;
+
+const SendMessageButtonContainer = styled.div`
+  position: absolute;
+  padding: ${props => props.theme.spacing.small};
+  padding-right: ${props => props.theme.spacing.base};
+  top: 0;
+  right: 0;
+  z-index: 2;
 `;
 
 const PaperClipContainer = styled.div`
@@ -49,7 +60,7 @@ const PaperClipContainer = styled.div`
   }
 `;
 
-const IconButton = styled.div`    
+const IconButton = styled.button`
     background-color: transparent;
     border: 1px solid transparent;
     position: relative;
@@ -94,6 +105,7 @@ const TextInput = styled(TextareaAutosize)`
   font-family: inherit;
   padding: ${props => props.theme.spacing.small};
   padding-left: 0;
+  padding-right: ${props => props.theme.spacing.xxlarge};
   margin-left: ${props => props.theme.spacing.small};
   max-height: 80px;
   line-height: 1.5rem;
@@ -166,14 +178,7 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
   function onInput(event) {
     if (!event.shiftKey && event.key === KEYBOARD_KEY_CONSTANTS.ENTER) {
       event.preventDefault();
-      throttledOnTyping.cancel();
-      sendTextMessage(event.target.value);
-      setMessage("");
-
-      if (attachment) {
-        sendAttachment();
-        clearFileInput();
-      }
+      sendMessage();
 
       return false;
     } else {
@@ -189,6 +194,20 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
         clearFileInput();
         return;
       }
+    }
+  }
+
+  /**
+   * Cancel any pending (not flushed) typing events, send the message (and attachment if applicable), and clear input bar.
+   */
+  function sendMessage() {
+    throttledOnTyping.cancel();
+    sendTextMessage(message);
+    setMessage("");
+
+    if (attachment) {
+      sendAttachment();
+      clearFileInput();
     }
   }
 
@@ -270,6 +289,12 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
                   tabIndex="0"
                   spellCheck="true"
               />
+              <SendMessageButtonContainer>
+                <SendMessageButton
+                  isActive={!!message || attachment}
+                  sendMessage={sendMessage.bind(this)}
+                />
+              </SendMessageButtonContainer>
             </React.Fragment>
         )}
       </ChatComposerWrapper>

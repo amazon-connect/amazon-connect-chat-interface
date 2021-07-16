@@ -3,7 +3,16 @@
 exports[`Style should match the snapshot 1`] = `
 Object {
   "asFragment": [Function],
-  "baseElement": .c0 {
+  "baseElement": .c6 {
+  cursor: default;
+}
+
+.c6>svg {
+  fill: #EDEDED;
+}
+
+.c0 {
+  position: relative;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -15,6 +24,15 @@ Object {
   border: 0.5px solid #CCCCCC;
   border-left: 0;
   border-right: 0;
+}
+
+.c5 {
+  position: absolute;
+  padding: 10px;
+  padding-right: 14px;
+  top: 0;
+  right: 0;
+  z-index: 2;
 }
 
 .c1 {
@@ -75,6 +93,7 @@ Object {
   font-family: inherit;
   padding: 10px;
   padding-left: 0;
+  padding-right: 44px;
   margin-left: 10px;
   max-height: 80px;
   line-height: 1.5rem;
@@ -139,7 +158,7 @@ Object {
         <div
           class="c1"
         >
-          <div
+          <button
             aria-label="Attach a file"
             class="c2"
           >
@@ -173,7 +192,7 @@ Object {
                 type="file"
               />
             </label>
-          </div>
+          </button>
         </div>
         <textarea
           aria-label="Type a message"
@@ -183,25 +202,49 @@ Object {
           spellcheck="true"
           tabindex="0"
         />
+        <div
+          class="c5"
+        >
+          <div
+            aria-label="Send Message"
+            class="c6"
+            data-testid="customer-chat-send-message-button"
+          >
+            <svg
+              height="24px"
+              viewBox="0 0 24 24"
+              width="24px"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   </body>,
   "container": <div>
     <div
-      class="sc-bdVaJa drTmfV"
+      class="sc-bwzfXH kWpWSK"
     >
       <div
-        class="sc-bwzfXH ewjqaZ"
+        class="sc-bxivhb kZETRY"
       >
-        <div
+        <button
           aria-label="Attach a file"
-          class="sc-htpNat hOiLtH"
+          class="sc-ifAKCX jViadA"
         >
           <label
             for="customer-chat-file-select-12344"
           >
             <div
-              class="sc-EHOje kunhZM"
+              class="sc-gzVnrw eKvKZo"
             >
               <svg
                 height="24"
@@ -227,16 +270,40 @@ Object {
               type="file"
             />
           </label>
-        </div>
+        </button>
       </div>
       <textarea
         aria-label="Type a message"
-        class="sc-ifAKCX eUwGJo"
+        class="sc-bZQynM cxRPMT"
         data-testid="customer-chat-text-input"
         placeholder="Type a message"
         spellcheck="true"
         tabindex="0"
       />
+      <div
+        class="sc-htpNat hCHBri"
+      >
+        <div
+          aria-label="Send Message"
+          class="sc-bdVaJa iDYuWj"
+          data-testid="customer-chat-send-message-button"
+        >
+          <svg
+            height="24px"
+            viewBox="0 0 24 24"
+            width="24px"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 0h24v24H0z"
+              fill="none"
+            />
+            <path
+              d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
   </div>,
   "debug": [Function],

@@ -102,10 +102,14 @@
     "runTest": "none"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.4",
-    "@testing-library/dom": "^7.26.6",
-    "@testing-library/react": "^11.1.2",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.2.0",
+    "@storybook/addon-info": "4.0.11",
+    "@storybook/addons": "^4.0.11",
+    "@storybook/react": "^4.0.11",
+    "@testing-library/dom": "7.29.4",
+    "@testing-library/react": "11.2.5",
+    "@testing-library/user-event": "13.0.7",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-jest": "27.2.0",
