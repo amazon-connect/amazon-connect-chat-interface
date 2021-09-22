@@ -16,7 +16,7 @@ const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin-alt');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 
 
@@ -346,7 +346,7 @@ module.exports = {
           {
             test: cssRegex,
             exclude: cssModuleRegex,
-            loader: getStyleLoaders({
+            use: getStyleLoaders({
               importLoaders: 1,
               sourceMap: shouldUseSourceMap,
             }),
@@ -360,7 +360,7 @@ module.exports = {
           // using the extension .module.css
           {
             test: cssModuleRegex,
-            loader: getStyleLoaders({
+            use: getStyleLoaders({
               importLoaders: 1,
               sourceMap: shouldUseSourceMap,
               modules: true,
@@ -375,7 +375,7 @@ module.exports = {
           {
             test: sassRegex,
             exclude: sassModuleRegex,
-            loader: getStyleLoaders(
+            use: getStyleLoaders(
               {
                 importLoaders: 2,
                 sourceMap: shouldUseSourceMap,
@@ -392,7 +392,7 @@ module.exports = {
           // using the extension .module.scss or .module.sass
           {
             test: sassModuleRegex,
-            loader: getStyleLoaders(
+            use: getStyleLoaders(
               {
                 importLoaders: 2,
                 sourceMap: shouldUseSourceMap,
@@ -450,7 +450,10 @@ module.exports = {
     // solution that requires the user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/,
+    }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
     new WorkboxWebpackPlugin.GenerateSW({
