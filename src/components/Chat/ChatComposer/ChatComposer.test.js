@@ -5,6 +5,7 @@ import React from 'react';
 import ChatComposer from './ChatComposer';
 import { ThemeProvider } from '../../../theme';
 import { render, fireEvent } from "@testing-library/react"
+import userEvent from '@testing-library/user-event';
 import { ContentType } from "../datamodel/Model";
 import { KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 
@@ -49,6 +50,61 @@ test("Should be able to send an attachment", () => {
   fireEvent.keyDown(textInput, { key: KEYBOARD_KEY_CONSTANTS.ENTER});
   expect(mockProps.addAttachment).toHaveBeenCalledTimes(1);
   expect(mockProps.addAttachment).toHaveBeenCalledWith(mockProps.contactId, {...mockAttachmentsFile});
+});
+
+test("Should be able to send an attachment via the send message button", () => {
+  renderElement(mockProps);
+
+  const fileInput = mockComposer.getByTestId("customer-chat-file-select");
+  fireEvent.change(fileInput, {target: { files: [ mockAttachmentsFile ]}});
+
+  const sendMessageButton = mockComposer.getByTestId('customer-chat-send-message-button');
+  fireEvent.click(sendMessageButton);
+
+  expect(mockProps.addAttachment).toHaveBeenCalledTimes(1);
+  expect(mockProps.addAttachment).toHaveBeenCalledWith(mockProps.contactId, {...mockAttachmentsFile});
+});
+
+test("Should be able to send a message via the send message button", async () => {
+  renderElement(mockProps);
+
+  const testMessage = 'Hello, World!';
+  const textInput = mockComposer.getByTestId('customer-chat-text-input');
+  userEvent.type(textInput, testMessage);
+
+  const sendMessageButton = mockComposer.getByTestId('customer-chat-send-message-button');
+  fireEvent.click(sendMessageButton);
+
+  expect(mockProps.addMessage).toHaveBeenCalledTimes(1);
+  expect(mockProps.addMessage).toHaveBeenCalledWith(mockProps.contactId, { text: testMessage });
+});
+
+test("Should be able to send an attachment plus additional text via the send message button", () => {
+  renderElement(mockProps);
+
+  const fileInput = mockComposer.getByTestId("customer-chat-file-select");
+  fireEvent.change(fileInput, {target: { files: [ mockAttachmentsFile ]}});
+
+  const testMessage = 'Hello, World!';
+  const textInput = mockComposer.getByTestId('customer-chat-text-input');
+  userEvent.type(textInput, testMessage);
+
+  const sendMessageButton = mockComposer.getByTestId('customer-chat-send-message-button');
+  fireEvent.click(sendMessageButton);
+
+  expect(mockProps.addAttachment).toHaveBeenCalledTimes(1);
+  expect(mockProps.addAttachment).toHaveBeenCalledWith(mockProps.contactId, {...mockAttachmentsFile});
+
+  expect(mockProps.addMessage).toHaveBeenCalledTimes(1);
+  expect(mockProps.addMessage).toHaveBeenCalledWith(mockProps.contactId, { text: testMessage });
+});
+
+test("Should not send message if send button is clicked and there is no input", () => {
+  renderElement(mockProps);
+  const sendMessageButton = mockComposer.getByTestId('customer-chat-send-message-button');
+  fireEvent.click(sendMessageButton);
+
+  expect(mockProps.addMessage).toHaveBeenCalledTimes(0);
 });
 
 test("Should be able to unselect an attachment", () => {
