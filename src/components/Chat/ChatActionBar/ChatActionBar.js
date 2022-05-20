@@ -41,6 +41,13 @@ function createMarkup(content) {
 
 export default class ChatActionBar extends React.Component {
 
+  constructor() {
+    super();
+    if(window.connect && window.connect.LogManager) {
+      this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatActionBar" });
+    }
+  }
+
   static propTypes = {
     contactStatus: PT.string.isRequired,
     onEndChat: PT.func,
@@ -53,6 +60,10 @@ export default class ChatActionBar extends React.Component {
     onClose: () => {},
     footerConfig: {}
   };
+
+  componentDidMount() {
+    this.logger && this.logger.info("Component mounted.")
+  }
   
   render() {
     const {

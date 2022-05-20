@@ -65,7 +65,6 @@ const textInputRef = React.createRef();
 export default class Chat extends Component {
   constructor(props) {
     super(props);
-    console.log("Inside Chat Main Component", props);
 
     this.state = {
       transcript: [],
@@ -75,6 +74,9 @@ export default class Chat extends Component {
     this.updateTranscript = transcript => this.setState({transcript});
     this.updateTypingParticipants = typingParticipants => this.setState({typingParticipants});
     this.updateContactStatus = contactStatus => this.setState({contactStatus});
+    if(window.connect && window.connect.LogManager) {
+      this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-Chat" });
+    }
   }
 
   static propTypes = {
@@ -89,6 +91,7 @@ export default class Chat extends Component {
 
   componentDidMount() {
     this.init(this.props.chatSession);
+    this.logger && this.logger.info("Component mounted.")
   }
 
   componentDidUpdate(prevProps) {
