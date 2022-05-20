@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import React, { useState, useLayoutEffect, useRef, useCallback } from "react";
+import React, { useState, useLayoutEffect, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import throttle from "lodash/throttle";
 import PT from "prop-types";
@@ -160,9 +160,17 @@ ChatComposer.defaultProps = {
 };
 
 export default function ChatComposer({ addMessage, addAttachment, onTyping, contactId, contactStatus, onTypingValidityTime, textInputRef, composerConfig }) {
+  let logger;
+  if(window.connect && window.connect.LogManager) {
+    logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatComposer" })
+  }
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    logger && logger.info("Component mounted.");
+  }, [logger])
 
   useLayoutEffect(() => {
     if (!textInputRef || !textInputRef.current || !textInputRef.current.focus) {
@@ -214,7 +222,7 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
   const throttledOnTyping = useCallback(
       throttle(() => {
         onTyping().then(() => {
-          console.log("CCP", "ChatComposer", "On typing event sent successfully");
+          console.log("On typing event");
         });
       }, onTypingValidityTime),
       [onTypingValidityTime]
@@ -229,11 +237,13 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
   function onFileInput(e) {
     const file = e.target.files[0];
     setAttachment(file);
+    logger && logger.info(`File added.`);
   }
 
   function clearFileInput() {
     setAttachment(null);
     fileInputRef.current.value = null;
+    logger && logger.info(`File is removed.`);
   }
 
   function sendAttachment() {
