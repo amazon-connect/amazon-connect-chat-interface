@@ -133,6 +133,9 @@ class ChatSession {
       participantId: this.client.getParticipantId(),
       displayName: displayName
     };
+    if(window.connect && window.connect.LogManager) {
+      this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatSession" });
+    }
   }
 
   // Callbacks 
@@ -194,7 +197,7 @@ class ChatSession {
   }
 
   sendTypingEvent() {
-    console.log("Calling SendEvent API for Typing");
+    this.logger && this.logger.info("Calling SendEvent API for Typing");
     return this.client.sendTypingEvent();
   }
 
@@ -204,7 +207,7 @@ class ChatSession {
     { data: data.text, type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN },
       this.thisParticipant
     );
-    console.log("addOutgoingMessage, messageItem is:", message);
+    this.logger && this.logger.info(`Adding outgoing message. ContactId: ${this.contactId}`);
 
     this._addItemsToTranscript([message]);
 
@@ -240,6 +243,7 @@ class ChatSession {
         this.thisParticipant
     );
     this._addItemsToTranscript([transcriptItem]);
+    this.logger && this.logger.info(`Sending File. ContactId: ${this.contactId}.`);
     return this.sendAttachment(transcriptItem);
   }
  
@@ -294,12 +298,14 @@ class ChatSession {
   // EVENT HANDLING
   
   on(eventType, handler) {
+    this.logger && this.logger.info(`Event [${eventType}] is on!`);
     if (this._eventHandlers[eventType].indexOf(handler) === -1) {
       this._eventHandlers[eventType].push(handler);
     }
   }
 
   off(eventType, handler) {
+    this.logger && this.logger.info(`Event [${eventType}] is off!`);
     const idx = this._eventHandlers[eventType].indexOf(handler);
     if (idx > -1) {
       this._eventHandlers[eventType].splice(idx, 1);
@@ -307,6 +313,7 @@ class ChatSession {
   }
 
   _triggerEvent(eventType, payload) {
+    this.logger && this.logger.info(`Event [${eventType}] is triggered!`);
     this._eventHandlers[eventType].forEach(handler => {
       handler(payload);
     });

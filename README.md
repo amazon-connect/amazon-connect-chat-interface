@@ -21,6 +21,40 @@ To build the production version of this package, simply run `npm install && npm 
 Import this into your package as is described in the GitHub examples.
 
 ## Customization
+### Logger Configuration
+The logger is provided by ChatJS package, you can configure it in this file: `src/utils/log.js`.
+- By default, the logger is activated in this package with `INFO` level. If you want to deactivate it, you can set `config.loggerConfig.useDefaultLogger` to `false`.
+- There are three log levels available - DEBUG, INFO, ERROR.
+- If you want to use your own logger, you can add them into `customizedLogger` , and add `customizedLogger` object as the value of `globalConfig.loggerConfig.customizedLogger`, then set the lowest logger level. `globalConfig.loggerConfig.useDefaultLogger` is not required.
+- If you want to use the default logger provided by Chat-js, you can set the logger level, and set `useDefaultLogger` to true. `globalConfig.loggerConfig.customizedLogger` is not required.
+- If you not only provide your own logger, but also set `useDefaultLogger` to true, your own logger will be overwritten by the default logger.
+- How we define log level?
+  1. DEBUG: Print meta data, we can use it to print api response data;
+  2. INFO: Print the information regarding the current state, or the most recent user event.
+  3. ERROR: Print the error messages caused by UI issue, API issue or network issue.
+  
+```
+// Add your own logger function here
+var customizedLogger = {
+  debug: (data) => {// customize logger function here},
+  info: (data) => {// customize logger function here},
+  error: (data) => {// customize logger function here}
+}
+  
+var globalConfig = {
+  loggerConfig: {
+    // You can provide your own logger here, otherwise 
+    // this property is optional
+    customizedLogger: customizedLogger,
+    // There are four levels available - DEBUG, INFO, ERROR. Default is INFO
+    level: connect.LogLevel.INFO,
+    // Choose if you want to use the default logger
+    useDefaultLogger: true
+  }
+};
+  
+connect.ChatSession.setGlobalConfig(globalConfig);
+```
 ### Theme
 To customize the theme, determine which aspect(s) of the chat interface you would like to modify, make your changes and build the file as described above.
 
