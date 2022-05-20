@@ -43,7 +43,6 @@ const Wrapper = styled.div`
 class ChatContainer extends Component {
   constructor(props) {
     super(props);
-    console.log("ChatContainer called...", props);
     this.state = {
       chatSession: null,
       composerConfig: {},
@@ -52,6 +51,9 @@ class ChatContainer extends Component {
 
     this.submitChatInitiationHandler = this.submitChatInitiation.bind(this);
     EventBus.on("initChat", this.initiateChatSession.bind(this));
+    if(window.connect && window.connect.LogManager) {
+      this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatContainer" });
+    }
   }
 
 
@@ -61,6 +63,15 @@ class ChatContainer extends Component {
 
 
   initiateChatSession(chatDetails, success, failure) {
+    const logContent = {
+      contactFlowId: chatDetails.contactFlowId ? chatDetails.contactFlowId : null,
+      instanceId: chatDetails.instanceId ? chatDetails.instanceId : null,
+      region: chatDetails.region ? chatDetails.region : null,
+      stage: chatDetails.stage ? chatDetails.stage : null,
+      featurePermissions: chatDetails.featurePermissions ? chatDetails.featurePermissions : null,
+      apiGatewayEndpoint: chatDetails.apiGatewayEndpoint ? chatDetails.apiGatewayEndpoint : null,
+    }
+    this.logger && this.logger.info("Chat session meta data:", logContent);
     this.submitChatInitiation(chatDetails, success, failure);
   }
 
@@ -111,6 +122,7 @@ class ChatContainer extends Component {
 
   resetState = () => {
     this.setState({ status: "NotInitiated", chatSession: null });
+    this.logger && this.logger.info("Chat session is reset");
   };
 
   render() {
