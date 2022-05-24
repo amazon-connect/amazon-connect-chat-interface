@@ -22,7 +22,7 @@ Import this into your package as is described in the GitHub examples.
 
 ## Customization
 ### Logger Configuration
-The logger is provided by ChatJS package, you can configure it in this file: `src/utils/log.js`.
+The logger is provided by [amazon-connect-chatjs](https://github.com/amazon-connect/amazon-connect-chatjs) package, you can configure it in this file: `src/utils/log.js`.
 - By default, the logger is activated in this package with `INFO` level. If you want to deactivate it, you can set `config.loggerConfig.useDefaultLogger` to `false`.
 - There are three log levels available - DEBUG, INFO, ERROR.
 - If you want to use your own logger, you can add them into `customizedLogger` , and add `customizedLogger` object as the value of `globalConfig.loggerConfig.customizedLogger`, then set the lowest logger level. `globalConfig.loggerConfig.useDefaultLogger` is not required.
