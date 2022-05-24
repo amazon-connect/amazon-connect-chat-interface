@@ -46,7 +46,7 @@ var globalConfig = {
     // You can provide your own logger here, otherwise 
     // this property is optional
     customizedLogger: customizedLogger,
-    // There are four levels available - DEBUG, INFO, ERROR. Default is INFO
+    // There are three levels available - DEBUG, INFO, ERROR. Default is INFO
     level: connect.LogLevel.INFO,
     // Choose if you want to use the default logger
     useDefaultLogger: true
