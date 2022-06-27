@@ -14,7 +14,7 @@ const paths = require('./paths');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const typescriptFormatter = require('typescript-formatter');
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
