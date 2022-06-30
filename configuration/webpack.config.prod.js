@@ -17,7 +17,7 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const typescriptFormatter = require('typescript-formatter');
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -152,7 +152,11 @@ module.exports = {
             // Pending futher investigation:
             // https://github.com/terser-js/terser/issues/120
             inline: 2,
-            drop_console: true,
+            pure_funcs: [
+              'console.log',
+              'console.warn',
+              'console.debug'
+            ],
           },
           mangle: {
             safari10: true,
