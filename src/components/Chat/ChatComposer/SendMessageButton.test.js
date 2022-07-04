@@ -4,6 +4,7 @@
 import React from 'react';
 import SendMessageButton from './SendMessageButton';
 import { render, fireEvent } from "@testing-library/react"
+import { KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 
 let mockSendMessageButton;
 let mockProps;
@@ -28,5 +29,25 @@ test("Should fire sendMessage onClick", () => {
   const sendMessageButton = mockSendMessageButton.getByTestId('customer-chat-send-message-button');
   fireEvent.click(sendMessageButton);
 
+  expect(mockProps.sendMessage).toHaveBeenCalledTimes(1);
+});
+
+test("Should fire sendMessage onClick on Enter pressed", () => {
+  renderElement(mockProps);
+ 
+  const sendMessageButton = mockSendMessageButton.getByTestId('customer-chat-send-message-button');
+  fireEvent.focus(sendMessageButton);
+  fireEvent.keyDown(sendMessageButton, { key: KEYBOARD_KEY_CONSTANTS.ENTER });
+ 
+  expect(mockProps.sendMessage).toHaveBeenCalledTimes(1);
+});
+ 
+test("Should fire sendMessage onClick on Space pressed", () => {
+  renderElement(mockProps);
+ 
+  const sendMessageButton = mockSendMessageButton.getByTestId('customer-chat-send-message-button');
+  fireEvent.focus(sendMessageButton);
+  fireEvent.keyDown(sendMessageButton, { key: KEYBOARD_KEY_CONSTANTS.SPACE });
+ 
   expect(mockProps.sendMessage).toHaveBeenCalledTimes(1);
 });

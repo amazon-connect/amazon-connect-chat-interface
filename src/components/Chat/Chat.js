@@ -17,8 +17,44 @@ const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  @media (max-width:640px) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
 `;
 
+const ParentHeaderWrapper = styled.div`
+  margin: 0;
+  padding: 0;
+  order: 1;
+  @media (max-width: 640px) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+  }
+`;
+
+const ChatComposerWrapper = styled.div`
+  order: 2;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: ${props => props.theme.screen.medium.height}px;
+  min-height: ${props => props.theme.screen.small.height}px;
+  @media (max-width:640px) {
+    position: absolute;
+    left: 0;
+    bottom: 85px;
+    right: 0;
+    top: ${props => props.parentHeaderWrapperHeight}px;
+    min-height: auto;
+  }
+`;
 
 const HeaderWrapper = styled.div`
   background: #3F5773;
@@ -61,6 +97,7 @@ function Header({ headerConfig }){
 }
 
 const textInputRef = React.createRef();
+const HEADER_HEIGHT = 51;
 
 export default class Chat extends Component {
   constructor(props) {
@@ -69,8 +106,10 @@ export default class Chat extends Component {
     this.state = {
       transcript: [],
       typingParticipants: [],
-      contactStatus: CONTACT_STATUS.DISCONNECTED
+      contactStatus: CONTACT_STATUS.DISCONNECTED,
+      parentHeaderWrapperHeight: HEADER_HEIGHT,
     };
+    this.parentHeaderRef = React.createRef();
     this.updateTranscript = transcript => this.setState({transcript});
     this.updateTypingParticipants = typingParticipants => this.setState({typingParticipants});
     this.updateContactStatus = contactStatus => this.setState({contactStatus});
@@ -89,8 +128,15 @@ export default class Chat extends Component {
     onEnded: () => {}
   };
 
+  resetChatHeight() {
+    this.setState({
+      parentHeaderWrapperHeight: this.parentHeaderRef && this.parentHeaderRef.current ? this.parentHeaderRef.current.clientHeight : HEADER_HEIGHT,
+    });
+  }
+
   componentDidMount() {
     this.init(this.props.chatSession);
+    this.resetChatHeight();
     this.logger && this.logger.info("Component mounted.")
   }
 
@@ -126,38 +172,45 @@ export default class Chat extends Component {
   closeChat() {
     this.props.chatSession.closeChat();
   }
-
+/*
+  Note: For Mobile layout: divided into 3 sections
+  1. Header - Positon: absolute; top: 0, left: 0, right: 0 - height is dynamic!
+  2. MainContent - Position: absolute; top: {dynamicHeight}, left: 0, right: 0, bottom: {fixedFooterHeight: 85px}
+  3. Footer - position: absolute; bottom: 0, right: 0, left: 0
+  -- this prevents overlay from overflowing in mobile browser. 
+*/
   render() {
     const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig} = this.props;
     console.log('MESSAGES', this.state.transcript);
 
     return (
-      <ChatWrapper>
+      <ChatWrapper data-testid="amazon-connect-chat-wrapper">
         {(this.state.contactStatus === CONTACT_STATUS.CONNECTED ||
           this.state.contactStatus === CONTACT_STATUS.CONNECTING || this.state.contactStatus === CONTACT_STATUS.ENDED) && 
-        <Header headerConfig={headerConfig}/>
+          <ParentHeaderWrapper ref={this.parentHeaderRef}><Header headerConfig={headerConfig}/></ParentHeaderWrapper>
         }
-
-        <ChatTranscriptor
-          loadPreviousTranscript={() => chatSession.loadPreviousTranscript()}
-          addMessage={(data) => chatSession.addOutgoingMessage(data)}
-          downloadAttachment={(attachmentId) => chatSession.downloadAttachment(attachmentId)}
-          transcript={this.state.transcript}
-          typingParticipants={this.state.typingParticipants}
-          contactStatus={this.state.contactStatus}
-          contactId={chatSession.contactId}
-          transcriptConfig={transcriptConfig}
-          textInputRef={textInputRef}
-        />
-        <ChatComposer
-          contactStatus={this.state.contactStatus}
-          contactId={chatSession.contactId}
-          addMessage={(contactId, data) => chatSession.addOutgoingMessage(data)}
-          addAttachment={(contactId, attachment) => chatSession.addOutgoingAttachment(attachment)}
-          onTyping={() => chatSession.sendTypingEvent()}
-          composerConfig={composerConfig}
-          textInputRef={textInputRef}
-        />
+        <ChatComposerWrapper  parentHeaderWrapperHeight={this.state.parentHeaderWrapperHeight}>
+          <ChatTranscriptor
+            loadPreviousTranscript={() => chatSession.loadPreviousTranscript()}
+            addMessage={(data) => chatSession.addOutgoingMessage(data)}
+            downloadAttachment={(attachmentId) => chatSession.downloadAttachment(attachmentId)}
+            transcript={this.state.transcript}
+            typingParticipants={this.state.typingParticipants}
+            contactStatus={this.state.contactStatus}
+            contactId={chatSession.contactId}
+            transcriptConfig={transcriptConfig}
+            textInputRef={textInputRef}
+          />
+          <ChatComposer
+            contactStatus={this.state.contactStatus}
+            contactId={chatSession.contactId}
+            addMessage={(contactId, data) => chatSession.addOutgoingMessage(data)}
+            addAttachment={(contactId, attachment) => chatSession.addOutgoingAttachment(attachment)}
+            onTyping={() => chatSession.sendTypingEvent()}
+            composerConfig={composerConfig}
+            textInputRef={textInputRef}
+          />
+        </ChatComposerWrapper>
         {<ChatActionBar
           onEndChat={() => this.endChat()}
           onClose ={() => this.closeChat()}

@@ -8,6 +8,7 @@ import { render, fireEvent } from "@testing-library/react"
 import userEvent from '@testing-library/user-event';
 import { ContentType } from "../datamodel/Model";
 import { KEYBOARD_KEY_CONSTANTS } from "connect-constants";
+import '@testing-library/jest-dom/extend-expect';
 
 const mockAttachmentsFile = {
   name: "testUpload.pdf",
@@ -116,6 +117,57 @@ describe("when window.connect is not defined", () => {
     fireEvent.keyDown(textInput, { key: KEYBOARD_KEY_CONSTANTS.DELETE});
     fireEvent.keyDown(textInput, { key: KEYBOARD_KEY_CONSTANTS.ENTER});
     expect(mockProps.addAttachment).toHaveBeenCalledTimes(0);
+  });
+
+
+  test("Should be able to click send button using Tab and Space", () => {
+    renderElement(mockProps);
+    const textInput = document.querySelector('[aria-label="Type a message"]');
+    const testMessage = 'Hello, World!';
+    userEvent.type(textInput, testMessage);
+    userEvent.tab();
+    const sendMessageButton = mockComposer.getByTestId("customer-chat-send-message-button");
+    expect(sendMessageButton).toHaveFocus();
+    fireEvent.keyDown(sendMessageButton, { key: KEYBOARD_KEY_CONSTANTS.SPACE});
+    expect(mockProps.addMessage).toHaveBeenCalledTimes(1);
+  });
+ 
+  test("Should be able to click send button using Tab and Enter", () => {
+    renderElement(mockProps);
+    const textInput = document.querySelector('[aria-label="Type a message"]');
+    const testMessage = 'Hello, World!';
+    userEvent.type(textInput, testMessage);
+    userEvent.tab();
+    const sendMessageButton = mockComposer.getByTestId("customer-chat-send-message-button");
+    expect(sendMessageButton).toHaveFocus();
+    fireEvent.keyDown(sendMessageButton, { key: KEYBOARD_KEY_CONSTANTS.ENTER});
+    expect(mockProps.addMessage).toHaveBeenCalledTimes(1);
+  });
+ 
+  test("Should be able to click attachment icon using Tab and Space", () => {
+    renderElement(mockProps);
+    const textInput = document.querySelector('[aria-label="Type a message"]');
+    const testMessage = 'Hello, World!';
+    userEvent.type(textInput, testMessage);
+    // focus on the attachment icon
+    userEvent.tab({shift:true});
+    expect(document.querySelector('[aria-label="Attach a file"]')).toHaveFocus();
+    const attachmentIcon = mockComposer.getByTestId("customer-chat-attachment-icon");
+    // TODO: add test for verifying the click event
+    fireEvent.keyDown(attachmentIcon, { key: KEYBOARD_KEY_CONSTANTS.SPACE});
+  });
+ 
+  test("Should be able to click attachment icon using Tab and Enter", () => {
+    renderElement(mockProps);
+    const textInput = document.querySelector('[aria-label="Type a message"]');
+    const testMessage = 'Hello, World!';
+    userEvent.type(textInput, testMessage);
+    // focus on the attachment icon
+    userEvent.tab({shift:true});
+    expect(document.querySelector('[aria-label="Attach a file"]')).toHaveFocus();
+    const attachmentIcon = mockComposer.getByTestId("customer-chat-attachment-icon");
+    // TODO: add test for verifying the click event
+    fireEvent.keyDown(attachmentIcon, { key: KEYBOARD_KEY_CONSTANTS.ENTER});
   });
 })
 

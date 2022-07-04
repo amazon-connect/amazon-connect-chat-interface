@@ -7,13 +7,21 @@ import PT from "prop-types";
 import { Button } from "connect-core";
 import { CONTACT_STATUS } from "connect-constants";
 
+export const ACTION_BAR_HEIGHT = "85px";
+
 const Actions = styled.div`
   background: ${props => props.theme.palette.dustyGray};
-  height: 85px;
+  height: ${ACTION_BAR_HEIGHT};
 `;
 
-const FooterWrapper =  styled.div`
-  order: 4;
+const FooterWrapper = styled.div`
+  order: 3;
+  @media (max-width: 640px) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -36,14 +44,14 @@ const ActionButton = styled(Button)`
 `;
 
 function createMarkup(content) {
-  return {__html: content};
+  return { __html: content };
 }
 
 export default class ChatActionBar extends React.Component {
 
   constructor() {
     super();
-    if(window.connect && window.connect.LogManager) {
+    if (window.connect && window.connect.LogManager) {
       this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatActionBar" });
     }
   }
@@ -56,15 +64,15 @@ export default class ChatActionBar extends React.Component {
   };
 
   static defaultProps = {
-    onEndChat: () => {},
-    onClose: () => {},
+    onEndChat: () => { },
+    onClose: () => { },
     footerConfig: {}
   };
 
   componentDidMount() {
     this.logger && this.logger.info("Component mounted.")
   }
-  
+
   render() {
     const {
       contactStatus,
@@ -73,10 +81,10 @@ export default class ChatActionBar extends React.Component {
       footerConfig
     } = this.props;
 
-    if(footerConfig.render){
+    if (footerConfig.render) {
       const content = footerConfig.render(this.props);
       return footerConfig.isHTML ? <FooterWrapper dangerouslySetInnerHTML={createMarkup(content)} />
-      : <FooterWrapper>{content}</FooterWrapper>
+        : <FooterWrapper>{content}</FooterWrapper>
     }
 
     return (
@@ -85,29 +93,29 @@ export default class ChatActionBar extends React.Component {
           <ButtonWrapper>
             {(contactStatus === CONTACT_STATUS.CONNECTED ||
               contactStatus === CONTACT_STATUS.CONNECTING) && (
-              <React.Fragment>
-                <ActionButton
-                  col="2"
-                  type="default"
-                  onClick={onEndChat}
-                >
-                <span>End chat</span>
-                </ActionButton>
-              </React.Fragment>
-            )}
+                <React.Fragment>
+                  <ActionButton
+                    col="2"
+                    type="default"
+                    onClick={onEndChat}
+                  >
+                    <span>End chat</span>
+                  </ActionButton>
+                </React.Fragment>
+              )}
 
-           {contactStatus === CONTACT_STATUS.ENDED && 
-            <React.Fragment>
+            {contactStatus === CONTACT_STATUS.ENDED &&
+              <React.Fragment>
                 <ActionButton
                   col="2"
                   type="default"
                   onClick={onClose}
                 >
-                <span>Close</span>
+                  <span>Close</span>
                 </ActionButton>
               </React.Fragment>
-           
-           }
+
+            }
           </ButtonWrapper>
         </Actions>
       </FooterWrapper>

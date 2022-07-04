@@ -17,6 +17,7 @@ Object {
         aria-label="Send Message"
         class="c0"
         data-testid="customer-chat-send-message-button"
+        tabindex="0"
       >
         <svg
           height="24px"
@@ -40,6 +41,7 @@ Object {
       aria-label="Send Message"
       class="sc-bdVaJa iDYuWj"
       data-testid="customer-chat-send-message-button"
+      tabindex="0"
     >
       <svg
         height="24px"

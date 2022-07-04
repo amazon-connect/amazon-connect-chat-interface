@@ -261,19 +261,25 @@ class ChatSession {
             type: error.type,
             message: error.message,
           };
-          if(error.type !== AttachmentErrorType.ValidationException){
-            transcriptItem.transportDetails.error.message = "Attachment failed to send";
-            transcriptItem.transportDetails.error.retry = () => {
-              const newTranscriptItem = modelUtils.createOutgoingTranscriptItem(
-                  ATTACHMENT_MESSAGE,
-                  transcriptItem.content,
-                  { displayName, participantId }
-              );
-              newTranscriptItem.id = transcriptItem.id;
-              this._replaceItemInTranscript(transcriptItem, newTranscriptItem);
-              this.sendAttachment(newTranscriptItem);
+
+          if (error.type !== AttachmentErrorType.ValidationException) {
+            if (error.type === AttachmentErrorType.ServiceQuotaExceededException) {
+              transcriptItem.transportDetails.error.message = "Attachment failed to send. The maximum number of attachments allowed, has been reached";
+            } else {
+              transcriptItem.transportDetails.error.message = "Attachment failed to send";
+              transcriptItem.transportDetails.error.retry = () => {
+                const newTranscriptItem = modelUtils.createOutgoingTranscriptItem(
+                    ATTACHMENT_MESSAGE,
+                    transcriptItem.content,
+                    { displayName, participantId }
+                );
+                newTranscriptItem.id = transcriptItem.id;
+                this._replaceItemInTranscript(transcriptItem, newTranscriptItem);
+                this.sendAttachment(newTranscriptItem);
+              }
             }
           }
+
           this._failMessage(transcriptItem);
         });
   }
