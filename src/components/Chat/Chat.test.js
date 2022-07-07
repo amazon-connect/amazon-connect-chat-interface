@@ -1,5 +1,8 @@
 import React from 'react';
 import Chat from './Chat';
+import ThemeProvider from '../../theme/ThemeProvider';
+import { render } from "@testing-library/react";
+import {screen} from '@testing-library/dom';
 
 const mockProps = {
     chatSession: {
@@ -8,7 +11,12 @@ const mockProps = {
         thisParticipant: {participantId: 'c8f96a', displayName: 'abc'},
         typingParticipants: [],
         on: jest.fn(),
-        logger: {}
+        logger: {},
+        off: jest.fn(),
+        loadPreviousTranscript: jest.fn(),
+    },
+    composerConfig: {
+        attachmentsEnabled: false,
     }
 }
 
@@ -42,6 +50,15 @@ describe('<Chat />', () => {
         test("Info method should be called after componentDidMount method is called.", () => {
             instance.componentDidMount();
             expect(instance.logger.info).toBeCalled();
+        })
+
+        test("should reset the header height", () => {
+            const mockResetHeightMethod = jest.spyOn(Chat.prototype, "resetChatHeight");
+            render(<ThemeProvider>
+                      <Chat {...mockProps} />
+                    </ThemeProvider>);
+            expect(screen.getByTestId('amazon-connect-chat-wrapper')).not.toBe(null);
+            expect(mockResetHeightMethod).toBeCalled();
         })
     })
 

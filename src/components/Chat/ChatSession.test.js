@@ -1,4 +1,6 @@
 import ChatSession from './ChatSession';
+import { AttachmentErrorType } from "./datamodel/Model";
+
 const chatDetails = {
     startChatResult: {
         "ContactId": "aaa",
@@ -19,7 +21,15 @@ beforeAll(() => {
                     }),
                     sendMessage: jest.fn().mockResolvedValue("aaa"),
                     sendEvent: jest.fn().mockResolvedValue("bb"),
-                    sendAttachment: jest.fn().mockResolvedValue("ccc"),
+                    sendAttachment: jest.fn().mockImplementation((...input) => 
+                        new Promise((resolve, reject) => {
+                        if (input[0].attachment.status === "resolve") {
+                            resolve(input[0].attachment);
+                        } else {
+                            reject(input[0].attachment);
+                        }
+                        })
+                    ),
                 }
             },
         }
@@ -73,6 +83,33 @@ describe("ChatSession", () => {
                 session.closeChat();
                 expect(session.logger.info).toBeCalled()
             })
+
+            test("sendAttachment: should display correct message if ServiceQuotaExceeded", () => {
+                const DEFAULT_MESSAGE = "DEFAULT_MESSAGE";
+                Object.values(AttachmentErrorType).forEach(exceptionType => {
+                  let transcriptItem = {
+                    content: {
+                      status: "error",
+                      type: exceptionType,
+                      message: DEFAULT_MESSAGE
+                    },
+                    transportDetails: {},
+                    id: ""
+                  };
+                  const returnVal = session.sendAttachment(transcriptItem);
+                  returnVal.then(() => {
+                    if (transcriptItem.transportDetails.error.type === AttachmentErrorType.ServiceQuotaExceededException) {
+                      expect(transcriptItem.transportDetails.error.message).toEqual("Attachment failed to send. The maximum number of attachments allowed, has been reached");
+                    } else if (transcriptItem.transportDetails.error.type === AttachmentErrorType.ValidationException) {
+                      expect(transcriptItem.transportDetails.error.message).toEqual(DEFAULT_MESSAGE);
+                    } else {
+                      expect(transcriptItem.transportDetails.error.message).toEqual("Attachment failed to send");
+                    }
+                  }).catch(e => {
+                    console.log("REJECTED", e);
+                  })
+                });
+              })
         })
 
         describe("LogManager is undefined", () => {

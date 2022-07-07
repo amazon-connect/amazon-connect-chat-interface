@@ -11,8 +11,6 @@ import defaultTheme from './theme/defaultTheme';
 
 
 const Page = styled.div`
-  width: ${props => props.theme.screen.small.width}px;
-  height: ${props => props.theme.screen.small.height}px;
 
   font-family: ${props => props.theme.fonts.regular};
 

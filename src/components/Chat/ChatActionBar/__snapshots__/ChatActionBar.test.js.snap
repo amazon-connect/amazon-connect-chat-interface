@@ -102,9 +102,9 @@ exports[`<ChatActionBar /> Style should match the snapshot 1`] = `
 }
 
 .c0 {
-  -webkit-order: 4;
-  -ms-flex-order: 4;
-  order: 4;
+  -webkit-order: 3;
+  -ms-flex-order: 3;
+  order: 3;
 }
 
 .c2 {
@@ -135,6 +135,15 @@ exports[`<ChatActionBar /> Style should match the snapshot 1`] = `
 .c4 {
   margin: 10px;
   width: 43%;
+}
+
+@media (max-width:640px) {
+  .c0 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 <div

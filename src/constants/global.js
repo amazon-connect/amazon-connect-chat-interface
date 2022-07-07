@@ -21,7 +21,7 @@ export const KEYBOARD_KEY_CONSTANTS = {
   ARROW_RIGHT: 'ArrowRight',
   TAB: 'Tab',
   ESC: 'Escape',
-  SPACE: 'Space',
+  SPACE: ' ',
   DIGIT_0: '0',
   DIGIT_1: '1',
   DIGIT_2: '2',
