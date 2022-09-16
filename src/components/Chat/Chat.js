@@ -44,8 +44,7 @@ const ChatComposerWrapper = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
-  max-height: ${props => props.theme.screen.medium.height}px;
-  min-height: ${props => props.theme.screen.small.height}px;
+  height: 340px;
   @media (max-width:640px) {
     position: absolute;
     left: 0;
