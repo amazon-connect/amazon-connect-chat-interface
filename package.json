@@ -28,6 +28,7 @@
   "scripts": {
     "build": "npm run coverage && node scripts/build.js",
     "release": "npm run build",
+    "debug": "npm run dev-build && node scripts/copyToOutput.js",
     "dev-build": "NODE_ENV=development npx webpack --config configuration/webpack.config.dev.js",
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
