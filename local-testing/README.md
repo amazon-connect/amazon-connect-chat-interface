@@ -6,7 +6,7 @@ This folder has an example html page that you can use to test your code. You wil
 1. Follow the steps in [this repo](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI) to deploy the backend pieces to start a chat.
 2. Follow the steps in the main [README](../README.md) of this GitHub repo to compile the code and generate the `amazon-connect-chat-interface.js` file.
 3. Once you have generated the `amazon-connect-chat-interface.js`, copy it into this directory.
-4. Modify the [index.html](./index.html) file to include the values used as parameters (contact id, instance id, and region) and created as an output in step 1 (API Gateway endpoint URL). All the necessary variables are marked by "TODO".
+4. Modify the [backendEndpoints.js](./backendEndpoints.js) file to include the values used as parameters (contact id, instance id, apiGatewayEndpoint and region) and created as an output in step 1 (API Gateway endpoint URL). All the necessary variables are marked by "TODO".
 5. Using the command line, install http-server by running `npm install -g http-server`
 5. Navigate to the `local-testing` folder and run the code locally by running `http-server`
 6. Open `http://127.0.0.1:8080/` in your browser.
