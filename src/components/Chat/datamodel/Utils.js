@@ -37,9 +37,9 @@ function createItemFromIncoming(item, thisParticipant) {
   transcriptItem.participantId = item.ParticipantId;
   transcriptItem.participantRole = item.ParticipantRole;
   transportDetails.direction = 
-    thisParticipant.participantId === transcriptItem.participantId
-      ? Direction.Outgoing
-      : Direction.Incoming
+      item.ParticipantRole === PARTICIPANT_TYPES.CUSTOMER
+        ? Direction.Outgoing
+        : Direction.Incoming;
   transportDetails.sentTime = 
     new Date(item.AbsoluteTime).getTime() / 1000;
   transportDetails.status = Status.SendSuccess;

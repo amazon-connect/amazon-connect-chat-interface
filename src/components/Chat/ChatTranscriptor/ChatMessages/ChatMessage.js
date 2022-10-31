@@ -106,7 +106,13 @@ export class ParticipantMessage extends PureComponent {
   timestampToDisplayable(timestamp) {
     const d = new Date(0);
     d.setUTCSeconds(timestamp);
-    return d.toLocaleTimeString([], {hour: 'numeric', minute: 'numeric'});
+    const today = new Date().toDateString();
+    const thatDay = new Date(timestamp * 1000).toDateString();
+    const option = {hour: 'numeric', minute: 'numeric'};
+    if(today === thatDay) {
+      return d.toLocaleTimeString([], option);
+    }
+    return d.toLocaleTimeString([], {...option, weekday: 'short', month: 'short', day: 'numeric'});
   }
 
   renderHeader() {
@@ -189,7 +195,7 @@ export class ParticipantMessage extends PureComponent {
 
     return (
         <React.Fragment>
-          <Header>{this.renderHeader()}</Header>
+          <Header data-testid="message-header">{this.renderHeader()}</Header>
           <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig}>
             {this.renderContent(content, contentType)}
           </Body>
