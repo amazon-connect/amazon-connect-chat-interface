@@ -96,7 +96,8 @@
       "web.jsx",
       "jsx",
       "node"
-    ]
+    ],
+    "globalSetup": "./global-setup.js"
   },
   "npm-pretty-much": {
     "runRelease": "release",
