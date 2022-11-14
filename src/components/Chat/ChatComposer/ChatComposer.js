@@ -165,6 +165,7 @@ ChatComposer.defaultProps = {
 
 export default function ChatComposer({ addMessage, addAttachment, onTyping, contactId, contactStatus, onTypingValidityTime, textInputRef, composerConfig }) {
   let logger;
+  let mobileJitter;
   if (window.connect && window.connect.LogManager) {
     logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatComposer" })
   }
@@ -207,6 +208,36 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
         return;
       }
     }
+  }
+
+  /**
+   * Fix for https://app.asana.com/0/1200039825797577/1202475657019640/f
+   * Bug: In iOS browser when we focus on input elem, virtual keyboard pops up on top of the chat content and we can not scroll and view entire chat.
+   * Fix: We create a temp input element at top of screen and set focus, then we set focus back to the actual input element.
+   *      This forces the viewport scrollbar to recalculate scroll position initially to focus on top of the new viewport screen and then to the bottom which brings actual input element within the new viewport.
+   *      Note: "new viewport" - refers to the small screen after virtual keyboard is displayed on iphone.
+   */
+   function onTextInputFocus() {
+    if (!mobileJitter && isIphone()) {
+      mobileJitter = true;
+      const tempInputElem = document.createElement("input");
+      const chatWidgetWrapper = document.querySelector('[data-testid="amazon-connect-chat-wrapper"] div');
+      if (chatWidgetWrapper) {
+        chatWidgetWrapper.appendChild(tempInputElem);
+        tempInputElem.focus();
+      }
+      
+      setTimeout(() => {
+        textInputRef && textInputRef.current && textInputRef.current.focus();
+        tempInputElem.remove();
+        mobileJitter = false;
+      }, 300)
+    }
+  }
+
+  function isIphone() {
+    const userAgent = window.navigator && window.navigator.userAgent;
+    return userAgent && userAgent.search(/iPhone/i) !== -1;
   }
 
   /**
@@ -303,12 +334,13 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
               </AttachmentContainer>
             )}
             <TextInput
-              data-testid={`customer-chat-text-input`}
+              data-testid="customer-chat-text-input"
               ref={textInputRef}
               value={message}
               onInput={onInput}
               onKeyPress={onInput}
               onKeyDown={onInput}
+              onFocus={onTextInputFocus}
               aria-label={ariaLabel}
               placeholder={placeholder}
               tabIndex="0"
