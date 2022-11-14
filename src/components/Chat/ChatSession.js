@@ -16,7 +16,7 @@ import {
 
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
-
+const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
 // Low-level abstraction on top of Chat.JS
 class ChatJSClient {
   session = null;
@@ -134,7 +134,7 @@ class ChatSession {
       displayName: displayName
     };
     if(window.connect && window.connect.LogManager) {
-      this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatSession" });
+      this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
     }
   }
 
