@@ -30,6 +30,16 @@ Header.Sender = styled.div`
 Header.Status = styled.div`
   float: right;
 `;
+
+const Footer = styled.div`
+  overflow: auto;
+  color: ${({ theme }) => theme.globals.textSecondaryColor};
+  padding-right: ${({ theme }) => theme.spacing.mini};
+`;
+Footer.MessageReceipt = styled.div`
+  float: right;
+`;
+
 const Body = styled.div`
   ${props =>
     props.direction === Direction.Outgoing
@@ -100,7 +110,8 @@ export class ParticipantMessage extends PureComponent {
     incomingMsgStyle: PT.object,
     outgoingMsgStyle: PT.object,
     mediaOperations: PT.object,
-    isLatestMessage: PT.bool
+    isLatestMessage: PT.bool,
+    shouldShowMessageReceipts: PT.bool,
   };
 
   timestampToDisplayable(timestamp) {
@@ -163,8 +174,23 @@ export class ParticipantMessage extends PureComponent {
         </React.Fragment>
     );
   }
+  renderFooter() {
+    const { messageDetails: { lastReadReceipt = false, lastDeliveredReceipt = false, transportDetails: { messageReceiptType, direction } = { } }} = this.props;
+    if(direction !== Direction.Outgoing || !messageReceiptType) {
+      return null;
+    }
+    return (
+      <React.Fragment>
+          <Footer.MessageReceipt>
+            {lastReadReceipt && "Read"}
+             {lastDeliveredReceipt && "Delivered"}
+          </Footer.MessageReceipt>
+      </React.Fragment>
+    );
+  }
 
   render() {
+    const { shouldShowMessageReceipts } = this.props;
     let {direction, error} = this.props.messageDetails.transportDetails;
     const messageStyle = direction === Direction.Outgoing ? this.props.outgoingMsgStyle : this.props.incomingMsgStyle;
 
@@ -199,6 +225,7 @@ export class ParticipantMessage extends PureComponent {
           <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig}>
             {this.renderContent(content, contentType)}
           </Body>
+          <Footer>{shouldShowMessageReceipts && this.renderFooter()}</Footer>
           {error && this.renderTransportError(error)}
         </React.Fragment>
     );

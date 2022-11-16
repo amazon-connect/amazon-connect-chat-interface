@@ -57,8 +57,8 @@ export default class ChatTranscriptor extends PureComponent {
     transcript: PT.array,
     typingParticipants: PT.array.isRequired,
     contactStatus: PT.string.isRequired,
-    loadPreviousTranscript: PT.func.isRequired
-
+    loadPreviousTranscript: PT.func.isRequired,
+    shouldShowMessageReceipts: PT.bool.isRequired,
   };
 
   loadTranscript = () => {
@@ -100,7 +100,8 @@ export default class ChatTranscriptor extends PureComponent {
           downloadAttachment: this.props.downloadAttachment
         },
         textInputRef: this.props.textInputRef,
-        isLatestMessage
+        shouldShowMessageReceipts: this.props.shouldShowMessageReceipts,
+        isLatestMessage,
       }
     } else if (itemDetails.type === ATTACHMENT_MESSAGE) {
       config = Object.assign({}, config, transcriptConfig.attachmentMessageConfig);
