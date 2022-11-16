@@ -33,7 +33,8 @@
     "dev-build": "NODE_ENV=development npx webpack --config configuration/webpack.config.dev.js",
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
-    "coverage": "node scripts/test.js --coverage"
+    "coverage": "node scripts/test.js --coverage",
+    "test:watch": "node scripts/test.js --watchAll"
   },
   "eslintConfig": {
     "extends": "react-app"

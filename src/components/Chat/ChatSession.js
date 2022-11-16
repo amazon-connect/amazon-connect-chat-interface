@@ -28,7 +28,13 @@ class ChatJSClient {
     this.session = connect.ChatSession.create({
       chatDetails: chatDetails.startChatResult,
       type: "CUSTOMER",
-      options: {region: region}
+      options: {region: region},
+      features: {
+        messageReceipts: {
+          shouldSendMessageReceipts: true,
+          throttleTime: 5000
+        }
+      }
     });
   }
 
@@ -44,6 +50,14 @@ class ChatJSClient {
 
   onTyping(handler) {
     return this.session.onTyping(handler);
+  }
+
+  onReadReceipt(handler) {
+    return this.session.onReadReceipt(handler);
+  }
+
+  onDeliveredReceipt(handler) {
+    return this.session.onDeliveredReceipt(handler);
   }
 
   onEnded(handler) {
@@ -347,6 +361,13 @@ class ChatSession {
     this.client.onTyping(data => {
       this._handleTypingEvent(data);
     });
+
+    this.client.onReadReceipt(data => {
+      this._handleMessageReceipt("read", data);
+    });
+    this.client.onDeliveredReceipt(data => {
+      this._handleMessageReceipt("delivered", data);
+    });
     
     this.client.onEnded(data => {
       this._handleEndedEvent(data);
@@ -414,6 +435,19 @@ class ChatSession {
     }
   }
 
+  _handleMessageReceipt(messageReceiptType, dataInput) {
+    var messageReceiptData = dataInput.data;
+    var messageId = messageReceiptData.MessageMetadata.MessageId;
+    var oldItemInTranscript = this._findItemInTranscriptUsingMessageId(messageId);
+
+    if(oldItemInTranscript === -1) {
+      this.logger && this.logger.debug(`Message with messageId:${messageId} not found in transcript`);
+      return;
+    }
+    var newItem = modelUtils.createIncomingTranscriptReceiptItem(this.thisParticipant, oldItemInTranscript, messageReceiptData, messageReceiptType);
+    this._replaceItemInTranscript(oldItemInTranscript, newItem, messageReceiptType);
+  }
+
   _failMessage(message) {
     // Failed messages are going to be inserted into the transcript with a fake timestamp
     // that is 1ms higher than the timestamp of the last existing message or 0 if no such
@@ -464,8 +498,22 @@ class ChatSession {
         item = self.incomingItemDecorator(item);
       }else{
         item = self.outgoingItemDecorator(item);
+      }
+      item.lastReadReceipt = false;
+      item.lastDeliveredReceipt = false;
+    });
+
+    //add Read/Delivered only to the last messageId
+    const lastReadMessageIdx = this._findLastMessageReceiptInTranscript("read", newTranscript);
+    const lastDeliveredMessageIdx = this._findLastMessageReceiptInTranscript("delivered", newTranscript);
+
+    if (lastReadMessageIdx !== -1) {
+      newTranscript[lastReadMessageIdx].lastReadReceipt = true;
     }
-    }); 
+    //Read has higher priority - only show Read message
+    if (lastDeliveredMessageIdx !== -1 && lastReadMessageIdx < lastDeliveredMessageIdx) {
+      newTranscript[lastDeliveredMessageIdx].lastDeliveredReceipt = true;
+    }
 
     this._updateTranscript(newTranscript);
   }
@@ -476,6 +524,27 @@ class ChatSession {
       this.transcript.splice(idx, 1);
     }
     this._addItemsToTranscript([newItem]);
+  }
+
+  _findItemInTranscriptUsingMessageId(messageId) {
+    const index = this.transcript.findIndex(transcript => transcript.id === messageId);
+    if (index !== -1) {
+      return this.transcript[index];
+    }
+    return -1;
+  }
+
+  _findLastMessageReceiptInTranscript(messageReceiptType, transcript) {
+    const size = transcript.length;
+    let indexToFind;
+    const indexFound = [...transcript].reverse().some((item, index) => {
+      if (item.transportDetails.messageReceiptType === messageReceiptType) {
+        indexToFind = index;
+        return true;
+      }
+      return false;
+    });
+    return indexFound ? size - indexToFind -1 : -1;
   }
 
   _isRoundtripMessage(item) {

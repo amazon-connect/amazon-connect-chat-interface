@@ -120,11 +120,13 @@ export default class Chat extends Component {
   static propTypes = {
     chatSession: PT.object.isRequired,
     composerConfig: PT.object,
-    onEnded: PT.func
+    onEnded: PT.func,
+    shouldShowMessageReceipts: PT.bool,
   };
 
   static defaultProps = {
-    onEnded: () => {}
+    onEnded: () => {},
+    shouldShowMessageReceipts: true,
   };
 
   resetChatHeight() {
@@ -179,7 +181,7 @@ export default class Chat extends Component {
   -- this prevents overlay from overflowing in mobile browser. 
 */
   render() {
-    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig} = this.props;
+    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig, shouldShowMessageReceipts } = this.props;
     console.log('MESSAGES', this.state.transcript);
 
     return (
@@ -199,6 +201,7 @@ export default class Chat extends Component {
             contactId={chatSession.contactId}
             transcriptConfig={transcriptConfig}
             textInputRef={textInputRef}
+            shouldShowMessageReceipts={shouldShowMessageReceipts}
           />
           <ChatComposer
             contactStatus={this.state.contactStatus}

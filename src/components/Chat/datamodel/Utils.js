@@ -124,6 +124,20 @@ function isAttachmentContentType(contentType) {
   return contentType && Object.values(ContentType.ATTACHMENT_CONTENT_TYPE).includes(contentType.toLowerCase());
 }
 
+function createIncomingTranscriptReceiptItem(thisParticipant, oldItemInTranscript, messageReceiptData, messageReceiptType) {
+  const newTranscriptItem = new ItemDetails();
+  Object.assign(newTranscriptItem, oldItemInTranscript);
+
+  newTranscriptItem.transportDetails = {
+    ...oldItemInTranscript.transportDetails,
+    messageReceiptType: oldItemInTranscript.transportDetails.messageReceiptType === "read" ? "read" : messageReceiptType,
+    direction: thisParticipant.participantId !== messageReceiptData.MessageMetadata.Receipts[0].RecipientParticipantId
+                ? Direction.Outgoing
+                : Direction.Incoming
+  };
+  return newTranscriptItem;
+}
+
 var modelUtils = {
   createItemFromIncoming: createItemFromIncoming,
   createOutgoingTranscriptItem: createOutgoingTranscriptItem,
@@ -132,6 +146,7 @@ var modelUtils = {
   isRecognizedEvent: isRecognizedEvent,
   createTranscriptItemFromSuccessResponse: createTranscriptItemFromSuccessResponse,
   isAttachmentContentType: isAttachmentContentType,
+  createIncomingTranscriptReceiptItem: createIncomingTranscriptReceiptItem,
 };
 
 export { modelUtils };
