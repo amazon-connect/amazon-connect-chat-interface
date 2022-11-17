@@ -13,6 +13,8 @@ import {
   AttachmentErrorType,
   PARTICIPANT_TYPES
 } from "./datamodel/Model";
+import { CSM_CONSTANTS, CSM_CATEGORY } from '../../constants/global';
+import { getTimeFromTimeStamp } from '../../utils/helper'
 
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
@@ -162,6 +164,14 @@ class ChatSession {
       participantId: this.client.getParticipantId(),
       displayName: displayName
     };
+    if(window.connect) {
+      if(window.connect.LogManager) {
+        this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
+      }
+      if(window.connect.csmService) {
+        this.csmService = window.connect.csmService;
+      }
+    }
     if(window.connect && window.connect.LogManager) {
       this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
     }
@@ -233,6 +243,7 @@ class ChatSession {
 
   sendReadReceipt(messageId, options) {
     this.logger && this.logger.info("Calling SendEvent API for ReadReceipt", messageId, options);
+    this.csmService && this.csmService.addCountMetric(CSM_CONSTANTS.SEND_READ_RECEIPT, CSM_CATEGORY.UI);
     return this.client.sendReadReceipt(messageId, options);
   }
 
@@ -240,6 +251,7 @@ class ChatSession {
     if(!this.shouldShowMessageReceipts) {
       return;
     }
+    this.csmService && this.csmService.addCountMetric(CSM_CONSTANTS.SEND_DELIVERED_RECEIPT, CSM_CATEGORY.UI);
     this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
     return this.client.sendDeliveredReceipt(messageId, options);
   }
@@ -479,8 +491,22 @@ class ChatSession {
       this.logger && this.logger.debug(`Message with messageId:${messageId} not found in transcript`);
       return;
     }
+    this._handleMessageReceiptLatencyMetric(messageReceiptType, messageReceiptData);
     var newItem = modelUtils.createIncomingTranscriptReceiptItem(this.thisParticipant, oldItemInTranscript, messageReceiptData, messageReceiptType);
     this._replaceItemInTranscript(oldItemInTranscript, newItem, messageReceiptType);
+  }
+
+  _handleMessageReceiptLatencyMetric(messageReceiptType, messageReceiptData) {
+    const { AbsoluteTime, MessageMetadata } = messageReceiptData;
+    const { Receipts } = MessageMetadata;
+    if(Receipts.length > 0) {
+      const { DeliveredTimestamp, ReadTimestamp } = Receipts[0];
+      const receiptEvent = messageReceiptType === 'read' ? CSM_CONSTANTS.SEND_READ_RECEIPT : CSM_CONSTANTS.SEND_DELIVERED_RECEIPT;
+      const timeDifference = messageReceiptType === 'read' ?
+        getTimeFromTimeStamp(ReadTimestamp) - getTimeFromTimeStamp(AbsoluteTime) :
+        getTimeFromTimeStamp(DeliveredTimestamp) - getTimeFromTimeStamp(AbsoluteTime);
+      this.csmService.addLatencyMetric(receiptEvent, timeDifference, CSM_CATEGORY.UI);
+    }
   }
 
   _failMessage(message) {

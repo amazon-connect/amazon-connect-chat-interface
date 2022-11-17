@@ -9,3 +9,7 @@ export function shouldDisplayMessageForType(correntType) {
   }
   return isValid;
 }
+
+export function getTimeFromTimeStamp(timeStamp) {
+  return new Date(timeStamp).getTime();
+}
