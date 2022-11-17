@@ -13,6 +13,8 @@ export const PARTICIPANT_TYPES = {
 export const ContentType = {
     EVENT_CONTENT_TYPE: {
         TYPING: "application/vnd.amazonaws.connect.event.typing",
+        READ_RECEIPT: "application/vnd.amazonaws.connect.event.message.read",
+        DELIVERED_RECEIPT: "application/vnd.amazonaws.connect.event.message.delivered",
         PARTICIPANT_JOINED: "application/vnd.amazonaws.connect.event.participant.joined",
         PARTICIPANT_LEFT: "application/vnd.amazonaws.connect.event.participant.left",
         TRANSFER_SUCCEEDED: "application/vnd.amazonaws.connect.event.transfer.succeeded",

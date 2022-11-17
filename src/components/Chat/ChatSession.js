@@ -94,6 +94,24 @@ class ChatJSClient {
     });
   }
 
+  sendReadReceipt(messageId) {
+    return this.session.sendEvent({
+      contentType: ContentType.EVENT_CONTENT_TYPE.READ_RECEIPT,
+      content: JSON.stringify({
+        MessageId: messageId
+      })
+    });
+  }
+
+  sendDeliveredReceipt(messageId) {
+    return this.session.sendEvent({
+      contentType: ContentType.EVENT_CONTENT_TYPE.DELIVERED_RECEIPT,
+      content: JSON.stringify({
+        MessageId: messageId
+      })
+    });
+  }
+
   sendMessage(content) {
     // Right now we are assuming only text messages,
     // later we will have to add functionality for other types.
@@ -140,8 +158,9 @@ class ChatSession {
     'chat-closed': [],
   };
 
-  constructor(chatDetails, displayName, region, stage) {
+  constructor(chatDetails, displayName, region, stage, shouldShowMessageReceipts) {
     this.client = new ChatJSClient(chatDetails, region, stage);
+    this.shouldShowMessageReceipts = shouldShowMessageReceipts;
     this.contactId = this.client.getContactId();
     this.thisParticipant = {
       participantId: this.client.getParticipantId(),
@@ -213,6 +232,16 @@ class ChatSession {
   sendTypingEvent() {
     this.logger && this.logger.info("Calling SendEvent API for Typing");
     return this.client.sendTypingEvent();
+  }
+
+  sendReadReceipt(messageId) {
+    this.logger && this.logger.info("Calling SendEvent API for ReadReceipt", messageId);
+    return this.client.sendReadReceipt(messageId);
+  }
+
+  sendDeliveredReceipt(messageId) {
+    this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId);
+    return this.client.sendDeliveredReceipt(messageId);
   }
 
   addOutgoingMessage(data) {
@@ -418,9 +447,15 @@ class ChatSession {
       }
       console.log("_handleIncomingData item created");
 
-      if(item.transportDetails.direction === Direction.Incoming){
+      const { transportDetails, type } = item;
+      if(transportDetails.direction === Direction.Incoming){
         this._triggerEvent("incoming-message", data);
-      }else{
+        if (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) {
+          this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
+            disableThrottle: true
+          } : {});
+        }
+      } else {
         this._triggerEvent("outgoing-message", data);
       }
 
@@ -474,8 +509,6 @@ class ChatSession {
     }
 
     items = items.filter(item => !this._isRoundTripSystemEvent(item));
-
-    console.log("ADD ITEMS", items);
 
     const newItemMap = items.reduce((acc, item) => ({...acc, [item.id]: item}), {});
     

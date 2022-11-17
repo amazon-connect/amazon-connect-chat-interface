@@ -4,6 +4,8 @@ import ThemeProvider from '../../theme/ThemeProvider';
 import { render } from "@testing-library/react";
 import {screen} from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import ChatTranscriptor from './ChatTranscriptor';
+
 
 const mockProps = {
     chatSession: {
@@ -15,15 +17,16 @@ const mockProps = {
         logger: {},
         off: jest.fn(),
         loadPreviousTranscript: jest.fn(),
-        sendTypingEvent: jest.fn().mockReturnValue(Promise.resolve()),
+        sendReadReceipt: jest.fn().mockReturnValue(Promise.resolve()),
     },
-    composerConfig: {
-        attachmentsEnabled: false,
-    }
+    shouldShowMessageReceipts: true
 }
 
 jest.useFakeTimers();
 jest.spyOn(global, 'setTimeout');
+jest.mock('./ChatTranscriptor', () => {
+    return jest.fn(() => null)
+  })
 describe('<Chat />', () => {
     describe("when window.connect is defined", () => {
         let wrapper, instance;
@@ -82,6 +85,16 @@ describe('<Chat />', () => {
             const textInput = mockComposer.getByTestId('customer-chat-text-input');
             userEvent.type(textInput, testMessage);
             expect(document.querySelector('[data-testid="amazon-connect-chat-wrapper"] div input')).not.toBe(null);
+        })
+
+        test("should send ReadReceipt when a message is visible in the viewport", () => {
+            ChatTranscriptor.mockClear();
+            render(
+                    <ThemeProvider>
+                    <Chat {...mockProps} />
+                    </ThemeProvider>)
+            ChatTranscriptor.mock.calls[0][0].sendReadReceipt({});
+            expect(mockProps.chatSession.sendReadReceipt).toHaveBeenCalled();
         })
     })
 

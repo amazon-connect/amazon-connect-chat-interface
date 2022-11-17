@@ -114,7 +114,7 @@ class ChatContainer extends Component {
   }
 
   openChatSession(chatDetails, name, region, stage) {
-    const chatSession = new ChatSession(chatDetails, name, region, stage);
+    const chatSession = new ChatSession(chatDetails, name, region, stage, this.props.shouldShowMessageReceipts);
     return chatSession.openChatSession().then(() => {
       return chatSession;
     });
