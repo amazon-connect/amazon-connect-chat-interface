@@ -31,7 +31,8 @@ class ChatJSClient {
       options: {region: region},
       features: {
         messageReceipts: {
-          shouldSendMessageReceipts: true,
+          //TODO: enable message-receipts by default once BE changes are available in all regions
+          shouldSendMessageReceipts: false,
           throttleTime: 5000
         }
       }
