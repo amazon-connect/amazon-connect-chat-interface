@@ -135,7 +135,7 @@ afterAll(() => {
 });
 
 describe("ChatSession", () => {
-  describe.skip("About logger", () => {
+  describe("About logger", () => {
     describe("LogManager is defined", () => {
       let session;
       beforeEach(() => {
@@ -315,7 +315,7 @@ describe("ChatSession", () => {
       readCallback(readReceiptMessage);
       expect(session.transcript[0].lastReadReceipt).toEqual(false);
     });
-    test.only("should call handleMessageReceipt to update the transcript", async () => {
+    test("should call handleMessageReceipt to update the transcript", async () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
       const readCallback =
@@ -334,7 +334,7 @@ describe("ChatSession", () => {
               {
                 DeliveredTimestamp: new Date().toISOString(),
                 ReadTimestamp: new Date().toISOString(),
-                RecipientParticipantId: "participantDEF",
+                RecipientParticipantId: "123",
               },
             ],
           },
@@ -354,7 +354,7 @@ describe("ChatSession", () => {
             Receipts: [
               {
                 DeliveredTimestamp: new Date().toISOString(),
-                RecipientParticipantId: "participantDEF",
+                RecipientParticipantId: "123",
               },
             ],
           },
