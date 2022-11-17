@@ -20,7 +20,7 @@ const mockRichMessagingTranscript = [
             MessageId: "italics",
             Receipts: [{
                 RecipientParticipantId: "RecipientParticipantId",
-                DeliverTimestamp : (new Date()).toISOString(),
+                DeliveredTimestamp : (new Date()).toISOString(),
                 ReadTimestamp: (new Date).toISOString(),
             }]
         },
@@ -41,7 +41,7 @@ const mockRichMessagingTranscript = [
             MessageId: "bold",
             Receipts: [{
                 RecipientParticipantId: "RecipientParticipantId",
-                DeliverTimestamp : (new Date()).toISOString(),
+                DeliveredTimestamp : (new Date()).toISOString(),
                 ReadTimestamp: (new Date).toISOString(),
             }]
         },
@@ -73,7 +73,7 @@ const mockRichMessagingTranscript = [
             MessageId: "bulletedList",
             Receipts: [{
                 RecipientParticipantId: "RecipientParticipantId",
-                DeliverTimestamp : (new Date()).toISOString(),
+                DeliveredTimestamp : (new Date()).toISOString(),
                 ReadTimestamp: (new Date).toISOString(),
             }]
         },
