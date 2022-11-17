@@ -14,6 +14,11 @@ import defaultTheme from './theme/defaultTheme';
   connect.LogManager && connect.LogManager.updateLoggerConfig(config);
   connect.ChatInterface = connect.ChatInterface || {};
   connect.ChatInterface.init = ({containerId, ...props}) => {
+    if (props.widgetType) {
+      config.csmConfig = {
+        widgetType: props.widgetType
+      }
+    }
     config.features = {
       messageReceipts: {
         shouldSendMessageReceipts: true,

@@ -279,6 +279,10 @@ describe("ChatSession", () => {
             };
           },
         },
+        csmService: {
+          addCountMetric: jest.fn().mockImplementation(() => {}),
+          addLatencyMetric: jest.fn().mockImplementation(() => {}),
+        }
       };
     });
     afterAll(() => {
