@@ -109,7 +109,7 @@ export default class Chat extends Component {
       parentHeaderWrapperHeight: HEADER_HEIGHT,
     };
     this.parentHeaderRef = React.createRef();
-    this.updateTranscript = transcript => this.setState({transcript});
+    this.updateTranscript = transcript => this.setState({transcript: [...transcript]});
     this.updateTypingParticipants = typingParticipants => this.setState({typingParticipants});
     this.updateContactStatus = contactStatus => this.setState({contactStatus});
     if(window.connect && window.connect.LogManager) {

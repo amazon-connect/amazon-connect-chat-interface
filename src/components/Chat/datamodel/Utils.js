@@ -43,6 +43,8 @@ function createItemFromIncoming(item, thisParticipant) {
   transportDetails.sentTime = 
     new Date(item.AbsoluteTime).getTime() / 1000;
   transportDetails.status = Status.SendSuccess;
+  transportDetails.messageReceiptType = item.MessageMetadata && Array.isArray(item.MessageMetadata.Receipts) ?
+   (item.MessageMetadata.Receipts[0].DeliveredTimestamp ? "delivered" : (item.MessageMetadata.Receipts[0].ReadTimestamp ? "read" : "")) : "";
   transcriptItem.transportDetails = transportDetails;
   transcriptItem.version = 0;
   transcriptItem.Attachments = item.Attachments;
