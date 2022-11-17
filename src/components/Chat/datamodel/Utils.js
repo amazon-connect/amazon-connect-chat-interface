@@ -43,8 +43,8 @@ function createItemFromIncoming(item, thisParticipant) {
   transportDetails.sentTime = 
     new Date(item.AbsoluteTime).getTime() / 1000;
   transportDetails.status = Status.SendSuccess;
-  transportDetails.messageReceiptType = item.MessageMetadata && Array.isArray(item.MessageMetadata.Receipts) ?
-   (item.MessageMetadata.Receipts[0].DeliveredTimestamp ? "delivered" : (item.MessageMetadata.Receipts[0].ReadTimestamp ? "read" : "")) : "";
+  transportDetails.messageReceiptType = item.MessageMetadata && Array.isArray(item.MessageMetadata.Receipts) && item.MessageMetadata.Receipts.length > 0 ?
+     (item.MessageMetadata.Receipts[0].ReadTimestamp ? "read" : (item.MessageMetadata.Receipts[0].DeliveredTimestamp ? "delivered" : "")) : "";
   transcriptItem.transportDetails = transportDetails;
   transcriptItem.version = 0;
   transcriptItem.Attachments = item.Attachments;
@@ -133,9 +133,6 @@ function createIncomingTranscriptReceiptItem(thisParticipant, oldItemInTranscrip
   newTranscriptItem.transportDetails = {
     ...oldItemInTranscript.transportDetails,
     messageReceiptType: oldItemInTranscript.transportDetails.messageReceiptType === "read" ? "read" : messageReceiptType,
-    direction: thisParticipant.participantId !== messageReceiptData.MessageMetadata.Receipts[0].RecipientParticipantId
-                ? Direction.Outgoing
-                : Direction.Incoming
   };
   return newTranscriptItem;
 }

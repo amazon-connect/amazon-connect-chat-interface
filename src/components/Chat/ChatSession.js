@@ -31,8 +31,7 @@ class ChatJSClient {
       options: {region: region},
       features: {
         messageReceipts: {
-          //TODO: enable message-receipts by default once BE changes are available in all regions
-          shouldSendMessageReceipts: false,
+          shouldSendMessageReceipts: true,
           throttleTime: 5000
         }
       }
@@ -142,6 +141,7 @@ class ChatSession {
   client = null;
   contactId = null;
   contactStatus = CONTACT_STATUS.DISCONNECTED;
+  shouldShowMessageReceipts = false;
 
   /**
    * Flag set when an outgoing message from the Customer is in flight.
@@ -208,7 +208,8 @@ class ChatSession {
   }
 
   // CHAT API
-  openChatSession() {
+  openChatSession(shouldShowMessageReceipts) {
+    this.shouldShowMessageReceipts = shouldShowMessageReceipts;
     this._addEventListeners();
     this._updateContactStatus(CONTACT_STATUS.CONNECTING);
     return this.client.connect().then((response) => {
@@ -242,6 +243,9 @@ class ChatSession {
   }
 
   sendDeliveredReceipt(messageId, options) {
+    if(!this.shouldShowMessageReceipts) {
+      return;
+    }
     this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
     return this.client.sendDeliveredReceipt(messageId, options);
   }
@@ -570,16 +574,17 @@ class ChatSession {
   }
 
   _findLastMessageReceiptInTranscript(messageReceiptType, transcript) {
-    const size = transcript.length;
-    let indexToFind;
-    const indexFound = [...transcript].reverse().some((item, index) => {
-      if (item.transportDetails.messageReceiptType === messageReceiptType) {
-        indexToFind = index;
-        return true;
+    const size = transcript.length - 1;
+    let lastReceiptIdx = -1;
+    for(let index=size; index>=0; index--) {
+      const transportDetails = transcript[index].transportDetails;
+      if (transportDetails.direction === Direction.Outgoing &&
+        transportDetails.messageReceiptType === messageReceiptType) {
+        lastReceiptIdx = index;
+        break;
       }
-      return false;
-    });
-    return indexFound ? size - indexToFind -1 : -1;
+    }
+    return lastReceiptIdx;
   }
 
   _isRoundtripMessage(item) {
