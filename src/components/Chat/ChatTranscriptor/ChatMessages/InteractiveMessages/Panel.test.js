@@ -8,8 +8,8 @@ import { ThemeProvider } from "../../../../../theme";
 import Panel from "./Panel";
  
 const mockPanelContent = {
-    title: "PanelTitle",
-    subtitle: "PanelSubTitle",
+    title: "PanelTitle https://www.amazon.com/",
+    subtitle: "PanelSubTitle https://www.amazon.com/",
     elements: [
         {
             title: "PanelElementTitle",
@@ -50,6 +50,13 @@ test("Should be able to use Panel", () => {
  
     expect(mockPanel.getByText("PanelTitle")).toBeDefined();
     expect(mockPanel.getByAltText("PanelImageDescription")).toBeDefined();
+
+    expect(mockPanel.getByText("PanelTitle").innerHTML).toEqual(
+        "PanelTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+    );
+    expect(mockPanel.getByText("PanelSubTitle").innerHTML).toEqual(
+        "PanelSubTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+    );
  
     expect(mockPanel.getByText("PanelElementTitle")).toBeDefined();
     expect(mockPanel.getByText("AnotherPanelElementTitle")).toBeDefined();

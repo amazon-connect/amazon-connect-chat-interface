@@ -8,8 +8,8 @@ import { ThemeProvider } from "../../../../../theme";
 import TimePicker from "./TimePicker";
  
 const mockTimePickerContent = {
-    title: "TimePickerTitle",
-    subtitle: "TimePickerSubtitle",
+    title: "TimePickerTitle https://www.amazon.com/",
+    subtitle: "TimePickerSubtitle https://www.amazon.com/",
     timeslots: [
         {
             date: "2020-10-31T17:00+00:00",
@@ -51,6 +51,12 @@ afterEach(() => {
 test("Style should match the snapshot", () => {
     renderElement(mockProps);
     expect(mockTimePicker).toMatchSnapshot();
+    expect(mockTimePicker.getByText("TimePickerTitle").innerHTML).toEqual(
+        "TimePickerTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+    );
+    expect(mockTimePicker.getByText("TimePickerSubtitle").innerHTML).toEqual(
+        "TimePickerSubtitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+    );
 });
  
 test("Should be able to select a date", () => {
