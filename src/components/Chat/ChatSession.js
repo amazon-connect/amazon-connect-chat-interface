@@ -584,6 +584,18 @@ class ChatSession {
     const lastReadMessageIdx = this._findLastMessageReceiptInTranscript("read", newTranscript);
     const lastDeliveredMessageIdx = this._findLastMessageReceiptInTranscript("delivered", newTranscript);
 
+    const lastIncomingMessageIdx = this._findLastMessageInTranscript(Direction.Incoming, newTranscript);
+    const lastOutgoingMessageIdx = this._findLastMessageInTranscript(Direction.Outgoing, newTranscript);
+
+    //Corner case: lastMessage is not read and Customer typed a new message
+    //so we need to explicitly fire readReceipt for the last received/incoming message.
+    //Note: ChatJS has a mapper and prevents duplicate event if its already fired!
+    if(lastIncomingMessageIdx !== -1 &&
+       lastOutgoingMessageIdx > lastIncomingMessageIdx) {
+      const { type, id } = newTranscript[lastIncomingMessageIdx];
+      this.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
+    }
+
     if (lastReadMessageIdx !== -1) {
       newTranscript[lastReadMessageIdx].lastReadReceipt = true;
     }
@@ -616,8 +628,22 @@ class ChatSession {
     let lastReceiptIdx = -1;
     for(let index=size; index>=0; index--) {
       const transportDetails = transcript[index].transportDetails;
-      if (transportDetails.direction === Direction.Outgoing &&
+      if (transportDetails && transportDetails.direction === Direction.Outgoing &&
         transportDetails.messageReceiptType === messageReceiptType) {
+        lastReceiptIdx = index;
+        break;
+      }
+    }
+    return lastReceiptIdx;
+  }
+
+  _findLastMessageInTranscript(direction, transcript) {
+    const size = transcript.length - 1;
+    let lastReceiptIdx = -1;
+    for(let index=size; index>=0; index--) {
+      const transportDetails = transcript[index].transportDetails;
+
+      if (transportDetails && transportDetails.direction === direction) {
         lastReceiptIdx = index;
         break;
       }
