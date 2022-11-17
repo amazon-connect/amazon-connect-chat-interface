@@ -99,6 +99,8 @@ beforeAll(() => {
           }),
           sendMessage: jest.fn().mockResolvedValue("aaa"),
           sendEvent: jest.fn().mockResolvedValue("bb"),
+          sendReadReceipt: jest.fn().mockResolvedValue("bb"),
+          sendDeliveredReceipt: jest.fn().mockResolvedValue("bb"),
           sendAttachment: jest.fn().mockImplementation(
             (...input) =>
               new Promise((resolve, reject) => {
@@ -244,6 +246,8 @@ describe("ChatSession", () => {
               connect: jest.fn().mockResolvedValue("aaa"),
               sendMessage: jest.fn().mockResolvedValue("aaa"),
               sendEvent: jest.fn().mockResolvedValue("bb"),
+              sendReadReceipt: jest.fn().mockResolvedValue("bb"),
+              sendDeliveredReceipt: jest.fn().mockResolvedValue("bb"),
               sendAttachment: jest.fn().mockImplementation(
                 (...input) =>
                   new Promise((resolve, reject) => {
@@ -348,6 +352,36 @@ describe("ChatSession", () => {
       expect(session.transcript[3].lastDeliveredReceipt).toEqual(false);
       deliveredCallback(deliverReceiptMessage);
       expect(session.transcript[3].lastDeliveredReceipt).toEqual(true);
+    });
+
+    test("should call sendEvent with correct params when sendReadReceipt is called", () => {
+      const session = new ChatSession(chatDetails, region, stage);
+      session.openChatSession();
+      session.client.session.sendEvent.mockClear();
+      session.sendReadReceipt();
+      expect(session.client.session.sendEvent).toBeCalled();
+      expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({"content": "{}", "contentType": "application/vnd.amazonaws.connect.event.message.read"});
+    });
+    test("should call sendEvent with correct params when sendDeliveredReceipt is called", () => {
+      const session = new ChatSession(chatDetails, region, stage);
+      session.openChatSession();
+      session.client.session.sendEvent.mockClear();
+      session.sendDeliveredReceipt();
+      expect(session.client.session.sendEvent).toBeCalled();
+      expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({"content": "{}", "contentType": "application/vnd.amazonaws.connect.event.message.delivered"});
+    });
+    test("should call sendDeliveredReceipt when an new incoming message is received", () => {
+      const session = new ChatSession(chatDetails, "", region, stage, true);
+      session.client.onMessage = jest.fn();
+      session.client.session.onMessage.mockClear();
+      session.client.session.sendEvent.mockClear();
+      session.openChatSession();
+      const callbackFn = session.client.onMessage.mock.calls[0][0];
+      const dataInput = JSON.parse(
+        '{"data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","Content":"hi","ContentType":"text/plain","Id":"ID","Type":"MESSAGE","ParticipantId":"ParticipantId","DisplayName":"Agent","ParticipantRole":"AGENT","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}');
+      callbackFn(dataInput);
+      expect(session.client.session.sendEvent).toBeCalled();
+      expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({"content": "{\"MessageId\":\"ID\"}", "contentType": "application/vnd.amazonaws.connect.event.message.delivered"});
     });
   });
 });

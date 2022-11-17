@@ -59,6 +59,7 @@ export default class ChatTranscriptor extends PureComponent {
     contactStatus: PT.string.isRequired,
     loadPreviousTranscript: PT.func.isRequired,
     shouldShowMessageReceipts: PT.bool.isRequired,
+    sendReadReceipt: PT.func.isRequired,
   };
 
   loadTranscript = () => {
@@ -102,13 +103,15 @@ export default class ChatTranscriptor extends PureComponent {
         textInputRef: this.props.textInputRef,
         shouldShowMessageReceipts: this.props.shouldShowMessageReceipts,
         isLatestMessage,
+        sendReadReceipt: this.props.sendReadReceipt,
       }
     } else if (itemDetails.type === ATTACHMENT_MESSAGE) {
       config = Object.assign({}, config, transcriptConfig.attachmentMessageConfig);
       additionalProps = {
         mediaOperations: {
           downloadAttachment: this.props.downloadAttachment
-        }
+        },
+        sendReadReceipt: this.props.sendReadReceipt,
       }
     } else if (modelUtils.isRecognizedEvent(itemDetails.content.type)) {
       config = Object.assign({}, config, transcriptConfig.systemMessageConfig);

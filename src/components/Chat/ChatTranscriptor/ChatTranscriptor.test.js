@@ -2,10 +2,110 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from 'react';
-import { render, fireEvent } from "@testing-library/react"
+import { render, fireEvent, waitFor } from "@testing-library/react"
 import ChatTranscriptor from "./ChatTranscriptor";
-import {ATTACHMENT_MESSAGE, ContentType, AttachmentStatus, AttachmentErrorType} from "../datamodel/Model";
+import {ATTACHMENT_MESSAGE, ContentType, AttachmentStatus, AttachmentErrorType, PARTICIPANT_MESSAGE} from "../datamodel/Model";
 import { ThemeProvider } from "../../../theme";
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
+
+const mockRichMessagingTranscript = [
+    {
+        id: "italics",
+        type: PARTICIPANT_MESSAGE,
+        transportDetails: {
+            direction: "Incoming",
+            messageReceiptType: "read"
+        },
+        MessageMetadata: {
+            MessageId: "italics",
+            Receipts: [{
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliverTimestamp : (new Date()).toISOString(),
+                ReadTimestamp: (new Date).toISOString(),
+            }]
+        },
+        lastReadReceipt: true,
+        content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+            data: "data"
+        }
+    },
+    {
+        id: "bold",
+        type: PARTICIPANT_MESSAGE,
+        transportDetails: {
+            direction: "Outgoing",
+            messageReceiptType: "delivered"
+        },
+        MessageMetadata: {
+            MessageId: "bold",
+            Receipts: [{
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliverTimestamp : (new Date()).toISOString(),
+                ReadTimestamp: (new Date).toISOString(),
+            }]
+        },
+        lastDeliveredReceipt: true,
+        content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+            data: "data"
+        }
+    },
+    {
+        id: "numberedList",
+        type: PARTICIPANT_MESSAGE,
+        transportDetails: {
+            direction: "Incoming",
+        },
+        content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+            data: "data"
+        }
+    },
+    {
+        id: "bulletedList",
+        type: PARTICIPANT_MESSAGE,
+        transportDetails: {
+            direction: "Outgoing",
+            messageReceiptType: "read"
+        },
+        MessageMetadata: {
+            MessageId: "bulletedList",
+            Receipts: [{
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliverTimestamp : (new Date()).toISOString(),
+                ReadTimestamp: (new Date).toISOString(),
+            }]
+        },
+        lastReadReceipt: true,
+        content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+            data: 'data'
+        }
+    },
+    {
+        id: "hyperLink",
+        type: PARTICIPANT_MESSAGE,
+        transportDetails: {
+            direction: "Incoming",
+        },
+        content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+            data: "data"
+        }
+    },
+    {
+        id: "image",
+        type: PARTICIPANT_MESSAGE,
+        transportDetails: {
+            direction: "Outgoing",
+        },
+        content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+            data: "data"
+        }
+    }
+];
  
 const mockAttachmentsTranscript = [
     {
@@ -56,8 +156,10 @@ function renderElement(props) {
 global.URL.createObjectURL = jest.fn();
 
 beforeEach(()=>{
+    global.URL.createObjectURL = jest.fn();
     const downloadAttachment = jest.fn().mockResolvedValue(undefined);
-    mockProps = {downloadAttachment: downloadAttachment, contactId: "12344", contactStatus:"connected", customerName: "Customer", transcript: mockAttachmentsTranscript, typingParticipants: []};
+    mockProps = {downloadAttachment: downloadAttachment, contactId: "12344", contactStatus:"connected", customerName: "Customer", transcript: mockAttachmentsTranscript, typingParticipants: [], shouldShowMessageReceipts: true, loadPreviousTranscript: jest.fn(), sendReadReceipt: jest.fn()};
+    mockAllIsIntersecting(false);
 });
  
 test("Should be able to see and download an attachment", () => {
@@ -73,4 +175,18 @@ test("Should not be able to download an rejected attachment", () => {
     expect(mockTranscriptor.getByText("transport error")).toBeDefined();
     fireEvent.click(mockTranscriptor.getByText("testDownloadError.pdf"));
     expect(mockProps.downloadAttachment).toHaveBeenCalledTimes(0);
+});
+
+test("Should send Read Receipts after a message is displayed in the viewport", async () => {
+    mockProps.transcript = mockRichMessagingTranscript;
+    mockProps.transcript[mockProps.transcript.length - 1].transportDetails = {
+        direction: "Incoming",
+        participantRole: "CUSTOMER"
+    }
+    renderElement(mockProps);
+    expect(mockProps.sendReadReceipt).not.toHaveBeenCalled();
+    mockAllIsIntersecting(true);
+    await waitFor(() => {
+        expect(mockProps.sendReadReceipt).toHaveBeenCalled();
+    });
 });

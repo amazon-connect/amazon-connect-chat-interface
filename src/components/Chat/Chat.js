@@ -121,12 +121,10 @@ export default class Chat extends Component {
     chatSession: PT.object.isRequired,
     composerConfig: PT.object,
     onEnded: PT.func,
-    shouldShowMessageReceipts: PT.bool,
   };
 
   static defaultProps = {
     onEnded: () => {},
-    shouldShowMessageReceipts: true,
   };
 
   resetChatHeight() {
@@ -202,6 +200,7 @@ export default class Chat extends Component {
             transcriptConfig={transcriptConfig}
             textInputRef={textInputRef}
             shouldShowMessageReceipts={shouldShowMessageReceipts}
+            sendReadReceipt={(e) => chatSession.sendReadReceipt(e)}
           />
           <ChatComposer
             contactStatus={this.state.contactStatus}

@@ -8,6 +8,8 @@ import Linkify from "react-linkify";
 import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
 import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
+import { PARTICIPANT_TYPES } from "../../datamodel/Model";
+import { InView } from 'react-intersection-observer';
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding}
@@ -112,7 +114,15 @@ export class ParticipantMessage extends PureComponent {
     mediaOperations: PT.object,
     isLatestMessage: PT.bool,
     shouldShowMessageReceipts: PT.bool,
+    sendReadReceipt: PT.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      inView: false
+    };
+  }
 
   timestampToDisplayable(timestamp) {
     const d = new Date(0);
@@ -174,7 +184,7 @@ export class ParticipantMessage extends PureComponent {
         </React.Fragment>
     );
   }
-  renderFooter() {
+  renderMessageReceipts() {
     const { messageDetails: { lastReadReceipt = false, lastDeliveredReceipt = false, transportDetails: { messageReceiptType, direction } = { } }} = this.props;
     if(direction !== Direction.Outgoing || !messageReceiptType) {
       return null;
@@ -187,6 +197,18 @@ export class ParticipantMessage extends PureComponent {
           </Footer.MessageReceipt>
       </React.Fragment>
     );
+  }
+
+  componentDidUpdate() {
+    const { direction, participantRole } = this.props.messageDetails.transportDetails;
+    //TODO: Identify which messageTypes to ignore for messageReceipts.
+    if (this.props.shouldShowMessageReceipts && 
+        this.state.inView &&
+        participantRole === PARTICIPANT_TYPES.CUSTOMER &&
+        direction === Direction.Incoming) {
+          const messageId = this.props.messageDetails.id;
+          this.props.sendReadReceipt(messageId);
+    }
   }
 
   render() {
@@ -222,10 +244,14 @@ export class ParticipantMessage extends PureComponent {
     return (
         <React.Fragment>
           <Header data-testid="message-header">{this.renderHeader()}</Header>
-          <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig}>
-            {this.renderContent(content, contentType)}
-          </Body>
-          <Footer>{shouldShowMessageReceipts && this.renderFooter()}</Footer>
+          <InView onChange={(inView) => this.setState({ inView })}>
+            {({ ref }) => (
+              <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig} ref={this.props.isLatestMessage ? ref : null}>
+                {this.renderContent(content, contentType)}
+              </Body>
+            )}
+          </InView>
+          <Footer>{shouldShowMessageReceipts && this.renderMessageReceipts()}</Footer>
           {error && this.renderTransportError(error)}
         </React.Fragment>
     );
