@@ -88,7 +88,7 @@ const transcriptResponse = {
         },
       },
       {
-        AbsoluteTime: "2022-09-28T12:37:54.740Z",
+        AbsoluteTime: AbsoluteTime + 4000,
         MessageMetadata: {
           MessageId: "31bf18c9-d80b-4f75-8145-c47946a26e03",
           Receipts: [],
@@ -101,6 +101,21 @@ const transcriptResponse = {
         ParticipantId: "bcd32342-dd03-42ce-9288-9c44ebf81c4e",
         ParticipantRole: "SYSTEM",
         Type: "MESSAGE",
+      },
+      {
+        Id: "bulletedList2",
+        Type: "message",
+        ParticipantId: "123",
+        AbsoluteTime: AbsoluteTime + 5000,
+        ParticipantRole: 'CUSTOMER',
+        transportDetails: {
+          direction: "Outgoing",
+          status: "SendSuccess",
+        },
+        content: {
+          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+          data: "* item3 \n * item4",
+        },
       },
     ],
   },
