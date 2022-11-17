@@ -44,7 +44,7 @@ function createItemFromIncoming(item, thisParticipant) {
     new Date(item.AbsoluteTime).getTime() / 1000;
   transportDetails.status = Status.SendSuccess;
   if (item.MessageMetadata && Array.isArray(item.MessageMetadata.Receipts) && item.MessageMetadata.Receipts.length > 0) {
-    const receipt = item.MessageMetadata.Receipts.find(receipt => receipt.RecipientParticipantId === transcriptItem.participantId) || {};
+    const receipt = item.MessageMetadata.Receipts.find(receipt => receipt.RecipientParticipantId !== transcriptItem.participantId) || {};
     transportDetails.messageReceiptType =  receipt.ReadTimestamp ? "read" : (receipt.DeliveredTimestamp ? "delivered" : "");
   }
   transcriptItem.transportDetails = transportDetails;
