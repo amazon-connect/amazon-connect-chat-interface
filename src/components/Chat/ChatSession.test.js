@@ -24,6 +24,7 @@ const transcriptResponse = {
           direction: "Outgoing",
           status: "SendSuccess",
         },
+        ParticipantRole: 'CUSTOMER',
         content: {
           type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
           data: "data",
@@ -34,6 +35,7 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "123",
         AbsoluteTime: AbsoluteTime + 1000,
+        ParticipantRole: 'AGENT',
         transportDetails: {
           direction: "Incoming",
           messageReceiptType: "delivered",
@@ -60,6 +62,7 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "456",
         AbsoluteTime: AbsoluteTime + 2000,
+        ParticipantRole: 'AGENT',
         transportDetails: {
           direction: "Incoming",
           status: "SendSuccess",
@@ -74,6 +77,7 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "123",
         AbsoluteTime: AbsoluteTime + 3000,
+        ParticipantRole: 'CUSTOMER',
         transportDetails: {
           direction: "Outgoing",
           status: "SendSuccess",
@@ -344,7 +348,7 @@ describe("ChatSession", () => {
       };
       expect(session.transcript[0].lastReadReceipt).toEqual(false);
       readCallback(readReceiptMessage);
-      // expect(session.transcript[0].lastReadReceipt).toEqual(true);
+      expect(session.transcript[0].lastReadReceipt).toEqual(true);
 
       const deliverReceiptMessage = {
         data: {
@@ -364,7 +368,7 @@ describe("ChatSession", () => {
       };
       expect(session.transcript[3].lastDeliveredReceipt).toEqual(false);
       deliveredCallback(deliverReceiptMessage);
-      // expect(session.transcript[3].lastDeliveredReceipt).toEqual(true);
+      expect(session.transcript[3].lastDeliveredReceipt).toEqual(true);
     });
 
     test("should call sendEvent with correct params when sendReadReceipt is called", () => {

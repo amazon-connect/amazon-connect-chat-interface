@@ -10,6 +10,7 @@ import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
 import { PARTICIPANT_TYPES } from "../../datamodel/Model";
 import { InView } from 'react-intersection-observer';
+import { shouldDisplayMessageForType } from '../../../../utils/helper'
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding}
@@ -237,10 +238,13 @@ export class ParticipantMessage extends PureComponent {
     } else {
       content = this.props.messageDetails.content.data;
       contentType = this.props.messageDetails.content.type
+      if(!shouldDisplayMessageForType(contentType)) {
+        return null;
+      }
     }
 
     return (
-        <React.Fragment>
+        <div data-testid='main-message'>
           <Header data-testid="message-header">{this.renderHeader()}</Header>
           <InView onChange={(inView) => this.setState({ inView })}>
             {({ ref }) => (
@@ -251,7 +255,7 @@ export class ParticipantMessage extends PureComponent {
           </InView>
           <Footer>{shouldShowMessageReceipts && this.renderMessageReceipts()}</Footer>
           {error && this.renderTransportError(error)}
-        </React.Fragment>
+        </div>
     );
   }
 
