@@ -459,13 +459,14 @@ class ChatSession {
       }
       console.log("_handleIncomingData item created");
 
-      const { transportDetails, type } = item;
+      const { transportDetails, type, participantRole } = item;
       if(transportDetails.direction === Direction.Incoming){
         this._triggerEvent("incoming-message", data);
-        if (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) {
-          this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
-            disableThrottle: true
-          } : {});
+        if (modelUtils.isTypeMessageOrAttachment(type) &&
+            modelUtils.isParticipantAgentOrCustomer(participantRole)) {
+            this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
+              disableThrottle: true
+            } : {});
         }
       } else {
         this._triggerEvent("outgoing-message", data);
