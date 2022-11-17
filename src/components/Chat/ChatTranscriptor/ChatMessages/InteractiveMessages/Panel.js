@@ -11,6 +11,7 @@ import {
 } from "../InteractiveMessage";
 import styled from "styled-components";
 import PT from "prop-types";
+import Linkify from "react-linkify";
  
 const ElementTitle = styled(Text)`
     font-weight: bold;
@@ -67,8 +68,16 @@ export default function Panel({ content, addMessage }) {
       </ImageContainer>
       }
       <TextSection>
-        <Title>{title}</Title>
-        {subtitle && <Subtitle>{subtitle}</Subtitle>}
+        <Title>
+          <Linkify properties={{ target: "_blank" }}>
+            {title}
+          </Linkify>
+        </Title>
+        {subtitle && <Subtitle>
+            <Linkify properties={{ target: "_blank" }}>
+                {subtitle}
+            </Linkify>
+         </Subtitle>}
       </TextSection>
       <ResponsesSection>
         <div>
