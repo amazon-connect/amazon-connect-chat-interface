@@ -197,12 +197,26 @@ Object {
         <p
           class="c3 c4"
         >
-          ListPickerTitle
+          <span
+            class="Linkify"
+          >
+            ListPickerTitle 
+            <a
+              href="https://www.amazon.com/"
+              target="_blank"
+            >
+              https://www.amazon.com/
+            </a>
+          </span>
         </p>
         <p
           class="c3 c5"
         >
-          ListPickerSubTitle
+          <span
+            class="Linkify"
+          >
+            ListPickerSubTitle
+          </span>
         </p>
       </div>
       <div
@@ -285,12 +299,26 @@ Object {
       <p
         class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
       >
-        ListPickerTitle
+        <span
+          class="Linkify"
+        >
+          ListPickerTitle 
+          <a
+            href="https://www.amazon.com/"
+            target="_blank"
+          >
+            https://www.amazon.com/
+          </a>
+        </span>
       </p>
       <p
         class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
       >
-        ListPickerSubTitle
+        <span
+          class="Linkify"
+        >
+          ListPickerSubTitle
+        </span>
       </p>
     </div>
     <div

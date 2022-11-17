@@ -5,7 +5,7 @@ import React, { PureComponent } from "react";
 import styled from "styled-components";
 import PT from "prop-types";
 import Linkify from "react-linkify";
-import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
+import { PARTICIPANT_MESSAGE, ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
 import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
 import { PARTICIPANT_TYPES } from "../../datamodel/Model";
@@ -200,14 +200,12 @@ export class ParticipantMessage extends PureComponent {
   }
 
   componentDidUpdate() {
-    const { direction, participantRole } = this.props.messageDetails.transportDetails;
-    //TODO: Identify which messageTypes to ignore for messageReceipts.
-    if (this.props.shouldShowMessageReceipts && 
-        this.state.inView &&
-        participantRole === PARTICIPANT_TYPES.CUSTOMER &&
+    const { transportDetails: { direction }, type, id } = this.props.messageDetails;
+    //Note: type valid values: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_Item.html#connectparticipant-Type-Item-Type
+    if (this.state.inView &&
+      (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) &&
         direction === Direction.Incoming) {
-          const messageId = this.props.messageDetails.id;
-          this.props.sendReadReceipt(messageId);
+          this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
   }
 
@@ -218,7 +216,7 @@ export class ParticipantMessage extends PureComponent {
 
     //Hack to simulate ChatJS response with attachment content types
     const bodyStyleConfig = {};
-    if (this.props.isLatestMessage &&
+    if (this.props.isLatestMessage && this.props.messageDetails.content &&
         this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
       bodyStyleConfig.hideDirectionArrow = true;
       bodyStyleConfig.removePadding = true;

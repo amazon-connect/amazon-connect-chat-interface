@@ -94,20 +94,22 @@ class ChatJSClient {
     });
   }
 
-  sendReadReceipt(messageId) {
+  sendReadReceipt(messageId, options = {}) {
     return this.session.sendEvent({
       contentType: ContentType.EVENT_CONTENT_TYPE.READ_RECEIPT,
       content: JSON.stringify({
-        MessageId: messageId
+        MessageId: messageId,
+        ...options
       })
     });
   }
 
-  sendDeliveredReceipt(messageId) {
+  sendDeliveredReceipt(messageId, options = {}) {
     return this.session.sendEvent({
       contentType: ContentType.EVENT_CONTENT_TYPE.DELIVERED_RECEIPT,
       content: JSON.stringify({
-        MessageId: messageId
+        MessageId: messageId,
+        ...options
       })
     });
   }
@@ -158,9 +160,8 @@ class ChatSession {
     'chat-closed': [],
   };
 
-  constructor(chatDetails, displayName, region, stage, shouldShowMessageReceipts) {
+  constructor(chatDetails, displayName, region, stage) {
     this.client = new ChatJSClient(chatDetails, region, stage);
-    this.shouldShowMessageReceipts = shouldShowMessageReceipts;
     this.contactId = this.client.getContactId();
     this.thisParticipant = {
       participantId: this.client.getParticipantId(),
@@ -234,14 +235,14 @@ class ChatSession {
     return this.client.sendTypingEvent();
   }
 
-  sendReadReceipt(messageId) {
-    this.logger && this.logger.info("Calling SendEvent API for ReadReceipt", messageId);
-    return this.client.sendReadReceipt(messageId);
+  sendReadReceipt(messageId, options) {
+    this.logger && this.logger.info("Calling SendEvent API for ReadReceipt", messageId, options);
+    return this.client.sendReadReceipt(messageId, options);
   }
 
-  sendDeliveredReceipt(messageId) {
-    this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId);
-    return this.client.sendDeliveredReceipt(messageId);
+  sendDeliveredReceipt(messageId, options) {
+    this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
+    return this.client.sendDeliveredReceipt(messageId, options);
   }
 
   addOutgoingMessage(data) {

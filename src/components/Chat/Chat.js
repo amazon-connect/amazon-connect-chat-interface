@@ -200,7 +200,7 @@ export default class Chat extends Component {
             transcriptConfig={transcriptConfig}
             textInputRef={textInputRef}
             shouldShowMessageReceipts={shouldShowMessageReceipts}
-            sendReadReceipt={(e) => chatSession.sendReadReceipt(e)}
+            sendReadReceipt={(...inputParams) => chatSession.sendReadReceipt(...inputParams)}
           />
           <ChatComposer
             contactStatus={this.state.contactStatus}
