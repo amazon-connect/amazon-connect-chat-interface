@@ -349,6 +349,9 @@ describe("ChatSession", () => {
           InitialContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
           ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
         },
+        chatDetails: {
+          participantId: "participantId"
+        }
       };
       expect(session.transcript[0].lastReadReceipt).toEqual(false);
       readCallback(readReceiptMessage);
@@ -369,6 +372,9 @@ describe("ChatSession", () => {
           InitialContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
           ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
         },
+        chatDetails: {
+          participantId: "participantId"
+        }
       };
       expect(session.transcript[3].lastDeliveredReceipt).toEqual(false);
       deliveredCallback(deliverReceiptMessage);
