@@ -73,7 +73,8 @@ export default class ChatTranscriptor extends PureComponent {
   renderMessage = (itemDetails, isLatestMessage) => {
     const itemId = itemDetails.id;
     const version = itemDetails.version;
-    const key = itemId + "." + version;
+    const messageReceiptType = itemDetails.messageReceiptType ? itemDetails.messageReceiptType : "";
+    const key = `${itemId}.${version}.${messageReceiptType}`;
 
     const transcriptConfig = Object.assign({}, defaultTranscriptConfig, this.props.transcriptConfig);
     let config = {

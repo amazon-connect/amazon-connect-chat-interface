@@ -214,7 +214,7 @@ export class ParticipantMessage extends PureComponent {
     //Note: type valid values: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_Item.html#connectparticipant-Type-Item-Type
     if (this.state.inView &&
       (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) &&
-        direction === Direction.Incoming) {
+        direction === Direction.Incoming && this.props.shouldShowMessageReceipts) {
           this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
   }
