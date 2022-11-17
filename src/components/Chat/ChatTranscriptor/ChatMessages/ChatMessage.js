@@ -5,12 +5,13 @@ import React, { PureComponent } from "react";
 import styled from "styled-components";
 import PT from "prop-types";
 import Linkify from "react-linkify";
-import { PARTICIPANT_MESSAGE, ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
+import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
 import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
 import { PARTICIPANT_TYPES } from "../../datamodel/Model";
 import { InView } from 'react-intersection-observer';
-import { shouldDisplayMessageForType } from '../../../../utils/helper'
+import { shouldDisplayMessageForType } from '../../../../utils/helper';
+import { modelUtils } from "../../datamodel/Utils";
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding}
@@ -121,7 +122,8 @@ export class ParticipantMessage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      inView: false
+      inView: false,
+      isVisible: false,
     };
   }
 
@@ -200,14 +202,30 @@ export class ParticipantMessage extends PureComponent {
     );
   }
 
+  visibilityChangeListener() {
+    const isVisible = document.visibilityState === 'visible';
+    this.setState({ isVisible });
+  }
+
   componentDidUpdate() {
-    const { transportDetails: { direction }, type, id } = this.props.messageDetails;
+    const { transportDetails: { direction }, type, id, participantRole } = this.props.messageDetails;
     //Note: type valid values: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_Item.html#connectparticipant-Type-Item-Type
-    if (this.state.inView &&
-      (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) &&
-        direction === Direction.Incoming && this.props.shouldShowMessageReceipts) {
-          this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
+    if (this.state.inView && this.state.isVisible &&
+      modelUtils.isTypeMessageOrAttachment(type) &&
+      modelUtils.isParticipantAgentOrCustomer(participantRole) &&
+      direction === Direction.Incoming && this.props.shouldShowMessageReceipts) {
+        this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
+  }
+
+  componentDidMount() {
+    //Bug-Fix: In Firefox react-intersection-observer is not able to identify if a page is active or minimized.
+    this.visibilityChangeListener();
+    document.addEventListener("visibilitychange", this.visibilityChangeListener.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("visibilitychange", this.visibilityChangeListener.bind(this));
   }
 
   render() {

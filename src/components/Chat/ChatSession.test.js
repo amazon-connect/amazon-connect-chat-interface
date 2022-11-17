@@ -443,5 +443,25 @@ describe("ChatSession", () => {
           "application/vnd.amazonaws.connect.event.message.delivered",
       });
     });
+
+    test("should not call sendDeliveredReceipt when an participantRole is not Customer or Agent", () => {
+      const session = new ChatSession(
+        chatDetails,
+        "",
+        region,
+        stage,
+        true
+      );
+      session.client.onMessage = jest.fn();
+      session.client.session.onMessage.mockClear();
+      session.client.session.sendEvent.mockClear();
+      session.openChatSession(true);
+      const callbackFn = session.client.onMessage.mock.calls[0][0];
+      const dataInput = JSON.parse(
+        '{"data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","Content":"hi","ContentType":"text/plain","Id":"ID","Type":"MESSAGE","ParticipantId":"ParticipantId","DisplayName":"Agent","ParticipantRole":"SYSTEM","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}'
+      );
+      callbackFn(dataInput);
+      expect(session.client.session.sendEvent).not.toBeCalled();
+    });
   });
 });

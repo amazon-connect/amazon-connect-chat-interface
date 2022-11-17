@@ -190,10 +190,17 @@ test("Should not be able to download an rejected attachment", () => {
 });
 
 test("Should send Read Receipts after a message is displayed in the viewport", async () => {
-    mockProps.transcript = mockRichMessagingTranscript;
+    jest.spyOn(document, 'addEventListener').mockImplementation((event, handler) => {
+        if (event === 'visibilitychange') {
+            Object.defineProperty(document, 'visibilityState', {
+                value: 'visible',
+            });
+            handler();
+        }
+    });
+    mockProps.transcript[mockProps.transcript.length - 1].participantRole = "CUSTOMER";
     mockProps.transcript[mockProps.transcript.length - 1].transportDetails = {
         direction: "Incoming",
-        participantRole: "CUSTOMER"
     }
     renderElement(mockProps);
     expect(mockProps.sendReadReceipt).not.toHaveBeenCalled();

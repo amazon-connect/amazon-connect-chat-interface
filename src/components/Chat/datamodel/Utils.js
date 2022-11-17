@@ -7,7 +7,9 @@ import {
   ItemDetails,
   TransportDetails,
   ContentType,
-  PARTICIPANT_TYPES
+  PARTICIPANT_TYPES,
+  PARTICIPANT_MESSAGE,
+  ATTACHMENT_MESSAGE,
 } from "./Model";
 
 function isRecognizedEvent(eventName) {
@@ -139,6 +141,14 @@ function createIncomingTranscriptReceiptItem(thisParticipant, oldItemInTranscrip
   return newTranscriptItem;
 }
 
+function isTypeMessageOrAttachment(type) {
+  return (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE);
+}
+
+function isParticipantAgentOrCustomer(participantRole) {
+  return (participantRole === PARTICIPANT_TYPES.CUSTOMER || participantRole === PARTICIPANT_TYPES.AGENT);
+}
+
 var modelUtils = {
   createItemFromIncoming: createItemFromIncoming,
   createOutgoingTranscriptItem: createOutgoingTranscriptItem,
@@ -148,6 +158,8 @@ var modelUtils = {
   createTranscriptItemFromSuccessResponse: createTranscriptItemFromSuccessResponse,
   isAttachmentContentType: isAttachmentContentType,
   createIncomingTranscriptReceiptItem: createIncomingTranscriptReceiptItem,
+  isTypeMessageOrAttachment: isTypeMessageOrAttachment,
+  isParticipantAgentOrCustomer: isParticipantAgentOrCustomer
 };
 
 export { modelUtils };
