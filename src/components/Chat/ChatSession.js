@@ -98,7 +98,7 @@ class ChatJSClient {
     return this.session.sendEvent({
       contentType: ContentType.EVENT_CONTENT_TYPE.READ_RECEIPT,
       content: JSON.stringify({
-        MessageId: messageId,
+        messageId: messageId,
         ...options
       })
     });
@@ -108,7 +108,7 @@ class ChatJSClient {
     return this.session.sendEvent({
       contentType: ContentType.EVENT_CONTENT_TYPE.DELIVERED_RECEIPT,
       content: JSON.stringify({
-        MessageId: messageId,
+        messageId: messageId,
         ...options
       })
     });

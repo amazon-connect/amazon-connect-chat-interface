@@ -45,7 +45,7 @@ const transcriptResponse = {
           Receipts: [
             {
               RecipientParticipantId: "RecipientParticipantId",
-              DeliverTimestamp: new Date().toISOString(),
+              DeliveredTimestamp: new Date().toISOString(),
               ReadTimestamp: new Date().toISOString(),
             },
           ],
@@ -288,7 +288,7 @@ describe("ChatSession", () => {
             MessageId: "unknown_messageId",
             Receipts: [
               {
-                DeliverTimestamp: new Date().toISOString(),
+                DeliveredTimestamp: new Date().toISOString(),
                 ReadTimestamp: new Date().toISOString(),
                 RecipientParticipantId: "participantDEF",
               },
@@ -319,7 +319,7 @@ describe("ChatSession", () => {
             MessageId: "italics",
             Receipts: [
               {
-                DeliverTimestamp: new Date().toISOString(),
+                DeliveredTimestamp: new Date().toISOString(),
                 ReadTimestamp: new Date().toISOString(),
                 RecipientParticipantId: "participantDEF",
               },
@@ -340,7 +340,7 @@ describe("ChatSession", () => {
             MessageId: "bulletedList",
             Receipts: [
               {
-                DeliverTimestamp: new Date().toISOString(),
+                DeliveredTimestamp: new Date().toISOString(),
                 RecipientParticipantId: "participantDEF",
               },
             ],
@@ -381,7 +381,7 @@ describe("ChatSession", () => {
         '{"data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","Content":"hi","ContentType":"text/plain","Id":"ID","Type":"MESSAGE","ParticipantId":"ParticipantId","DisplayName":"Agent","ParticipantRole":"AGENT","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}');
       callbackFn(dataInput);
       expect(session.client.session.sendEvent).toBeCalled();
-      expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({"content": "{\"MessageId\":\"ID\"}", "contentType": "application/vnd.amazonaws.connect.event.message.delivered"});
+      expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({"content": "{\"messageId\":\"ID\"}", "contentType": "application/vnd.amazonaws.connect.event.message.delivered"});
     });
   });
 });
