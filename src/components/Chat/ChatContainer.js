@@ -49,7 +49,7 @@ class ChatContainer extends Component {
       status: "NotInitiated"
     };
 
-    this.submitChatInitiationHandler = this.submitChatInitiation.bind(this);
+    this.submitChatInitiationHandler = this.initiateChatSession.bind(this);
     EventBus.on("initChat", this.initiateChatSession.bind(this));
     if(window.connect && window.connect.LogManager) {
       this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatContainer" });
@@ -114,7 +114,7 @@ class ChatContainer extends Component {
   }
 
   openChatSession(chatDetails, name, region, stage) {
-    const chatSession = new ChatSession(chatDetails, name, region, stage, this.props.shouldShowMessageReceipts);
+    const chatSession = new ChatSession(chatDetails, name, region, stage);
     return chatSession.openChatSession().then(() => {
       return chatSession;
     });

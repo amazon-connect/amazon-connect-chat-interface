@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from 'react';
-import { render, fireEvent } from "@testing-library/react"
-import { InteractiveMessageType } from "../../../datamodel/Model";
+import { render, fireEvent, screen } from "@testing-library/react"
 import { ThemeProvider } from "../../../../../theme";
 import ListPicker from "./ListPicker";
  
 const mockListPickerContent = {
-    title: "ListPickerTitle",
+    title: "ListPickerTitle https://www.amazon.com/",
     subtitle: "ListPickerSubTitle",
     elements: [
         {
@@ -53,6 +52,9 @@ test("Should be able to use ListPicker", () => {
     renderElement(mockProps);
  
     expect(mockListPicker.getByText("ListPickerTitle")).toBeDefined();
+    expect(screen.getByText("ListPickerTitle").innerHTML).toEqual(
+        "ListPickerTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+    );
     expect(mockListPicker.getByAltText("ListPickerImageDescription")).toBeDefined();
  
     expect(mockListPicker.getByText("ListPickerElementTitle")).toBeDefined();

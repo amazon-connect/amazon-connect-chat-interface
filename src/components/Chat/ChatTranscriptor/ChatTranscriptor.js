@@ -111,6 +111,8 @@ export default class ChatTranscriptor extends PureComponent {
         mediaOperations: {
           downloadAttachment: this.props.downloadAttachment
         },
+        shouldShowMessageReceipts: this.props.shouldShowMessageReceipts,
+        isLatestMessage,
         sendReadReceipt: this.props.sendReadReceipt,
       }
     } else if (modelUtils.isRecognizedEvent(itemDetails.content.type)) {

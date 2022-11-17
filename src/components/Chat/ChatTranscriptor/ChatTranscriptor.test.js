@@ -141,7 +141,19 @@ const mockAttachmentsTranscript = [
                 Status: AttachmentStatus.REJECTED
             }
         ]
-    }
+    },
+    {
+        id: "12342",
+        type: ATTACHMENT_MESSAGE,
+        transportDetails: {
+            direction: "Incoming",
+        },
+        content: {
+            name: "name",
+            type: "type",
+        },
+        Attachments: []
+    },
 ];
  
 let mockTranscriptor;
@@ -188,5 +200,6 @@ test("Should send Read Receipts after a message is displayed in the viewport", a
     mockAllIsIntersecting(true);
     await waitFor(() => {
         expect(mockProps.sendReadReceipt).toHaveBeenCalled();
+        expect(mockProps.sendReadReceipt).toHaveBeenCalledTimes(1);
     });
 });

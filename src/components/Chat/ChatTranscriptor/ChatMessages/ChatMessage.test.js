@@ -38,6 +38,7 @@ describe('ChatMessage', () => {
       addMessage: jest.fn(),
       downloadAttachment: jest.fn()
     },
+    sendReadReceipt: jest.fn(),
   }
   const renderComponent = (props) =>
     render(
