@@ -491,22 +491,40 @@ class ChatSession {
       this.logger && this.logger.debug(`Message with messageId:${messageId} not found in transcript`);
       return;
     }
-    this._handleMessageReceiptLatencyMetric(messageReceiptType, messageReceiptData);
+    const { sentTime } = oldItemInTranscript.transportDetails;
+    this._handleMessageReceiptLatencyMetric(messageReceiptType, dataInput, sentTime);
     var newItem = modelUtils.createIncomingTranscriptReceiptItem(this.thisParticipant, oldItemInTranscript, messageReceiptData, messageReceiptType);
     this._replaceItemInTranscript(oldItemInTranscript, newItem, messageReceiptType);
   }
 
-  _handleMessageReceiptLatencyMetric(messageReceiptType, messageReceiptData) {
-    const { AbsoluteTime, MessageMetadata } = messageReceiptData;
-    const { Receipts } = MessageMetadata;
+  _handleMessageReceiptLatencyMetric(messageReceiptType, dataInput, sentTime) {
+    const {
+      chatDetails: {
+        participantId
+      },
+      data: { 
+        MessageMetadata: {
+          Receipts
+        }
+      }
+    } = dataInput;
     if(Receipts.length > 0) {
-      const { DeliveredTimestamp, ReadTimestamp } = Receipts[0];
-      const receiptEvent = messageReceiptType === 'read' ? CSM_CONSTANTS.SEND_READ_RECEIPT : CSM_CONSTANTS.SEND_DELIVERED_RECEIPT;
-      const timeDifference = messageReceiptType === 'read' ?
-        getTimeFromTimeStamp(ReadTimestamp) - getTimeFromTimeStamp(AbsoluteTime) :
-        getTimeFromTimeStamp(DeliveredTimestamp) - getTimeFromTimeStamp(AbsoluteTime);
-      this.csmService.addLatencyMetric(receiptEvent, timeDifference, CSM_CATEGORY.UI);
+      const receipt = this._findReceipt(Receipts, participantId);
+      if(receipt) {
+        const { DeliveredTimestamp, ReadTimestamp } = receipt;
+        const receiptEvent = messageReceiptType === 'read' ?
+          CSM_CONSTANTS.SEND_READ_RECEIPT :
+          CSM_CONSTANTS.SEND_DELIVERED_RECEIPT;
+        const timeDifference = messageReceiptType === 'read' ?
+          getTimeFromTimeStamp(ReadTimestamp) - (sentTime * 1000) :
+          getTimeFromTimeStamp(DeliveredTimestamp) - (sentTime * 1000);
+        this.csmService.addLatencyMetric(receiptEvent, timeDifference, CSM_CATEGORY.UI);
+      }
     }
+  }
+
+  _findReceipt(receipts, participantId) {
+    return receipts.find(receipt => receipt.RecipientParticipantId !== participantId);
   }
 
   _failMessage(message) {
