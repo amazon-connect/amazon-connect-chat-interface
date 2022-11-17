@@ -29,12 +29,6 @@ class ChatJSClient {
       chatDetails: chatDetails.startChatResult,
       type: "CUSTOMER",
       options: {region: region},
-      features: {
-        messageReceipts: {
-          shouldSendMessageReceipts: true,
-          throttleTime: 5000
-        }
-      }
     });
   }
 
