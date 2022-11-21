@@ -248,9 +248,6 @@ class ChatSession {
   }
 
   sendDeliveredReceipt(messageId, options) {
-    if(!this.shouldShowMessageReceipts) {
-      return;
-    }
     this.csmService && this.csmService.addCountMetric(CSM_CONSTANTS.SEND_DELIVERED_RECEIPT, CSM_CATEGORY.UI);
     this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
     return this.client.sendDeliveredReceipt(messageId, options);

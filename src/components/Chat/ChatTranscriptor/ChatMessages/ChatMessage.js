@@ -213,7 +213,7 @@ export class ParticipantMessage extends PureComponent {
     if (this.state.inView && this.state.isVisible &&
       modelUtils.isTypeMessageOrAttachment(type) &&
       modelUtils.isParticipantAgentOrCustomer(participantRole) &&
-      direction === Direction.Incoming && this.props.shouldShowMessageReceipts) {
+      direction === Direction.Incoming) {
         this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
   }
