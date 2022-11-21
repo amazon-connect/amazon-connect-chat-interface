@@ -42,9 +42,18 @@
                 </fieldset>
             </form>
         </section>
+
         <section class="section-chat" id="section-chat" style="display: none; float: right; width: 50%;">
             <div id="root"></div>
         </section>
+
+        <section class="section-note" id="section-note" style="position: absolute; bottom: 0; width: 100%; max-width: 500px;">
+            <h4 style="color: rgb(110, 0, 0);">Note: if you run into errors connecting, please verify the following:</h4>
+            <ul>
+                <li>Correct values are set in <code>backgroundEndpoint.js</code> - <a href="https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI">learn more</a></li>
+                <li>Correct domain is whitelisted for Chat Widget (eg <code>https://localhost:8080</code>) - <a href="https://docs.aws.amazon.com/connect/latest/adminguide/troubleshoot-chatwidget.html#400-invalid-request">learn more</a></li>
+            </ul>
+         </section>
     </div>
     <script src="backendEndpoints.js"></script>
     <script>
@@ -89,6 +98,7 @@
         }
 
         function failureHandler(error) {
+            alert('There was an error: ' + JSON.stringify(error));
             console.log("There was an error: ");
             console.log(error);
         }
