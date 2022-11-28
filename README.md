@@ -20,6 +20,14 @@ Webpack built file and the sourcemaps. You can import these in the same fashion 
 To build the production version of this package, simply run `npm install && npm run build`. These will generate a minified built file, with console logs stripped and other Webpack optimizations.
 Import this into your package as is described in the GitHub examples.
 
+```sh
+$ git clone https://github.com/amazon-connect/amazon-connect-chat-interface
+$ cd amazon-connect-chat-interface
+$ npm install
+$ npm run build
+# Use "local-testing/amazon-connect-chat-interface.js" bundle file
+```
+
 ## Customization
 ### Logger Configuration
 The logger is provided by [amazon-connect-chatjs](https://github.com/amazon-connect/amazon-connect-chatjs) package, you can configure it in this file: `src/utils/log.js`.

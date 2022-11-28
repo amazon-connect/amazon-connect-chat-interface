@@ -4,10 +4,13 @@ var apiGatewayEndpoint = "https://<api-id>.execute-api.<region>.amazonaws.com/<s
 var region = "<regoin>"; // TODO: Fill in
 
 var initConfig = {
-    name: "John",
-    region,
-    apiGatewayEndpoint,
-    contactAttributes: JSON.stringify({ "customerName": "John" }),
-    contactFlowId,
-    instanceId
+  name: "John",
+  region,
+  apiGatewayEndpoint,
+  contactAttributes: JSON.stringify({ "customerName": "John" }),
+  contactFlowId,
+  instanceId,
+  featurePermissions: {
+    ATTACHMENTS: true,  // this is the override flag from user for attachments
+  }
 }
