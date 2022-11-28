@@ -11,12 +11,10 @@
   For local development and production loggerLevel DEBUG will print all logs to the logger or browser console.
 */
 export const config = {
-  loggerConfig: {
-    // logger/customizedLogger: Add your logger here
-    // customizedLogger: customizedLogger,
-    level: connect.LogLevel.DEBUG,
-    useDefaultLogger: true,
-    //useDefaultLogger uses window.console
-    //advancedLogWriter: can have `info`,`warn`,`debug`,`error` - default value is `warn`
-  },
+  // logger/customizedLogger: Add your logger here
+  // customizedLogger: customizedLogger,
+  level: connect.LogLevel.DEBUG,
+  useDefaultLogger: true,
+  //useDefaultLogger uses window.console
+  //advancedLogWriter: can have `info`,`warn`,`debug`,`error` - default value is `warn`
 };
