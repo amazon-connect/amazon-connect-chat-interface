@@ -33,7 +33,7 @@ The logger is provided by [amazon-connect-chatjs](https://github.com/amazon-conn
   2. INFO: Print the information regarding the current state, or the most recent user event.
   3. ERROR: Print the error messages caused by UI issue, API issue or network issue.
   
-```
+```js
 // Add your own logger function here
 var customizedLogger = {
   debug: (data) => {// customize logger function here},
@@ -41,6 +41,7 @@ var customizedLogger = {
   error: (data) => {// customize logger function here}
 }
   
+// src/config.js
 var globalConfig = {
   loggerConfig: {
     // You can provide your own logger here, otherwise 
@@ -55,6 +56,39 @@ var globalConfig = {
   
 connect.ChatSession.setGlobalConfig(globalConfig);
 ```
+
+### Message Receipts
+
+Enable message receipts for rendering read/delivered events in chat transcript.
+
+1. First, update the ChatJS global configuration with the `features` key:
+
+```js
+// src/config.js
+
+const globalConfig = {
+  loggerConfig: { /* ... */ },
+  region: "us-east-1" // default: "us-west-2"
+  features: {
+    messageReceipts: {
+      shouldSendMessageReceipts: true,
+      throttleTime: 5000
+    }
+  }
+}
+
+connect.ChatSession.setGlobalConfig(globalConfig);
+```
+
+2. Then, update the `shouldShowMessageReceipts` prop for components at `ChatInterface.init()` invocation:
+
+```js
+connect.ChatInterface.init({
+  containerId: 'root' // This is the id of the container where you want the widget to reside
+  shouldShowMessageReceipts: true // default: undefined
+});
+``` 
+
 ### Theme
 To customize the theme, determine which aspect(s) of the chat interface you would like to modify, make your changes and build the file as described above.
 
