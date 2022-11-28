@@ -38,6 +38,10 @@
         function initiateChat() {
             $("#btn").prop("disabled", true);
             
+            // Enter custom name here
+            initConfig.name = "John";
+            initConfig.contactAttributes = JSON.stringify({ "customerName": "John" }),
+            
             connect.ChatInterface.initiateChat(initConfig, successHandler, failureHandler); // pass in custom handlers
         }
     </script>

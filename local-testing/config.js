@@ -7,9 +7,7 @@ var initConfig = {
     name: "John",
     region,
     apiGatewayEndpoint,
-    contactAttributes: JSON.stringify({
-        "customerName": "John"
-    }),
+    contactAttributes: JSON.stringify({ "customerName": "John" }),
     contactFlowId,
     instanceId
 }
