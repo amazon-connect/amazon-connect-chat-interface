@@ -80,33 +80,32 @@ Enable message receipts for rendering read/delivered events in chat transcript. 
 ![Toggle message receipts for widget](./screenshots/enable-read-receipts.png)
 
 
-2. Next, update the ChatJS global configuration with the `features` key:
+2. After enabling in the admin console, you must update the ChatJS global configuration and generate the latest [`amazon-connect-chat-interface.js`](./js/amazon-connect-chat-interface.js) production bundle. Update the ChatJS global configuration with the `features` key:
 
 ```js
-// src/config.js
+// github.com/amazon-connect/amazon-connect-chat-interface/src/index.js
 
-const globalConfig = {
-  loggerConfig: { /* ... */ },
-  region: "us-east-1" // default: "us-west-2"
+// Static configuration for the production bundle `amazon-connect-chat-interface.js`
+connect.ChatSession.setGlobalConfig({
+  // ...
   features: {
     messageReceipts: {
       shouldSendMessageReceipts: true,
       throttleTime: 5000
     }
   }
-}
-
-connect.ChatSession.setGlobalConfig(globalConfig);
+});
 ```
 
-3. Then, update the `shouldShowMessageReceipts` prop for components at `ChatInterface.init()` invocation:
+3. With ChatJS configured, update the UI to render message receipts. Add the `shouldShowMessageReceipts` option to `connect.ChatInterface.init()`:
 
 ```js
+// Pass down boolean prop for children to render message receipts
 connect.ChatInterface.init({
   containerId: 'root' // This is the id of the container where you want the widget to reside
   shouldShowMessageReceipts: true // default: undefined
 });
-``` 
+```
 
 4. Now view the message receipts like the figure below:
 
