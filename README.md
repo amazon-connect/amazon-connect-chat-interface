@@ -100,7 +100,7 @@ connect.ChatSession.setGlobalConfig({
 ```js
 // Pass down boolean prop for children to render message receipts
 connect.ChatInterface.init({
-  containerId: 'root' // This is the id of the container where you want the widget to reside
+  containerId: 'root', // This is the id of the container where you want the widget to reside
   shouldShowMessageReceipts: true // default: undefined
 });
 ```
