@@ -21,7 +21,7 @@ import defaultTheme from './theme/defaultTheme';
     }
     
     connect.ChatSession.setGlobalConfig(globalConfig);
-    
+        
     ReactDOM.render(
       <BrowserRouter><App {...props}/></BrowserRouter>,
       document.getElementById(containerId) || document.getElementById("root")
