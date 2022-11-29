@@ -107,6 +107,7 @@
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.2.0",
     "@testing-library/dom": "7.29.4",
+    "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "11.2.5",
     "@testing-library/user-event": "13.0.7",
     "babel-core": "7.0.0-bridge.0",
@@ -155,15 +156,14 @@
     "shallow": "^1.0.0",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "4.2.3",
+    "typescript": "^4.4.2",
+    "typescript-formatter": "^7.2.2",
     "universal-cookie": "^3.0.7",
     "url-loader": "1.1.1",
-    "webpack": "^5.75.0",
+    "webpack": "^4.46.0",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^4.1.1",
-    "webpack-manifest-plugin": "2.0.4",
-    "typescript-formatter": "^7.2.2",
-    "typescript": "^4.4.2",
-    "@testing-library/jest-dom": "^5.15.0"
+    "webpack-manifest-plugin": "2.0.4"
   },
   "overrides": {
     "chokidar": "^3.4.1"
