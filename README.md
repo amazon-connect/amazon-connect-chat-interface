@@ -67,18 +67,9 @@ connect.ChatSession.setGlobalConfig(globalConfig);
 
 ### Message Receipts
 
-Enable message receipts for rendering read/delivered events in chat transcript. Before updating the chat widget, follow these steps to enable message receipts in the admin console:
+Enable message receipts for rendering read/delivered events in chat transcript.
 
-1. Head to the `Channels` => `Chat Widget` page, then click "edit" on the left hand side:
-
-![Open the chat widget config](./screenshots/navigate-chat-widget-config-page.png)
-
-![Edit chat widget customization config](./screenshots/edit-chat-widget-config.png)
-
-![Toggle message receipts for widget](./screenshots/enable-read-receipt.png)
-
-
-2. After enabling in the admin console, you must update the ChatJS global configuration and generate the latest [`amazon-connect-chat-interface.js`](./js/amazon-connect-chat-interface.js) production bundle. Update the ChatJS global configuration with the `features` key:
+1. You must update the ChatJS global configuration and generate the latest [`amazon-connect-chat-interface.js`](./js/amazon-connect-chat-interface.js) production bundle. Update the configuration with the `features` key:
 
 ```js
 // github.com/amazon-connect/amazon-connect-chat-interface/src/index.js
@@ -95,7 +86,7 @@ connect.ChatSession.setGlobalConfig({
 });
 ```
 
-3. With ChatJS configured, update the UI to render message receipts. Add the `shouldShowMessageReceipts` option to `connect.ChatInterface.init()`:
+2. With ChatJS configured, update the UI to render message receipts. Add the `shouldShowMessageReceipts` option to `connect.ChatInterface.init()`:
 
 ```js
 // Pass down boolean prop for children to render message receipts
@@ -105,7 +96,7 @@ connect.ChatInterface.init({
 });
 ```
 
-4. Now view the message receipts like the figure below:
+3. Now view the message receipts like the figure below:
 
 ![View receipts](./screenshots/view-receipts.png)
 
