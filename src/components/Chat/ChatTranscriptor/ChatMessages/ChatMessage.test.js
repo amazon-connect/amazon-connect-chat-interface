@@ -63,6 +63,7 @@ describe('ChatMessage', () => {
     }
     renderComponent(props);
     const { getByText } = within(screen.getByTestId('message-header'));
+    expect(getByText('Sent at')).toBeInTheDocument();
     expect(getByText('4:28 PM')).toBeInTheDocument();
   })
 
@@ -85,6 +86,11 @@ describe('ChatMessage', () => {
     }
     renderComponent(props);
     const { getByText } = within(screen.getByTestId('message-header'));
+    expect(getByText('Sent')).toBeInTheDocument();
+    try {
+      getByText('Sent at'); // this should not exist
+      expect(false).toBe(true);
+    } catch (e) {}
     expect(getByText('Sat, Jun 11, 12:35 PM')).toBeInTheDocument();
   })
 
