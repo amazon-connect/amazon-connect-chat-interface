@@ -103,16 +103,32 @@ export class ParticipantMessage extends PureComponent {
     isLatestMessage: PT.bool
   };
 
-  timestampToDisplayable(timestamp) {
+  timestampToDisplayable(timestamp, isOutgoingMsg) {
     const d = new Date(0);
     d.setUTCSeconds(timestamp);
     const today = new Date().toDateString();
     const thatDay = new Date(timestamp * 1000).toDateString();
     const option = {hour: 'numeric', minute: 'numeric'};
+    let outboundMsgPrefix;
+    let localTimeString;
     if(today === thatDay) {
-      return d.toLocaleTimeString([], option);
+      outboundMsgPrefix = 'Sent at';
+      localTimeString = d.toLocaleTimeString([], option);
+    } else {
+      outboundMsgPrefix = 'Sent';
+      localTimeString = d.toLocaleTimeString([], {...option, weekday: 'short', month: 'short', day: 'numeric'});
     }
-    return d.toLocaleTimeString([], {...option, weekday: 'short', month: 'short', day: 'numeric'});
+    return (
+      <React.Fragment>
+        {isOutgoingMsg && <StatusText>
+          <span>
+            {outboundMsgPrefix}
+          </span>
+        </StatusText>
+        }
+        {localTimeString}
+      </React.Fragment>
+    )
   }
 
   renderHeader() {
@@ -133,13 +149,7 @@ export class ParticipantMessage extends PureComponent {
       case Status.SendSuccess:
         transportStatusElement = (
             <React.Fragment>
-              {isOutgoingMsg && <StatusText>
-                <span>
-                    Sent at
-                </span>
-              </StatusText>
-              }
-              {this.timestampToDisplayable(transportDetails.sentTime)}
+              {this.timestampToDisplayable(transportDetails.sentTime, isOutgoingMsg)}
             </React.Fragment>
         );
         break;
