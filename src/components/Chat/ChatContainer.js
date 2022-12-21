@@ -118,7 +118,7 @@ class ChatContainer extends Component {
     chatSession.onChatClose(() => {
       EventBus.trigger("endChat", {});
     });
-    return chatSession.openChatSession(this.props.shouldShowMessageReceipts).then(() => {
+    return chatSession.openChatSession().then(() => {
       return chatSession;
     });
   }

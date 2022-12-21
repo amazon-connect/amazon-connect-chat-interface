@@ -179,7 +179,7 @@ export default class Chat extends Component {
   -- this prevents overlay from overflowing in mobile browser. 
 */
   render() {
-    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig, shouldShowMessageReceipts } = this.props;
+    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig } = this.props;
     console.log('MESSAGES', this.state.transcript);
 
     return (
@@ -199,7 +199,6 @@ export default class Chat extends Component {
             contactId={chatSession.contactId}
             transcriptConfig={transcriptConfig}
             textInputRef={textInputRef}
-            shouldShowMessageReceipts={shouldShowMessageReceipts}
             sendReadReceipt={(...inputParams) => chatSession.sendReadReceipt(...inputParams)}
           />
           <ChatComposer

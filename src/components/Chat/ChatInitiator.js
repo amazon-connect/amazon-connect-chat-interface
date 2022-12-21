@@ -38,6 +38,16 @@ export function initiateChat(input) {
     Username: input.username,
   };
 
+  if(input.persistentChat) {
+    if (input.persistentChat.sourceContactId && input.persistentChat.rehydrationType) {
+      initiateChatRequest.PersistentChat = {
+        SourceContactId: input.persistentChat.sourceContactId,
+        RehydrationType: input.persistentChat.rehydrationType
+      }
+    }
+
+  }
+
   const attributes = safeParse(input.contactAttributes, null);
   if (attributes) {
     initiateChatRequest.Attributes = attributes;

@@ -54,7 +54,6 @@ const config = {
   headerConfig: {
     headerText: "Hello"
   },
-  shouldShowMessageReceipts: true,
 }
 
 describe("<ChatContainer />", () => {

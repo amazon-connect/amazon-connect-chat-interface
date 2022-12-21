@@ -170,7 +170,7 @@ global.URL.createObjectURL = jest.fn();
 beforeEach(()=>{
     global.URL.createObjectURL = jest.fn();
     const downloadAttachment = jest.fn().mockResolvedValue(undefined);
-    mockProps = {downloadAttachment: downloadAttachment, contactId: "12344", contactStatus:"connected", customerName: "Customer", transcript: mockAttachmentsTranscript, typingParticipants: [], shouldShowMessageReceipts: true, loadPreviousTranscript: jest.fn(), sendReadReceipt: jest.fn()};
+    mockProps = {downloadAttachment: downloadAttachment, contactId: "12344", contactStatus:"connected", customerName: "Customer", transcript: mockAttachmentsTranscript, typingParticipants: [], loadPreviousTranscript: jest.fn(), sendReadReceipt: jest.fn()};
     mockAllIsIntersecting(false);
 });
  

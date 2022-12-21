@@ -19,7 +19,6 @@ const mockProps = {
         loadPreviousTranscript: jest.fn(),
         sendReadReceipt: jest.fn().mockReturnValue(Promise.resolve()),
     },
-    shouldShowMessageReceipts: true
 }
 
 jest.useFakeTimers();

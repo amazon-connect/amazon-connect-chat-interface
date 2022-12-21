@@ -137,7 +137,7 @@ class ChatSession {
   client = null;
   contactId = null;
   contactStatus = CONTACT_STATUS.DISCONNECTED;
-  shouldShowMessageReceipts = false;
+  nextToken = null;
 
   /**
    * Flag set when an outgoing message from the Customer is in flight.
@@ -212,8 +212,7 @@ class ChatSession {
   }
 
   // CHAT API
-  openChatSession(shouldShowMessageReceipts) {
-    this.shouldShowMessageReceipts = shouldShowMessageReceipts;
+  openChatSession() {
     this._addEventListeners();
     this._updateContactStatus(CONTACT_STATUS.CONNECTING);
     return this.client.connect().then((response) => {
@@ -248,9 +247,6 @@ class ChatSession {
   }
 
   sendDeliveredReceipt(messageId, options) {
-    if(!this.shouldShowMessageReceipts) {
-      return;
-    }
     this.csmService && this.csmService.addCountMetric(CSM_CONSTANTS.SEND_DELIVERED_RECEIPT, CSM_CATEGORY.UI);
     this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
     return this.client.sendDeliveredReceipt(messageId, options);
@@ -346,10 +342,6 @@ class ChatSession {
   loadPreviousTranscript() {
     console.log("loadPreviousTranscript in single");
     var args = {};
-    if (this.transcript.length > 0) {
-      args.startPosition = {};
-      args.startPosition.id = this.transcript[0].id;
-    }
     args.scanDirection = "BACKWARD";
     args.sortOrder = "ASCENDING";
     args.maxResults = 15;
@@ -429,10 +421,12 @@ class ChatSession {
   }
 
   _loadTranscript(args) {
+    if(this.nextToken) {
+      args['nextToken'] = this.nextToken;
+    }
     return this.client.getTranscript(args).then(response => {
       var incomingDataList = response.data.Transcript;
-      console.log("in _loadTranscript");
-      console.log(response);
+      this.nextToken = response.data.NextToken;
       const transcriptItems = incomingDataList.map(data => {
         var transcriptItem = modelUtils.createItemFromIncoming(
           data,
@@ -462,11 +456,11 @@ class ChatSession {
       const { transportDetails, type, participantRole } = item;
       if(transportDetails.direction === Direction.Incoming){
         this._triggerEvent("incoming-message", data);
-        if (modelUtils.isTypeMessageOrAttachment(type) &&
+        if (modelUtils.isTypeMessageOrAttachment(type) && 
             modelUtils.isParticipantAgentOrCustomer(participantRole)) {
-            this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
-              disableThrottle: true
-            } : {});
+              this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
+                disableThrottle: true
+              } : {});
         }
       } else {
         this._triggerEvent("outgoing-message", data);

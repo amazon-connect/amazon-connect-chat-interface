@@ -8,7 +8,6 @@ import Linkify from "react-linkify";
 import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
 import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
-import { PARTICIPANT_TYPES } from "../../datamodel/Model";
 import { InView } from 'react-intersection-observer';
 import { shouldDisplayMessageForType } from '../../../../utils/helper';
 import { modelUtils } from "../../datamodel/Utils";
@@ -115,7 +114,6 @@ export class ParticipantMessage extends PureComponent {
     outgoingMsgStyle: PT.object,
     mediaOperations: PT.object,
     isLatestMessage: PT.bool,
-    shouldShowMessageReceipts: PT.bool,
     sendReadReceipt: PT.func.isRequired,
   };
 
@@ -218,12 +216,12 @@ export class ParticipantMessage extends PureComponent {
   }
 
   componentDidUpdate() {
-    const { transportDetails: { direction }, type, id, participantRole } = this.props.messageDetails;
+    const { transportDetails: { direction }, type, id, participantRole, isOldConversation } = this.props.messageDetails;
     //Note: type valid values: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_Item.html#connectparticipant-Type-Item-Type
-    if (this.state.inView && this.state.isVisible &&
+    if (!isOldConversation && this.state.inView && this.state.isVisible &&
       modelUtils.isTypeMessageOrAttachment(type) &&
       modelUtils.isParticipantAgentOrCustomer(participantRole) &&
-      direction === Direction.Incoming && this.props.shouldShowMessageReceipts) {
+      direction === Direction.Incoming) {
         this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
   }
@@ -239,7 +237,6 @@ export class ParticipantMessage extends PureComponent {
   }
 
   render() {
-    const { shouldShowMessageReceipts } = this.props;
     let {direction, error} = this.props.messageDetails.transportDetails;
     const messageStyle = direction === Direction.Outgoing ? this.props.outgoingMsgStyle : this.props.incomingMsgStyle;
 
@@ -281,7 +278,7 @@ export class ParticipantMessage extends PureComponent {
               </Body>
             )}
           </InView>
-          <Footer>{shouldShowMessageReceipts && this.renderMessageReceipts()}</Footer>
+          <Footer>{this.renderMessageReceipts()}</Footer>
           {error && this.renderTransportError(error)}
         </div>
     );

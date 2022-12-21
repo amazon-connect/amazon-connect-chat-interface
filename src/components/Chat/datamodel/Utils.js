@@ -52,6 +52,7 @@ function createItemFromIncoming(item, thisParticipant) {
   transcriptItem.transportDetails = transportDetails;
   transcriptItem.version = 0;
   transcriptItem.Attachments = item.Attachments;
+  transcriptItem.isOldConversation = !!item.RelatedContactid;
   return transcriptItem;
 }
 

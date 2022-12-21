@@ -58,7 +58,6 @@ export default class ChatTranscriptor extends PureComponent {
     typingParticipants: PT.array.isRequired,
     contactStatus: PT.string.isRequired,
     loadPreviousTranscript: PT.func.isRequired,
-    shouldShowMessageReceipts: PT.bool.isRequired,
     sendReadReceipt: PT.func.isRequired,
   };
 
@@ -103,7 +102,6 @@ export default class ChatTranscriptor extends PureComponent {
           downloadAttachment: this.props.downloadAttachment
         },
         textInputRef: this.props.textInputRef,
-        shouldShowMessageReceipts: this.props.shouldShowMessageReceipts,
         isLatestMessage,
         sendReadReceipt: this.props.sendReadReceipt,
       }
@@ -113,7 +111,6 @@ export default class ChatTranscriptor extends PureComponent {
         mediaOperations: {
           downloadAttachment: this.props.downloadAttachment
         },
-        shouldShowMessageReceipts: this.props.shouldShowMessageReceipts,
         isLatestMessage,
         sendReadReceipt: this.props.sendReadReceipt,
       }
