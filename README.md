@@ -20,6 +20,14 @@ Webpack built file and the sourcemaps. You can import these in the same fashion 
 To build the production version of this package, simply run `npm install && npm run build`. These will generate a minified built file, with console logs stripped and other Webpack optimizations.
 Import this into your package as is described in the GitHub examples.
 
+```sh
+$ git clone https://github.com/amazon-connect/amazon-connect-chat-interface
+$ cd amazon-connect-chat-interface
+$ npm install
+$ npm run build
+# Use "local-testing/amazon-connect-chat-interface.js" bundle file
+```
+
 ## Customization
 ### Logger Configuration
 The logger is provided by [amazon-connect-chatjs](https://github.com/amazon-connect/amazon-connect-chatjs) package, you can configure it in this file: `src/utils/log.js`.
@@ -33,7 +41,7 @@ The logger is provided by [amazon-connect-chatjs](https://github.com/amazon-conn
   2. INFO: Print the information regarding the current state, or the most recent user event.
   3. ERROR: Print the error messages caused by UI issue, API issue or network issue.
   
-```
+```js
 // Add your own logger function here
 var customizedLogger = {
   debug: (data) => {// customize logger function here},
@@ -41,6 +49,7 @@ var customizedLogger = {
   error: (data) => {// customize logger function here}
 }
   
+// src/config.js
 var globalConfig = {
   loggerConfig: {
     // You can provide your own logger here, otherwise 
@@ -55,6 +64,42 @@ var globalConfig = {
   
 connect.ChatSession.setGlobalConfig(globalConfig);
 ```
+
+### Message Receipts
+
+Enable message receipts for rendering read/delivered events in chat transcript.
+
+1. You must update the ChatJS global configuration and generate the latest [`amazon-connect-chat-interface.js`](./js/amazon-connect-chat-interface.js) production bundle. Update the configuration with the `features` key:
+
+```js
+// github.com/amazon-connect/amazon-connect-chat-interface/src/index.js
+
+// Static configuration for the production bundle `amazon-connect-chat-interface.js`
+connect.ChatSession.setGlobalConfig({
+  // ...
+  features: {
+    messageReceipts: {
+      shouldSendMessageReceipts: true,
+      throttleTime: 5000
+    }
+  }
+});
+```
+
+2. With ChatJS configured, update the UI to render message receipts. Add the `shouldShowMessageReceipts` option to `connect.ChatInterface.init()`:
+
+```js
+// Pass down boolean prop for children to render message receipts
+connect.ChatInterface.init({
+  containerId: 'root', // This is the id of the container where you want the widget to reside
+  shouldShowMessageReceipts: true // default: undefined
+});
+```
+
+3. Now view the message receipts like the figure below:
+
+![View receipts](./screenshots/view-receipts.png)
+
 ### Theme
 To customize the theme, determine which aspect(s) of the chat interface you would like to modify, make your changes and build the file as described above.
 
