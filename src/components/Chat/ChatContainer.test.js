@@ -4,7 +4,6 @@ import { render, waitFor } from '@testing-library/react';
 import ThemeProvider from '../../theme/ThemeProvider';
 import request from '../../utils/fetchRequest';
 import EventBus from "./eventbus";
-import { START_CHAT_REQUEST, CSM_CATEGORY } from '../../constants/global';
 
 jest.mock('../../utils/fetchRequest');
 

@@ -35,13 +35,3 @@ export const KEYBOARD_KEY_CONSTANTS = {
   BACKSPACE: 'Backspace',
   DELETE: 'Delete'
 };
-
-export const CSM_CONSTANTS = {
-  SEND_DELIVERED_RECEIPT: 'SEND_DELIVERED_RECEIPT',
-  SEND_READ_RECEIPT: 'SEND_READ_RECEIPT',
-}
-
-export const CSM_CATEGORY = {
-  API: "API",
-  UI: "UI"
-};

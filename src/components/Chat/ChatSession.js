@@ -13,7 +13,6 @@ import {
   AttachmentErrorType,
   PARTICIPANT_TYPES
 } from "./datamodel/Model";
-import { CSM_CONSTANTS, CSM_CATEGORY } from '../../constants/global';
 import { getTimeFromTimeStamp } from '../../utils/helper'
 
 
@@ -242,12 +241,10 @@ class ChatSession {
 
   sendReadReceipt(messageId, options) {
     this.logger && this.logger.info("Calling SendEvent API for ReadReceipt", messageId, options);
-    this.csmService && this.csmService.addCountMetric(CSM_CONSTANTS.SEND_READ_RECEIPT, CSM_CATEGORY.UI);
     return this.client.sendReadReceipt(messageId, options);
   }
 
   sendDeliveredReceipt(messageId, options) {
-    this.csmService && this.csmService.addCountMetric(CSM_CONSTANTS.SEND_DELIVERED_RECEIPT, CSM_CATEGORY.UI);
     this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
     return this.client.sendDeliveredReceipt(messageId, options);
   }
@@ -507,13 +504,10 @@ class ChatSession {
       const receipt = this._findReceipt(Receipts, participantId);
       if(receipt) {
         const { DeliveredTimestamp, ReadTimestamp } = receipt;
-        const receiptEvent = messageReceiptType === 'read' ?
-          CSM_CONSTANTS.SEND_READ_RECEIPT :
-          CSM_CONSTANTS.SEND_DELIVERED_RECEIPT;
         const timeDifference = messageReceiptType === 'read' ?
           getTimeFromTimeStamp(ReadTimestamp) - (sentTime * 1000) :
           getTimeFromTimeStamp(DeliveredTimestamp) - (sentTime * 1000);
-        this.csmService.addLatencyMetric(receiptEvent, timeDifference, CSM_CATEGORY.UI);
+        this.logger && this.logger.info(messageReceiptType, timeDifference);
       }
     }
   }

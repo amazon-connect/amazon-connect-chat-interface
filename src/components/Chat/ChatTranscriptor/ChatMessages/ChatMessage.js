@@ -216,9 +216,9 @@ export class ParticipantMessage extends PureComponent {
   }
 
   componentDidUpdate() {
-    const { transportDetails: { direction }, type, id, participantRole, isOldConversation } = this.props.messageDetails;
+    const { transportDetails: { direction }, type, id, participantRole } = this.props.messageDetails;
     //Note: type valid values: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_Item.html#connectparticipant-Type-Item-Type
-    if (!isOldConversation && this.state.inView && this.state.isVisible &&
+    if (this.state.inView && this.state.isVisible &&
       modelUtils.isTypeMessageOrAttachment(type) &&
       modelUtils.isParticipantAgentOrCustomer(participantRole) &&
       direction === Direction.Incoming) {

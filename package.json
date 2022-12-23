@@ -7,7 +7,7 @@
     "@emotion/core": "^10.0.35",
     "@svgr/webpack": "^6.2.1",
     "@types/jest": "^26.0.19",
-    "amazon-connect-chatjs": "^1.1.12",
+    "amazon-connect-chatjs": "^1.3.0",
     "core-js": "^3.8.3",
     "react": "^16.6.3",
     "react-app-polyfill": "^0.1.3",
