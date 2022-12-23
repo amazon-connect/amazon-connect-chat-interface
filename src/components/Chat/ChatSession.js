@@ -13,10 +13,11 @@ import {
   AttachmentErrorType,
   PARTICIPANT_TYPES
 } from "./datamodel/Model";
+import { getTimeFromTimeStamp } from '../../utils/helper'
 
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
-
+const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
 // Low-level abstraction on top of Chat.JS
 class ChatJSClient {
   session = null;
@@ -28,7 +29,7 @@ class ChatJSClient {
     this.session = connect.ChatSession.create({
       chatDetails: chatDetails.startChatResult,
       type: "CUSTOMER",
-      options: {region: region}
+      options: {region: region},
     });
   }
 
@@ -44,6 +45,14 @@ class ChatJSClient {
 
   onTyping(handler) {
     return this.session.onTyping(handler);
+  }
+
+  onReadReceipt(handler) {
+    return this.session.onReadReceipt(handler);
+  }
+
+  onDeliveredReceipt(handler) {
+    return this.session.onDeliveredReceipt(handler);
   }
 
   onEnded(handler) {
@@ -80,6 +89,26 @@ class ChatJSClient {
     });
   }
 
+  sendReadReceipt(messageId, options = {}) {
+    return this.session.sendEvent({
+      contentType: ContentType.EVENT_CONTENT_TYPE.READ_RECEIPT,
+      content: JSON.stringify({
+        messageId: messageId,
+        ...options
+      })
+    });
+  }
+
+  sendDeliveredReceipt(messageId, options = {}) {
+    return this.session.sendEvent({
+      contentType: ContentType.EVENT_CONTENT_TYPE.DELIVERED_RECEIPT,
+      content: JSON.stringify({
+        messageId: messageId,
+        ...options
+      })
+    });
+  }
+
   sendMessage(content) {
     // Right now we are assuming only text messages,
     // later we will have to add functionality for other types.
@@ -107,6 +136,7 @@ class ChatSession {
   client = null;
   contactId = null;
   contactStatus = CONTACT_STATUS.DISCONNECTED;
+  nextToken = null;
 
   /**
    * Flag set when an outgoing message from the Customer is in flight.
@@ -133,8 +163,16 @@ class ChatSession {
       participantId: this.client.getParticipantId(),
       displayName: displayName
     };
+    if(window.connect) {
+      if(window.connect.LogManager) {
+        this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
+      }
+      if(window.connect.csmService) {
+        this.csmService = window.connect.csmService;
+      }
+    }
     if(window.connect && window.connect.LogManager) {
-      this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-ChatSession" });
+      this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
     }
   }
 
@@ -199,6 +237,16 @@ class ChatSession {
   sendTypingEvent() {
     this.logger && this.logger.info("Calling SendEvent API for Typing");
     return this.client.sendTypingEvent();
+  }
+
+  sendReadReceipt(messageId, options) {
+    this.logger && this.logger.info("Calling SendEvent API for ReadReceipt", messageId, options);
+    return this.client.sendReadReceipt(messageId, options);
+  }
+
+  sendDeliveredReceipt(messageId, options) {
+    this.logger && this.logger.info("Calling SendEvent API for DeliveredReceipt", messageId, options);
+    return this.client.sendDeliveredReceipt(messageId, options);
   }
 
   addOutgoingMessage(data) {
@@ -291,10 +339,6 @@ class ChatSession {
   loadPreviousTranscript() {
     console.log("loadPreviousTranscript in single");
     var args = {};
-    if (this.transcript.length > 0) {
-      args.startPosition = {};
-      args.startPosition.id = this.transcript[0].id;
-    }
     args.scanDirection = "BACKWARD";
     args.sortOrder = "ASCENDING";
     args.maxResults = 15;
@@ -347,6 +391,13 @@ class ChatSession {
     this.client.onTyping(data => {
       this._handleTypingEvent(data);
     });
+
+    this.client.onReadReceipt(data => {
+      this._handleMessageReceipt("read", data);
+    });
+    this.client.onDeliveredReceipt(data => {
+      this._handleMessageReceipt("delivered", data);
+    });
     
     this.client.onEnded(data => {
       this._handleEndedEvent(data);
@@ -367,10 +418,12 @@ class ChatSession {
   }
 
   _loadTranscript(args) {
+    if(this.nextToken) {
+      args['nextToken'] = this.nextToken;
+    }
     return this.client.getTranscript(args).then(response => {
       var incomingDataList = response.data.Transcript;
-      console.log("in _loadTranscript");
-      console.log(response);
+      this.nextToken = response.data.NextToken;
       const transcriptItems = incomingDataList.map(data => {
         var transcriptItem = modelUtils.createItemFromIncoming(
           data,
@@ -397,9 +450,16 @@ class ChatSession {
       }
       console.log("_handleIncomingData item created");
 
-      if(item.transportDetails.direction === Direction.Incoming){
+      const { transportDetails, type, participantRole } = item;
+      if(transportDetails.direction === Direction.Incoming){
         this._triggerEvent("incoming-message", data);
-      }else{
+        if (modelUtils.isTypeMessageOrAttachment(type) && 
+            modelUtils.isParticipantAgentOrCustomer(participantRole)) {
+              this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
+                disableThrottle: true
+              } : {});
+        }
+      } else {
         this._triggerEvent("outgoing-message", data);
       }
 
@@ -412,6 +472,48 @@ class ChatSession {
     } else {
       console.log("_handleIncomingData NOT NOT item created");
     }
+  }
+
+  _handleMessageReceipt(messageReceiptType, dataInput) {
+    var messageReceiptData = dataInput.data;
+    var messageId = messageReceiptData.MessageMetadata.MessageId;
+    var oldItemInTranscript = this._findItemInTranscriptUsingMessageId(messageId);
+
+    if(oldItemInTranscript === -1) {
+      this.logger && this.logger.debug(`Message with messageId:${messageId} not found in transcript`);
+      return;
+    }
+    const { sentTime } = oldItemInTranscript.transportDetails;
+    this._handleMessageReceiptLatencyMetric(messageReceiptType, dataInput, sentTime);
+    var newItem = modelUtils.createIncomingTranscriptReceiptItem(this.thisParticipant, oldItemInTranscript, messageReceiptData, messageReceiptType);
+    this._replaceItemInTranscript(oldItemInTranscript, newItem, messageReceiptType);
+  }
+
+  _handleMessageReceiptLatencyMetric(messageReceiptType, dataInput, sentTime) {
+    const {
+      chatDetails: {
+        participantId
+      },
+      data: { 
+        MessageMetadata: {
+          Receipts
+        }
+      }
+    } = dataInput;
+    if(Receipts.length > 0) {
+      const receipt = this._findReceipt(Receipts, participantId);
+      if(receipt) {
+        const { DeliveredTimestamp, ReadTimestamp } = receipt;
+        const timeDifference = messageReceiptType === 'read' ?
+          getTimeFromTimeStamp(ReadTimestamp) - (sentTime * 1000) :
+          getTimeFromTimeStamp(DeliveredTimestamp) - (sentTime * 1000);
+        this.logger && this.logger.info(messageReceiptType, timeDifference);
+      }
+    }
+  }
+
+  _findReceipt(receipts, participantId) {
+    return receipts.find(receipt => receipt.RecipientParticipantId !== participantId);
   }
 
   _failMessage(message) {
@@ -441,8 +543,6 @@ class ChatSession {
 
     items = items.filter(item => !this._isRoundTripSystemEvent(item));
 
-    console.log("ADD ITEMS", items);
-
     const newItemMap = items.reduce((acc, item) => ({...acc, [item.id]: item}), {});
     
     const newTranscript = this.transcript.filter(item => newItemMap[item.id] === undefined);
@@ -464,8 +564,34 @@ class ChatSession {
         item = self.incomingItemDecorator(item);
       }else{
         item = self.outgoingItemDecorator(item);
+      }
+      item.lastReadReceipt = false;
+      item.lastDeliveredReceipt = false;
+    });
+
+    //add Read/Delivered only to the last messageId
+    const lastReadMessageIdx = this._findLastMessageReceiptInTranscript("read", newTranscript);
+    const lastDeliveredMessageIdx = this._findLastMessageReceiptInTranscript("delivered", newTranscript);
+
+    const lastIncomingMessageIdx = this._findLastMessageInTranscript(Direction.Incoming, newTranscript);
+    const lastOutgoingMessageIdx = this._findLastMessageInTranscript(Direction.Outgoing, newTranscript);
+
+    //Corner case: lastMessage is not read and Customer typed a new message
+    //so we need to explicitly fire readReceipt for the last received/incoming message.
+    //Note: ChatJS has a mapper and prevents duplicate event if its already fired!
+    if(lastIncomingMessageIdx !== -1 &&
+       lastOutgoingMessageIdx > lastIncomingMessageIdx) {
+      const { type, id } = newTranscript[lastIncomingMessageIdx];
+      this.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
-    }); 
+
+    if (lastReadMessageIdx !== -1) {
+      newTranscript[lastReadMessageIdx].lastReadReceipt = true;
+    }
+    //Read has higher priority - only show Read message
+    if (lastDeliveredMessageIdx !== -1 && lastReadMessageIdx < lastDeliveredMessageIdx) {
+      newTranscript[lastDeliveredMessageIdx].lastDeliveredReceipt = true;
+    }
 
     this._updateTranscript(newTranscript);
   }
@@ -476,6 +602,42 @@ class ChatSession {
       this.transcript.splice(idx, 1);
     }
     this._addItemsToTranscript([newItem]);
+  }
+
+  _findItemInTranscriptUsingMessageId(messageId) {
+    const index = this.transcript.findIndex(transcript => transcript.id === messageId);
+    if (index !== -1) {
+      return this.transcript[index];
+    }
+    return -1;
+  }
+
+  _findLastMessageReceiptInTranscript(messageReceiptType, transcript) {
+    const size = transcript.length - 1;
+    let lastReceiptIdx = -1;
+    for(let index=size; index>=0; index--) {
+      const transportDetails = transcript[index].transportDetails;
+      if (transportDetails && transportDetails.direction === Direction.Outgoing &&
+        transportDetails.messageReceiptType === messageReceiptType) {
+        lastReceiptIdx = index;
+        break;
+      }
+    }
+    return lastReceiptIdx;
+  }
+
+  _findLastMessageInTranscript(direction, transcript) {
+    const size = transcript.length - 1;
+    let lastReceiptIdx = -1;
+    for(let index=size; index>=0; index--) {
+      const transportDetails = transcript[index].transportDetails;
+
+      if (transportDetails && transportDetails.direction === direction) {
+        lastReceiptIdx = index;
+        break;
+      }
+    }
+    return lastReceiptIdx;
   }
 
   _isRoundtripMessage(item) {

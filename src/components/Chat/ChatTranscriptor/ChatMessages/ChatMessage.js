@@ -8,6 +8,9 @@ import Linkify from "react-linkify";
 import { ATTACHMENT_MESSAGE, AttachmentStatus, ContentType, Status, Direction } from "../../datamodel/Model";
 import { Icon, TypingLoader } from "connect-core";
 import { InteractiveMessage } from "./InteractiveMessage";
+import { InView } from 'react-intersection-observer';
+import { shouldDisplayMessageForType } from '../../../../utils/helper';
+import { modelUtils } from "../../datamodel/Utils";
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding}
@@ -30,6 +33,16 @@ Header.Sender = styled.div`
 Header.Status = styled.div`
   float: right;
 `;
+
+const Footer = styled.div`
+  overflow: auto;
+  color: ${({ theme }) => theme.globals.textSecondaryColor};
+  padding-right: ${({ theme }) => theme.spacing.mini};
+`;
+Footer.MessageReceipt = styled.div`
+  float: right;
+`;
+
 const Body = styled.div`
   ${props =>
     props.direction === Direction.Outgoing
@@ -100,8 +113,17 @@ export class ParticipantMessage extends PureComponent {
     incomingMsgStyle: PT.object,
     outgoingMsgStyle: PT.object,
     mediaOperations: PT.object,
-    isLatestMessage: PT.bool
+    isLatestMessage: PT.bool,
+    sendReadReceipt: PT.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      inView: false,
+      isVisible: false,
+    };
+  }
 
   timestampToDisplayable(timestamp, isOutgoingMsg) {
     const d = new Date(0);
@@ -173,6 +195,46 @@ export class ParticipantMessage extends PureComponent {
         </React.Fragment>
     );
   }
+  renderMessageReceipts() {
+    const { messageDetails: { lastReadReceipt = false, lastDeliveredReceipt = false, transportDetails: { messageReceiptType, direction } = { } }} = this.props;
+    if(direction !== Direction.Outgoing || !messageReceiptType) {
+      return null;
+    }
+    return (
+      <React.Fragment>
+          <Footer.MessageReceipt>
+            {lastReadReceipt && "Read"}
+             {lastDeliveredReceipt && "Delivered"}
+          </Footer.MessageReceipt>
+      </React.Fragment>
+    );
+  }
+
+  visibilityChangeListener() {
+    const isVisible = document.visibilityState === 'visible';
+    this.setState({ isVisible });
+  }
+
+  componentDidUpdate() {
+    const { transportDetails: { direction }, type, id, participantRole } = this.props.messageDetails;
+    //Note: type valid values: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_Item.html#connectparticipant-Type-Item-Type
+    if (this.state.inView && this.state.isVisible &&
+      modelUtils.isTypeMessageOrAttachment(type) &&
+      modelUtils.isParticipantAgentOrCustomer(participantRole) &&
+      direction === Direction.Incoming) {
+        this.props.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
+    }
+  }
+
+  componentDidMount() {
+    //Bug-Fix: In Firefox react-intersection-observer is not able to identify if a page is active or minimized.
+    this.visibilityChangeListener();
+    document.addEventListener("visibilitychange", this.visibilityChangeListener.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("visibilitychange", this.visibilityChangeListener.bind(this));
+  }
 
   render() {
     let {direction, error} = this.props.messageDetails.transportDetails;
@@ -180,7 +242,7 @@ export class ParticipantMessage extends PureComponent {
 
     //Hack to simulate ChatJS response with attachment content types
     const bodyStyleConfig = {};
-    if (this.props.isLatestMessage &&
+    if (this.props.isLatestMessage && this.props.messageDetails.content &&
         this.props.messageDetails.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
       bodyStyleConfig.hideDirectionArrow = true;
       bodyStyleConfig.removePadding = true;
@@ -201,16 +263,24 @@ export class ParticipantMessage extends PureComponent {
     } else {
       content = this.props.messageDetails.content.data;
       contentType = this.props.messageDetails.content.type
+      if(!shouldDisplayMessageForType(contentType)) {
+        return null;
+      }
     }
 
     return (
-        <React.Fragment>
+        <div data-testid='main-message'>
           <Header data-testid="message-header">{this.renderHeader()}</Header>
-          <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig}>
-            {this.renderContent(content, contentType)}
-          </Body>
+          <InView onChange={(inView) => this.setState({ inView })}>
+            {({ ref }) => (
+              <Body direction={direction} messageStyle={messageStyle} {...bodyStyleConfig} ref={this.props.isLatestMessage ? ref : null}>
+                {this.renderContent(content, contentType)}
+              </Body>
+            )}
+          </InView>
+          <Footer>{this.renderMessageReceipts()}</Footer>
           {error && this.renderTransportError(error)}
-        </React.Fragment>
+        </div>
     );
   }
 

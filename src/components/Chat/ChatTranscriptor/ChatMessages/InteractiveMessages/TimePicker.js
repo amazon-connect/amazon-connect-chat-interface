@@ -11,6 +11,7 @@ import {
   Title,
   Subtitle
 } from "../InteractiveMessage";
+import Linkify from "react-linkify";
  
 const NUM_TIMESLOTS_PER_PAGE = 3;
  
@@ -232,8 +233,16 @@ export default function TimePicker({ content, addMessage }) {
   return (
     <>
       <TextSection>
-        <Title>{title}</Title>
-        {subtitle && <Subtitle>{subtitle}</Subtitle>}
+        <Title>
+          <Linkify properties={{ target: "_blank" }}>
+            {title}
+          </Linkify>
+        </Title>
+        {subtitle && <Subtitle>
+            <Linkify properties={{ target: "_blank" }}>
+                {subtitle}
+            </Linkify>
+        </Subtitle>}
       </TextSection>
       <ResponsesSection>
         <DatePicker>

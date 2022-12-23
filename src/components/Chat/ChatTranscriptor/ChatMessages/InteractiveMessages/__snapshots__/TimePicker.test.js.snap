@@ -275,12 +275,32 @@ Object {
         <p
           class="c1 c2"
         >
-          TimePickerTitle
+          <span
+            class="Linkify"
+          >
+            TimePickerTitle 
+            <a
+              href="https://www.amazon.com/"
+              target="_blank"
+            >
+              https://www.amazon.com/
+            </a>
+          </span>
         </p>
         <p
           class="c1 c3"
         >
-          TimePickerSubtitle
+          <span
+            class="Linkify"
+          >
+            TimePickerSubtitle 
+            <a
+              href="https://www.amazon.com/"
+              target="_blank"
+            >
+              https://www.amazon.com/
+            </a>
+          </span>
         </p>
       </div>
       <div
@@ -391,12 +411,32 @@ Object {
       <p
         class="sc-bZQynM fraGhu sc-jKJlTe axADD"
       >
-        TimePickerTitle
+        <span
+          class="Linkify"
+        >
+          TimePickerTitle 
+          <a
+            href="https://www.amazon.com/"
+            target="_blank"
+          >
+            https://www.amazon.com/
+          </a>
+        </span>
       </p>
       <p
         class="sc-bZQynM fraGhu sc-eNQAEJ fUfAFZ"
       >
-        TimePickerSubtitle
+        <span
+          class="Linkify"
+        >
+          TimePickerSubtitle 
+          <a
+            href="https://www.amazon.com/"
+            target="_blank"
+          >
+            https://www.amazon.com/
+          </a>
+        </span>
       </p>
     </div>
     <div

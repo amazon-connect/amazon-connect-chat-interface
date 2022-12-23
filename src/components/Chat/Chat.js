@@ -109,7 +109,7 @@ export default class Chat extends Component {
       parentHeaderWrapperHeight: HEADER_HEIGHT,
     };
     this.parentHeaderRef = React.createRef();
-    this.updateTranscript = transcript => this.setState({transcript});
+    this.updateTranscript = transcript => this.setState({transcript: [...transcript]});
     this.updateTypingParticipants = typingParticipants => this.setState({typingParticipants});
     this.updateContactStatus = contactStatus => this.setState({contactStatus});
     if(window.connect && window.connect.LogManager) {
@@ -120,11 +120,11 @@ export default class Chat extends Component {
   static propTypes = {
     chatSession: PT.object.isRequired,
     composerConfig: PT.object,
-    onEnded: PT.func
+    onEnded: PT.func,
   };
 
   static defaultProps = {
-    onEnded: () => {}
+    onEnded: () => {},
   };
 
   resetChatHeight() {
@@ -179,7 +179,7 @@ export default class Chat extends Component {
   -- this prevents overlay from overflowing in mobile browser. 
 */
   render() {
-    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig} = this.props;
+    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig } = this.props;
     console.log('MESSAGES', this.state.transcript);
 
     return (
@@ -199,6 +199,7 @@ export default class Chat extends Component {
             contactId={chatSession.contactId}
             transcriptConfig={transcriptConfig}
             textInputRef={textInputRef}
+            sendReadReceipt={(...inputParams) => chatSession.sendReadReceipt(...inputParams)}
           />
           <ChatComposer
             contactStatus={this.state.contactStatus}

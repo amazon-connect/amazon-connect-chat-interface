@@ -3,6 +3,9 @@ import Chat from './Chat';
 import ThemeProvider from '../../theme/ThemeProvider';
 import { render } from "@testing-library/react";
 import {screen} from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
+import ChatTranscriptor from './ChatTranscriptor';
+
 
 const mockProps = {
     chatSession: {
@@ -14,12 +17,15 @@ const mockProps = {
         logger: {},
         off: jest.fn(),
         loadPreviousTranscript: jest.fn(),
+        sendReadReceipt: jest.fn().mockReturnValue(Promise.resolve()),
     },
-    composerConfig: {
-        attachmentsEnabled: false,
-    }
 }
 
+jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
+jest.mock('./ChatTranscriptor', () => {
+    return jest.fn(() => null)
+  })
 describe('<Chat />', () => {
     describe("when window.connect is defined", () => {
         let wrapper, instance;
@@ -37,6 +43,9 @@ describe('<Chat />', () => {
             }
             wrapper = shallow(<Chat {...mockProps} />);
             instance = wrapper.instance();
+            navigator.__defineGetter__('userAgent', function(){
+                return "Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 )";
+            });
         })
 
         afterAll(() => {
@@ -59,6 +68,32 @@ describe('<Chat />', () => {
                     </ThemeProvider>);
             expect(screen.getByTestId('amazon-connect-chat-wrapper')).not.toBe(null);
             expect(mockResetHeightMethod).toBeCalled();
+        })
+
+        test("Should be able to jitter to fix iphone mobile scroll issue", () => {
+            const mockResetHeightMethod = jest.spyOn(Chat.prototype, "resetChatHeight");
+            const mockComposer = render(
+                <ThemeProvider>
+                    <Chat {...mockProps} />
+                </ThemeProvider>
+            );
+            expect(screen.getByTestId('amazon-connect-chat-wrapper')).not.toBe(null);
+            expect(mockResetHeightMethod).toBeCalled();
+      
+            const testMessage = 'Hello, World!';
+            const textInput = mockComposer.getByTestId('customer-chat-text-input');
+            userEvent.type(textInput, testMessage);
+            expect(document.querySelector('[data-testid="amazon-connect-chat-wrapper"] div input')).not.toBe(null);
+        })
+
+        test("should send ReadReceipt when a message is visible in the viewport", () => {
+            ChatTranscriptor.mockClear();
+            render(
+                    <ThemeProvider>
+                    <Chat {...mockProps} />
+                    </ThemeProvider>)
+            ChatTranscriptor.mock.calls[0][0].sendReadReceipt({});
+            expect(mockProps.chatSession.sendReadReceipt).toHaveBeenCalled();
         })
     })
 

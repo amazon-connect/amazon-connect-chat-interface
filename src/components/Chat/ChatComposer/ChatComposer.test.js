@@ -25,12 +25,17 @@ function renderElement(props) {
   </ThemeProvider>);
 }
 
+jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
 describe("when window.connect is not defined", () => {
   beforeEach(()=>{
     const onTyping = jest.fn().mockResolvedValue(undefined);
     const addMessage = jest.fn().mockResolvedValue(undefined);
     const addAttachment = jest.fn().mockResolvedValue(undefined);
     mockProps = {onTyping: onTyping, addAttachment: addAttachment, addMessage: addMessage, contactId: "12344", contactStatus:"connected", typedMessage: "", composerConfig: { attachmentsEnabled: true }};
+    navigator.__defineGetter__('userAgent', function(){
+      return "Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X)";
+    });
   });
 
   test("Style should match the snapshot", () => {
@@ -79,6 +84,16 @@ describe("when window.connect is not defined", () => {
 
     expect(mockProps.addMessage).toHaveBeenCalledTimes(1);
     expect(mockProps.addMessage).toHaveBeenCalledWith(mockProps.contactId, { text: testMessage });
+  });
+
+  test("Should be able to jitter to fix iphone mobile scroll issue", () => {
+    renderElement(mockProps);
+  
+    const testMessage = 'Hello, World!';
+    const textInput = mockComposer.getByTestId('customer-chat-text-input');
+    userEvent.type(textInput, testMessage);
+    expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 300);
+    jest.runOnlyPendingTimers();
   });
 
   test("Should be able to send an attachment plus additional text via the send message button", () => {
@@ -183,7 +198,7 @@ describe("when window.connect is defined", () => {
           }
         }
       }
-    }
+    };
   })
   test("Style should match the snapshot", () => {
     renderElement(mockProps);

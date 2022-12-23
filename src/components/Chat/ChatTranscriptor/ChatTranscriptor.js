@@ -57,8 +57,8 @@ export default class ChatTranscriptor extends PureComponent {
     transcript: PT.array,
     typingParticipants: PT.array.isRequired,
     contactStatus: PT.string.isRequired,
-    loadPreviousTranscript: PT.func.isRequired
-
+    loadPreviousTranscript: PT.func.isRequired,
+    sendReadReceipt: PT.func.isRequired,
   };
 
   loadTranscript = () => {
@@ -72,7 +72,9 @@ export default class ChatTranscriptor extends PureComponent {
   renderMessage = (itemDetails, isLatestMessage) => {
     const itemId = itemDetails.id;
     const version = itemDetails.version;
-    const key = itemId + "." + version;
+    const messageReceiptType = itemDetails.transportDetails && itemDetails.transportDetails.messageReceiptType ? 
+                                itemDetails.transportDetails.messageReceiptType : "";
+    const key = `${itemId}.${version}.${messageReceiptType}`;
 
     const transcriptConfig = Object.assign({}, defaultTranscriptConfig, this.props.transcriptConfig);
     let config = {
@@ -100,14 +102,17 @@ export default class ChatTranscriptor extends PureComponent {
           downloadAttachment: this.props.downloadAttachment
         },
         textInputRef: this.props.textInputRef,
-        isLatestMessage
+        isLatestMessage,
+        sendReadReceipt: this.props.sendReadReceipt,
       }
     } else if (itemDetails.type === ATTACHMENT_MESSAGE) {
       config = Object.assign({}, config, transcriptConfig.attachmentMessageConfig);
       additionalProps = {
         mediaOperations: {
           downloadAttachment: this.props.downloadAttachment
-        }
+        },
+        isLatestMessage,
+        sendReadReceipt: this.props.sendReadReceipt,
       }
     } else if (modelUtils.isRecognizedEvent(itemDetails.content.type)) {
       config = Object.assign({}, config, transcriptConfig.systemMessageConfig);

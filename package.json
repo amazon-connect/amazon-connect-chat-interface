@@ -7,19 +7,20 @@
     "@emotion/core": "^10.0.35",
     "@svgr/webpack": "^6.2.1",
     "@types/jest": "^26.0.19",
-    "amazon-connect-chatjs": "^1.1.12",
+    "amazon-connect-chatjs": "^1.3.0",
     "core-js": "^3.8.3",
     "react": "^16.6.3",
     "react-app-polyfill": "^0.1.3",
     "react-dom": "^16.6.3",
-    "react-linkify": "~0.2.0",
+    "react-linkify": "0.2.2",
     "react-router-dom": "^4.3.1",
     "react-spinners": "^0.10.4",
     "react-textarea-autosize": "^8.3.0",
     "styled-components": "^4.1.1",
     "webpack": "^4.46.0",
     "whatwg-fetch": "^3.2.0",
-    "workbox-webpack-plugin": "3.6.3"
+    "workbox-webpack-plugin": "3.6.3",
+    "react-intersection-observer": "8.33.1"
   },
   "husky": {
     "hooks": {
@@ -33,7 +34,8 @@
     "dev-build": "NODE_ENV=development npx webpack --config configuration/webpack.config.dev.js",
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
-    "coverage": "node scripts/test.js --coverage"
+    "coverage": "node scripts/test.js --coverage",
+    "test:watch": "node scripts/test.js --watchAll"
   },
   "eslintConfig": {
     "extends": "react-app"

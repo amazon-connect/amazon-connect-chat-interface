@@ -7,7 +7,9 @@ import {
   ItemDetails,
   TransportDetails,
   ContentType,
-  PARTICIPANT_TYPES
+  PARTICIPANT_TYPES,
+  PARTICIPANT_MESSAGE,
+  ATTACHMENT_MESSAGE,
 } from "./Model";
 
 function isRecognizedEvent(eventName) {
@@ -43,9 +45,14 @@ function createItemFromIncoming(item, thisParticipant) {
   transportDetails.sentTime = 
     new Date(item.AbsoluteTime).getTime() / 1000;
   transportDetails.status = Status.SendSuccess;
+  if (item.MessageMetadata && Array.isArray(item.MessageMetadata.Receipts) && item.MessageMetadata.Receipts.length > 0) {
+    const receipt = item.MessageMetadata.Receipts.find(receipt => receipt.RecipientParticipantId !== transcriptItem.participantId) || {};
+    transportDetails.messageReceiptType =  receipt.ReadTimestamp ? "read" : (receipt.DeliveredTimestamp ? "delivered" : "");
+  }
   transcriptItem.transportDetails = transportDetails;
   transcriptItem.version = 0;
   transcriptItem.Attachments = item.Attachments;
+  transcriptItem.isOldConversation = !!item.RelatedContactid;
   return transcriptItem;
 }
 
@@ -124,6 +131,25 @@ function isAttachmentContentType(contentType) {
   return contentType && Object.values(ContentType.ATTACHMENT_CONTENT_TYPE).includes(contentType.toLowerCase());
 }
 
+function createIncomingTranscriptReceiptItem(thisParticipant, oldItemInTranscript, messageReceiptData, messageReceiptType) {
+  const newTranscriptItem = new ItemDetails();
+  Object.assign(newTranscriptItem, oldItemInTranscript);
+
+  newTranscriptItem.transportDetails = {
+    ...oldItemInTranscript.transportDetails,
+    messageReceiptType: oldItemInTranscript.transportDetails.messageReceiptType === "read" ? "read" : messageReceiptType,
+  };
+  return newTranscriptItem;
+}
+
+function isTypeMessageOrAttachment(type) {
+  return (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE);
+}
+
+function isParticipantAgentOrCustomer(participantRole) {
+  return (participantRole === PARTICIPANT_TYPES.CUSTOMER || participantRole === PARTICIPANT_TYPES.AGENT);
+}
+
 var modelUtils = {
   createItemFromIncoming: createItemFromIncoming,
   createOutgoingTranscriptItem: createOutgoingTranscriptItem,
@@ -132,6 +158,9 @@ var modelUtils = {
   isRecognizedEvent: isRecognizedEvent,
   createTranscriptItemFromSuccessResponse: createTranscriptItemFromSuccessResponse,
   isAttachmentContentType: isAttachmentContentType,
+  createIncomingTranscriptReceiptItem: createIncomingTranscriptReceiptItem,
+  isTypeMessageOrAttachment: isTypeMessageOrAttachment,
+  isParticipantAgentOrCustomer: isParticipantAgentOrCustomer
 };
 
 export { modelUtils };
