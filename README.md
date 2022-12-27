@@ -64,7 +64,7 @@ See below sections for high level description of each major component.
 
 ### Message Receipts
 
-Render and send read/delivered message receipts with feature enabled in [your connect instance](https://docs.aws.amazon.com/connect/latest/adminguide/message-receipts.html). Follow the changes below to update chat-interface. 
+Render and send read/delivered message receipts with feature enabled in [your connect instance](https://docs.aws.amazon.com/connect/latest/adminguide/message-receipts.html). Related files are listed below.
 
  - [`index.js`](./src/index.js): enable/disable or set throttling time for sending message-receipts
  - [`ChatTranscriptor.js`](./src/components/Chat/ChatTranscriptor/ChatTranscriptor.js) + [`Utils.js`](./src/components/Chat/datamodel/Utils.js): update the model to parse API response and find read/delivered receipt 
