@@ -62,6 +62,18 @@ Occasionally, a component will pull a style value from `src/theme/defaultTheme.j
 
 See below sections for high level description of each major component.
 
+### Message Receipts
+
+Render and send read/delivered message receipts with feature enabled in [your connect instance](https://docs.aws.amazon.com/connect/latest/adminguide/message-receipts.html). Related files are listed below.
+
+ - [`index.js`](./src/index.js): enable/disable or set throttling time for sending message-receipts
+ - [`ChatTranscriptor.js`](./src/components/Chat/ChatTranscriptor/ChatTranscriptor.js) + [`Utils.js`](./src/components/Chat/datamodel/Utils.js): update the model to parse API response and find read/delivered receipt 
+ - [`ChatMessage.js`](./src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js): use `react-intersection-observer` to send read receipt and handle display logic
+ - [`ChatSession.js`](./src/components/Chat/ChatSession.js): add read/delivered eventHandlers for ChatJs handshake and sending receipt for last message
+ - [`ChatJs`](https://github.com/amazon-connect/amazon-connect-chatjs): use latest version with updated feature [configuration](https://github.com/amazon-connect/amazon-connect-chatjs#connectchatsessionsetglobalconfig)
+
+![View receipts](./screenshots/view-receipts.png)
+
 ### Audio Notifications
 A commonly requested feature for the Connect Chat Interface is to play a sound when a new message is received from the agent. This can be done via the ![ChatJs](https://github.com/amazon-connect/amazon-connect-chatjs#chatsessiononmessage) `onMessage` event.
 
