@@ -70,6 +70,7 @@ Render and send read/delivered message receipts with feature enabled in [your co
  - [`ChatTranscriptor.js`](./src/components/Chat/ChatTranscriptor/ChatTranscriptor.js) + [`Utils.js`](./src/components/Chat/datamodel/Utils.js): update the model to parse API response and find read/delivered receipt 
  - [`ChatMessage.js`](./src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js): use `react-intersection-observer` to send read receipt and handle display logic
  - [`ChatSession.js`](./src/components/Chat/ChatSession.js): add read/delivered eventHandlers for ChatJs handshake and sending receipt for last message
+ - [`ChatJs`](https://github.com/amazon-connect/amazon-connect-chatjs): use latest version with updated feature [configuration](https://github.com/amazon-connect/amazon-connect-chatjs#connectchatsessionsetglobalconfig)
 
 ![View receipts](./screenshots/view-receipts.png)
 
