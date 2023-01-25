@@ -35,7 +35,11 @@
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
     "coverage": "node scripts/test.js --coverage",
-    "test:watch": "node scripts/test.js --watchAll"
+    "test:watch": "node scripts/test.js --watchAll",
+    "lint": "eslint --ext .js ./src",
+    "lint:fix": "eslint --fix 'src/**/*.js'",
+    "prettier": "prettier src --check",
+    "prettier:fix": "npm run prettier -- --write"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -151,6 +155,7 @@
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "6.0.6",
     "postcss-safe-parser": "4.0.1",
+    "prettier": "^2.8.3",
     "react-dev-utils": "^12.0.0",
     "react-render-html": "^0.6.0",
     "react-test-renderer": "^16.6.3",
