@@ -197,26 +197,23 @@ Object {
         <p
           class="c3 c4"
         >
-          <span
-            class="Linkify"
-          >
+          <p>
             ListPickerTitle 
             <a
               href="https://www.amazon.com/"
+              rel="noopener noreferrer"
               target="_blank"
             >
               https://www.amazon.com/
             </a>
-          </span>
+          </p>
         </p>
         <p
           class="c3 c5"
         >
-          <span
-            class="Linkify"
-          >
+          <p>
             ListPickerSubTitle
-          </span>
+          </p>
         </p>
       </div>
       <div
@@ -242,12 +239,16 @@ Object {
               <p
                 class="c3 c4"
               >
-                ListPickerElementTitle
+                <p>
+                  ListPickerElementTitle
+                </p>
               </p>
               <p
                 class="c3 c5"
               >
-                ListPickerElementSubtitle
+                <p>
+                  ListPickerElementSubtitle
+                </p>
               </p>
             </div>
           </button>
@@ -270,12 +271,16 @@ Object {
               <p
                 class="c3 c4"
               >
-                AnotherListPickerElementTitle
+                <p>
+                  AnotherListPickerElementTitle
+                </p>
               </p>
               <p
                 class="c3 c5"
               >
-                AnotherListPickerElementSubtitle
+                <p>
+                  AnotherListPickerElementSubtitle
+                </p>
               </p>
             </div>
           </button>
@@ -299,26 +304,23 @@ Object {
       <p
         class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
       >
-        <span
-          class="Linkify"
-        >
+        <p>
           ListPickerTitle 
           <a
             href="https://www.amazon.com/"
+            rel="noopener noreferrer"
             target="_blank"
           >
             https://www.amazon.com/
           </a>
-        </span>
+        </p>
       </p>
       <p
         class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
       >
-        <span
-          class="Linkify"
-        >
+        <p>
           ListPickerSubTitle
-        </span>
+        </p>
       </p>
     </div>
     <div
@@ -344,12 +346,16 @@ Object {
             <p
               class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
             >
-              ListPickerElementTitle
+              <p>
+                ListPickerElementTitle
+              </p>
             </p>
             <p
               class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
             >
-              ListPickerElementSubtitle
+              <p>
+                ListPickerElementSubtitle
+              </p>
             </p>
           </div>
         </button>
@@ -372,12 +378,16 @@ Object {
             <p
               class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
             >
-              AnotherListPickerElementTitle
+              <p>
+                AnotherListPickerElementTitle
+              </p>
             </p>
             <p
               class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
             >
-              AnotherListPickerElementSubtitle
+              <p>
+                AnotherListPickerElementSubtitle
+              </p>
             </p>
           </div>
         </button>

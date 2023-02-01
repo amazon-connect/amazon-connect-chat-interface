@@ -14,9 +14,11 @@
     "react-dom": "^16.6.3",
     "react-intersection-observer": "8.33.1",
     "react-linkify": "0.2.2",
+    "react-markdown": "^6.0.3",
     "react-router-dom": "^4.3.1",
     "react-spinners": "^0.10.4",
     "react-textarea-autosize": "^8.3.0",
+    "remark-gfm": "^1.0.0",
     "styled-components": "^4.1.1",
     "webpack": "^4.46.0",
     "whatwg-fetch": "^3.2.0",
@@ -35,7 +37,8 @@
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
     "coverage": "node scripts/test.js --coverage",
-    "test:watch": "node scripts/test.js --watchAll"
+    "test:watch": "node scripts/test.js --watchAll",
+    "preinstall": "npx npm-force-resolutions"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,7 +50,9 @@
     "not op_mini all"
   ],
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>/configuration/jest/setup.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/configuration/jest/setup.js"
+    ],
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
@@ -167,12 +172,7 @@
     "webpack-dev-server": "^4.1.1",
     "webpack-manifest-plugin": "2.0.4"
   },
-  "overrides": {
-    "chokidar": "^3.4.1",
-    "watchpack": "^2.4.0",
-    "webpack": {
-      "watchpack": "^2.4.0"
-    },
-    "loader-utils": "^2.0.0"
+  "resolutions": {
+    "glob-parent": "5.1.2"
   }
 }

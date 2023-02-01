@@ -52,10 +52,10 @@ test("Style should match the snapshot", () => {
     renderElement(mockProps);
     expect(mockTimePicker).toMatchSnapshot();
     expect(mockTimePicker.getByText("TimePickerTitle").innerHTML).toEqual(
-        "TimePickerTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+        "TimePickerTitle <a href=\"https://www.amazon.com/\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.amazon.com/</a>"
     );
     expect(mockTimePicker.getByText("TimePickerSubtitle").innerHTML).toEqual(
-        "TimePickerSubtitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+        "TimePickerSubtitle <a href=\"https://www.amazon.com/\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.amazon.com/</a>"
     );
 });
  

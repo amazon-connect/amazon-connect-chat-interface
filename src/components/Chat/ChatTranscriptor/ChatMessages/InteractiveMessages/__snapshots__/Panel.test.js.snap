@@ -189,32 +189,30 @@ Object {
         <p
           class="c3 c4"
         >
-          <span
-            class="Linkify"
-          >
+          <p>
             PanelTitle 
             <a
               href="https://www.amazon.com/"
+              rel="noopener noreferrer"
               target="_blank"
             >
               https://www.amazon.com/
             </a>
-          </span>
+          </p>
         </p>
         <p
           class="c3 c5"
         >
-          <span
-            class="Linkify"
-          >
+          <p>
             PanelSubTitle 
             <a
               href="https://www.amazon.com/"
+              rel="noopener noreferrer"
               target="_blank"
             >
               https://www.amazon.com/
             </a>
-          </span>
+          </p>
         </p>
       </div>
       <div
@@ -265,32 +263,30 @@ Object {
       <p
         class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
       >
-        <span
-          class="Linkify"
-        >
+        <p>
           PanelTitle 
           <a
             href="https://www.amazon.com/"
+            rel="noopener noreferrer"
             target="_blank"
           >
             https://www.amazon.com/
           </a>
-        </span>
+        </p>
       </p>
       <p
         class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
       >
-        <span
-          class="Linkify"
-        >
+        <p>
           PanelSubTitle 
           <a
             href="https://www.amazon.com/"
+            rel="noopener noreferrer"
             target="_blank"
           >
             https://www.amazon.com/
           </a>
-        </span>
+        </p>
       </p>
     </div>
     <div

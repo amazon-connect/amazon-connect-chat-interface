@@ -52,10 +52,10 @@ test("Should be able to use Panel", () => {
     expect(mockPanel.getByAltText("PanelImageDescription")).toBeDefined();
 
     expect(mockPanel.getByText("PanelTitle").innerHTML).toEqual(
-        "PanelTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+        "PanelTitle <a href=\"https://www.amazon.com/\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.amazon.com/</a>"
     );
     expect(mockPanel.getByText("PanelSubTitle").innerHTML).toEqual(
-        "PanelSubTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+        "PanelSubTitle <a href=\"https://www.amazon.com/\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.amazon.com/</a>"
     );
  
     expect(mockPanel.getByText("PanelElementTitle")).toBeDefined();

@@ -53,7 +53,7 @@ test("Should be able to use ListPicker", () => {
  
     expect(mockListPicker.getByText("ListPickerTitle")).toBeDefined();
     expect(screen.getByText("ListPickerTitle").innerHTML).toEqual(
-        "ListPickerTitle <a href=\"https://www.amazon.com/\" target=\"_blank\">https://www.amazon.com/</a>"
+        "ListPickerTitle <a href=\"https://www.amazon.com/\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.amazon.com/</a>"
     );
     expect(mockListPicker.getByAltText("ListPickerImageDescription")).toBeDefined();
  
