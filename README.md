@@ -74,6 +74,31 @@ Render and send read/delivered message receipts with feature enabled in [your co
 
 ![View receipts](./screenshots/view-receipts.png)
 
+## Rich Text Formatting
+Send and receive messages with rich text formatting. Render the rich toolbar used to apply markdown styling and display the emoji picker.
+
+Enable/disable feature by updating the `initiateChat()` config:
+
+```diff
+connect.ChatInterface.initiateChat({
+    ...backendEndpoints,
+    // ...
+    featurePermissions: {
+        ATTACHMENTS: false,
+    },
++   supportedMessagingContentTypes: "text/plain,text/markdown", // default: "text/plain"
+});
+```
+
+Referencing [PR#92](https://github.com/amazon-connect/amazon-connect-chat-interface/pull/92/files), the following additions are needed for rich messaging support:
+ - [`ChatInitiator.js`](./src/components/Chat/ChatInitiator.js): pass `input.supportedMessagingContentTypes` to [StartChat](https://docs.aws.amazon.com/connect/latest/APIReference/API_StartChatContact.html) request
+ - [`ChatTranscriptor.js`](./src/components/Chat/ChatTranscriptor/ChatMessages/ChatMessage.js): implement `<RichMessageRenderer />` for markdown messages
+ - [`ChatComposer.js`](./src/components/Chat/ChatComposer/ChatComposer.js) + [`Model.js`](./src/components/Chat/datamodel/Model.js): implement `<RichTextEditor />` and the toolbar, passing `ContentType: "text/markdown"` in sendMessage event
+ - [`RichMessageComponents`](./src/components/Chat/RichMessageComponents): currently uses pre-built components with [draft-js](https://www.npmjs.com/package/draft-js), [emoji-mart](https://www.npmjs.com/package/emoji-mart) and [markdown-draft-js](https://www.npmjs.com/package/markdown-draft-js)
+ <!-- TODO: replace with reusable components - https://app.asana.com/0/1203611591691532/1203611591691556/f -->
+
+![Chat Widget with rich messaging enabled screenshot](./screenshots/send-rich-messages.png)
+
 ### Audio Notifications
 A commonly requested feature for the Connect Chat Interface is to play a sound when a new message is received from the agent. This can be done via the ![ChatJs](https://github.com/amazon-connect/amazon-connect-chatjs#chatsessiononmessage) `onMessage` event.
 
