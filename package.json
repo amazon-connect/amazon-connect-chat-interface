@@ -148,7 +148,7 @@
     "file-loader": "2.0.0",
     "fork-ts-checker-webpack-plugin": "6.3.3",
     "fs-extra": "7.0.0",
-    "html-webpack-plugin": "4.0.0-alpha.2",
+    "html-webpack-plugin": "4.5.2",
     "husky": "^4.3.8",
     "identity-obj-proxy": "3.0.0",
     "jest": "^27.1.1",
