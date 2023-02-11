@@ -4,17 +4,8 @@
 import "amazon-connect-chatjs";
 import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
-import {
-  ContentType,
-  PARTICIPANT_MESSAGE,
-  Direction,
-  Status,
-  ATTACHMENT_MESSAGE,
-  AttachmentErrorType,
-  PARTICIPANT_TYPES
-} from "./datamodel/Model";
-import { getTimeFromTimeStamp } from '../../utils/helper'
-
+import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE, AttachmentErrorType, PARTICIPANT_TYPES } from "./datamodel/Model";
+import { getTimeFromTimeStamp } from "../../utils/helper";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
@@ -22,14 +13,14 @@ const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
 class ChatJSClient {
   session = null;
 
-  constructor(chatDetails,region, stage) {
+  constructor(chatDetails, region, stage) {
     // Creating a chatSession object with Chat.JS
     // Other operations (connecting, sending message, ...) are then done by interacting
     // with the chatSession object (this.session)
     this.session = connect.ChatSession.create({
       chatDetails: chatDetails.startChatResult,
       type: "CUSTOMER",
-      options: {region: region},
+      options: { region: region },
     });
   }
 
@@ -85,7 +76,7 @@ class ChatJSClient {
 
   sendTypingEvent() {
     return this.session.sendEvent({
-      contentType: ContentType.EVENT_CONTENT_TYPE.TYPING
+      contentType: ContentType.EVENT_CONTENT_TYPE.TYPING,
     });
   }
 
@@ -94,8 +85,8 @@ class ChatJSClient {
       contentType: ContentType.EVENT_CONTENT_TYPE.READ_RECEIPT,
       content: JSON.stringify({
         messageId: messageId,
-        ...options
-      })
+        ...options,
+      }),
     });
   }
 
@@ -104,8 +95,8 @@ class ChatJSClient {
       contentType: ContentType.EVENT_CONTENT_TYPE.DELIVERED_RECEIPT,
       content: JSON.stringify({
         messageId: messageId,
-        ...options
-      })
+        ...options,
+      }),
     });
   }
 
@@ -114,22 +105,20 @@ class ChatJSClient {
     // later we will have to add functionality for other types.
     return this.session.sendMessage({
       message: content.data,
-      contentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN
+      contentType: content.type,
     });
   }
 
   sendAttachment(attachment) {
     return this.session.sendAttachment({ attachment });
   }
- 
-  downloadAttachment(attachmentId){
+
+  downloadAttachment(attachmentId) {
     return this.session.downloadAttachment({ attachmentId });
   }
 }
 
-
 class ChatSession {
-
   transcript = [];
   typingParticipants = [];
   thisParticipant = null;
@@ -147,13 +136,13 @@ class ChatSession {
   isOutgoingMessageInFlight = false;
 
   _eventHandlers = {
-    'transcript-changed': [],
-    'typing-participants-changed': [],
-    'contact-status-changed': [],
-    'incoming-message': [],
-    'outgoing-message': [],
-    'chat-disconnected': [],
-    'chat-closed': [],
+    "transcript-changed": [],
+    "typing-participants-changed": [],
+    "contact-status-changed": [],
+    "incoming-message": [],
+    "outgoing-message": [],
+    "chat-disconnected": [],
+    "chat-closed": [],
   };
 
   constructor(chatDetails, displayName, region, stage) {
@@ -161,52 +150,56 @@ class ChatSession {
     this.contactId = this.client.getContactId();
     this.thisParticipant = {
       participantId: this.client.getParticipantId(),
-      displayName: displayName
+      displayName: displayName,
     };
-    if(window.connect) {
-      if(window.connect.LogManager) {
-        this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
+    if (window.connect) {
+      if (window.connect.LogManager) {
+        this.logger = window.connect.LogManager.getLogger({
+          prefix: DEFAULT_PREFIX,
+        });
       }
-      if(window.connect.csmService) {
+      if (window.connect.csmService) {
         this.csmService = window.connect.csmService;
       }
     }
-    if(window.connect && window.connect.LogManager) {
-      this.logger = window.connect.LogManager.getLogger({ prefix: DEFAULT_PREFIX });
+    if (window.connect && window.connect.LogManager) {
+      this.logger = window.connect.LogManager.getLogger({
+        prefix: DEFAULT_PREFIX,
+      });
     }
   }
 
-  // Callbacks 
-  onChatDisconnected(callback){
-    this.on("chat-disconnected", function(...rest){
+  // Callbacks
+  onChatDisconnected(callback) {
+    this.on("chat-disconnected", function (...rest) {
       callback(...rest);
-    })
+    });
   }
 
-  onChatClose(callback){
-    this.on("chat-closed", function(...rest){
+  onChatClose(callback) {
+    this.on("chat-closed", function (...rest) {
       callback(...rest);
-    })
-  }
-  
-  onIncoming(callback){
-    this.on("incoming-message", function(...rest){
-      callback(...rest);
-    })
+    });
   }
 
-  onOutgoing(callback){
-    this.on("outgoing-message", function(...rest){
+  onIncoming(callback) {
+    this.on("incoming-message", function (...rest) {
       callback(...rest);
-    })
+    });
   }
 
-  // Decoratorers 
-  incomingItemDecorator(item){
+  onOutgoing(callback) {
+    this.on("outgoing-message", function (...rest) {
+      callback(...rest);
+    });
+  }
+
+  // Decoratorers
+  incomingItemDecorator(item) {
     return item;
   }
 
-  outgoingItemDecorator(item){
+  outgoingItemDecorator(item) {
     return item;
   }
 
@@ -214,13 +207,16 @@ class ChatSession {
   openChatSession() {
     this._addEventListeners();
     this._updateContactStatus(CONTACT_STATUS.CONNECTING);
-    return this.client.connect().then((response) => {
-      this._updateContactStatus(CONTACT_STATUS.CONNECTED);
-      return response;
-    }, (error) => {
-      this._updateContactStatus(CONTACT_STATUS.DISCONNECTED);
-      return Promise.reject(error);
-    });
+    return this.client.connect().then(
+      (response) => {
+        this._updateContactStatus(CONTACT_STATUS.CONNECTED);
+        return response;
+      },
+      (error) => {
+        this._updateContactStatus(CONTACT_STATUS.DISCONNECTED);
+        return Promise.reject(error);
+      }
+    );
   }
 
   async endChat() {
@@ -252,7 +248,10 @@ class ChatSession {
   addOutgoingMessage(data) {
     const message = modelUtils.createOutgoingTranscriptItem(
       PARTICIPANT_MESSAGE,
-    { data: data.text, type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN },
+      {
+        data: data.text,
+        type: data.type || ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
+      },
       this.thisParticipant
     );
     this.logger && this.logger.info(`Adding outgoing message. ContactId: ${this.contactId}`);
@@ -266,13 +265,7 @@ class ChatSession {
       .then((response) => {
         console.log("send success");
         console.log(response);
-        this._replaceItemInTranscript(
-          message,
-          modelUtils.createTranscriptItemFromSuccessResponse(
-            message,
-            response
-          )
-        );
+        this._replaceItemInTranscript(message, modelUtils.createTranscriptItemFromSuccessResponse(message, response));
 
         this.isOutgoingMessageInFlight = false;
         return response;
@@ -285,55 +278,48 @@ class ChatSession {
   }
 
   addOutgoingAttachment(attachment) {
-    const transcriptItem = modelUtils.createOutgoingTranscriptItem(
-        ATTACHMENT_MESSAGE,
-        attachment,
-        this.thisParticipant
-    );
+    const transcriptItem = modelUtils.createOutgoingTranscriptItem(ATTACHMENT_MESSAGE, attachment, this.thisParticipant);
     this._addItemsToTranscript([transcriptItem]);
     this.logger && this.logger.info(`Sending File. ContactId: ${this.contactId}.`);
     return this.sendAttachment(transcriptItem);
   }
- 
+
   sendAttachment(transcriptItem) {
-    const {participantId, displayName} = this.thisParticipant;
+    const { participantId, displayName } = this.thisParticipant;
     return this.client
-        .sendAttachment(transcriptItem.content)
-        .then(response => {
-          console.log("RESPONSE", response);
-          console.log("sendAttachment response:", response);
-          this.transcript.splice(this.transcript.indexOf(transcriptItem), 1);
-          return response;
-        }).catch(error => {
-          transcriptItem.transportDetails.error = {
-            type: error.type,
-            message: error.message,
-          };
+      .sendAttachment(transcriptItem.content)
+      .then((response) => {
+        console.log("RESPONSE", response);
+        console.log("sendAttachment response:", response);
+        this.transcript.splice(this.transcript.indexOf(transcriptItem), 1);
+        return response;
+      })
+      .catch((error) => {
+        transcriptItem.transportDetails.error = {
+          type: error.type,
+          message: error.message,
+        };
 
-          if (error.type !== AttachmentErrorType.ValidationException) {
-            if (error.type === AttachmentErrorType.ServiceQuotaExceededException) {
-              transcriptItem.transportDetails.error.message = "Attachment failed to send. The maximum number of attachments allowed, has been reached";
-            } else {
-              transcriptItem.transportDetails.error.message = "Attachment failed to send";
-              transcriptItem.transportDetails.error.retry = () => {
-                const newTranscriptItem = modelUtils.createOutgoingTranscriptItem(
-                    ATTACHMENT_MESSAGE,
-                    transcriptItem.content,
-                    { displayName, participantId }
-                );
-                newTranscriptItem.id = transcriptItem.id;
-                this._replaceItemInTranscript(transcriptItem, newTranscriptItem);
-                this.sendAttachment(newTranscriptItem);
-              }
-            }
+        if (error.type !== AttachmentErrorType.ValidationException) {
+          if (error.type === AttachmentErrorType.ServiceQuotaExceededException) {
+            transcriptItem.transportDetails.error.message = "Attachment failed to send. The maximum number of attachments allowed, has been reached";
+          } else {
+            transcriptItem.transportDetails.error.message = "Attachment failed to send";
+            transcriptItem.transportDetails.error.retry = () => {
+              const newTranscriptItem = modelUtils.createOutgoingTranscriptItem(ATTACHMENT_MESSAGE, transcriptItem.content, { displayName, participantId });
+              newTranscriptItem.id = transcriptItem.id;
+              this._replaceItemInTranscript(transcriptItem, newTranscriptItem);
+              this.sendAttachment(newTranscriptItem);
+            };
           }
+        }
 
-          this._failMessage(transcriptItem);
-        });
+        this._failMessage(transcriptItem);
+      });
   }
- 
+
   downloadAttachment(attachmentId) {
-    return this.client.downloadAttachment(attachmentId)
+    return this.client.downloadAttachment(attachmentId);
   }
 
   loadPreviousTranscript() {
@@ -346,7 +332,7 @@ class ChatSession {
   }
 
   // EVENT HANDLING
-  
+
   on(eventType, handler) {
     this.logger && this.logger.info(`Event [${eventType}] is on!`);
     if (this._eventHandlers[eventType].indexOf(handler) === -1) {
@@ -364,42 +350,42 @@ class ChatSession {
 
   _triggerEvent(eventType, payload) {
     this.logger && this.logger.info(`Event [${eventType}] is triggered!`);
-    this._eventHandlers[eventType].forEach(handler => {
+    this._eventHandlers[eventType].forEach((handler) => {
       handler(payload);
     });
   }
-  
+
   _updateTranscript(transcript) {
     this.transcript = transcript;
-    this._triggerEvent('transcript-changed', transcript);
+    this._triggerEvent("transcript-changed", transcript);
   }
 
   _updateTypingParticipants(typingParticipants) {
     this.typingParticipants = typingParticipants;
-    this._triggerEvent('typing-participants-changed', typingParticipants);
+    this._triggerEvent("typing-participants-changed", typingParticipants);
   }
 
   _updateContactStatus(contactStatus) {
     this.contactStatus = contactStatus;
-    this._triggerEvent('contact-status-changed', contactStatus);
+    this._triggerEvent("contact-status-changed", contactStatus);
   }
 
   _addEventListeners() {
-    this.client.onMessage(data => {
+    this.client.onMessage((data) => {
       this._handleIncomingData(data);
     });
-    this.client.onTyping(data => {
+    this.client.onTyping((data) => {
       this._handleTypingEvent(data);
     });
 
-    this.client.onReadReceipt(data => {
+    this.client.onReadReceipt((data) => {
       this._handleMessageReceipt("read", data);
     });
-    this.client.onDeliveredReceipt(data => {
+    this.client.onDeliveredReceipt((data) => {
       this._handleMessageReceipt("delivered", data);
     });
-    
-    this.client.onEnded(data => {
+
+    this.client.onEnded((data) => {
       this._handleEndedEvent(data);
     });
     this.client.onConnectionEstablished(() => {
@@ -413,30 +399,30 @@ class ChatSession {
     return this._loadTranscript({
       scanDirection: "BACKWARD",
       sortOrder: "ASCENDING",
-      maxResults: 15
+      maxResults: 15,
     });
   }
 
   _loadTranscript(args) {
-    if(this.nextToken) {
-      args['nextToken'] = this.nextToken;
+    if (this.nextToken) {
+      args["nextToken"] = this.nextToken;
     }
-    return this.client.getTranscript(args).then(response => {
-      var incomingDataList = response.data.Transcript;
-      this.nextToken = response.data.NextToken;
-      const transcriptItems = incomingDataList.map(data => {
-        var transcriptItem = modelUtils.createItemFromIncoming(
-          data,
-          this.thisParticipant
-        );
-        return transcriptItem;
+    return this.client
+      .getTranscript(args)
+      .then((response) => {
+        var incomingDataList = response.data.Transcript;
+        this.nextToken = response.data.NextToken;
+        const transcriptItems = incomingDataList.map((data) => {
+          var transcriptItem = modelUtils.createItemFromIncoming(data, this.thisParticipant);
+          return transcriptItem;
+        });
+        this._addItemsToTranscript(transcriptItems);
+      })
+      .catch((err) => {
+        console.log("CustomerUI", "ChatSession", "transcript fetch error: ", err);
       });
-      this._addItemsToTranscript(transcriptItems);
-    }).catch((err) => {
-      console.log("CustomerUI", "ChatSession", "transcript fetch error: ", err);
-    });
   }
-  
+
   _handleIncomingData(dataInput) {
     var data = dataInput.data;
     var item = modelUtils.createItemFromIncoming(data, this.thisParticipant);
@@ -451,13 +437,17 @@ class ChatSession {
       console.log("_handleIncomingData item created");
 
       const { transportDetails, type, participantRole } = item;
-      if(transportDetails.direction === Direction.Incoming){
+      if (transportDetails.direction === Direction.Incoming) {
         this._triggerEvent("incoming-message", data);
-        if (modelUtils.isTypeMessageOrAttachment(type) && 
-            modelUtils.isParticipantAgentOrCustomer(participantRole)) {
-              this.sendDeliveredReceipt(item.id, type === ATTACHMENT_MESSAGE ? {
-                disableThrottle: true
-              } : {});
+        if (modelUtils.isTypeMessageOrAttachment(type) && modelUtils.isParticipantAgentOrCustomer(participantRole)) {
+          this.sendDeliveredReceipt(
+            item.id,
+            type === ATTACHMENT_MESSAGE
+              ? {
+                  disableThrottle: true,
+                }
+              : {}
+          );
         }
       } else {
         this._triggerEvent("outgoing-message", data);
@@ -468,7 +458,6 @@ class ChatSession {
       if (!shouldBypassAddItemToTranscript) {
         this._addItemsToTranscript([item]);
       }
-
     } else {
       console.log("_handleIncomingData NOT NOT item created");
     }
@@ -479,7 +468,7 @@ class ChatSession {
     var messageId = messageReceiptData.MessageMetadata.MessageId;
     var oldItemInTranscript = this._findItemInTranscriptUsingMessageId(messageId);
 
-    if(oldItemInTranscript === -1) {
+    if (oldItemInTranscript === -1) {
       this.logger && this.logger.debug(`Message with messageId:${messageId} not found in transcript`);
       return;
     }
@@ -491,42 +480,31 @@ class ChatSession {
 
   _handleMessageReceiptLatencyMetric(messageReceiptType, dataInput, sentTime) {
     const {
-      chatDetails: {
-        participantId
+      chatDetails: { participantId },
+      data: {
+        MessageMetadata: { Receipts },
       },
-      data: { 
-        MessageMetadata: {
-          Receipts
-        }
-      }
     } = dataInput;
-    if(Receipts.length > 0) {
+    if (Receipts.length > 0) {
       const receipt = this._findReceipt(Receipts, participantId);
-      if(receipt) {
+      if (receipt) {
         const { DeliveredTimestamp, ReadTimestamp } = receipt;
-        const timeDifference = messageReceiptType === 'read' ?
-          getTimeFromTimeStamp(ReadTimestamp) - (sentTime * 1000) :
-          getTimeFromTimeStamp(DeliveredTimestamp) - (sentTime * 1000);
+        const timeDifference = messageReceiptType === "read" ? getTimeFromTimeStamp(ReadTimestamp) - sentTime * 1000 : getTimeFromTimeStamp(DeliveredTimestamp) - sentTime * 1000;
         this.logger && this.logger.info(messageReceiptType, timeDifference);
       }
     }
   }
 
   _findReceipt(receipts, participantId) {
-    return receipts.find(receipt => receipt.RecipientParticipantId !== participantId);
+    return receipts.find((receipt) => receipt.RecipientParticipantId !== participantId);
   }
 
   _failMessage(message) {
     // Failed messages are going to be inserted into the transcript with a fake timestamp
     // that is 1ms higher than the timestamp of the last existing message or 0 if no such
     // message exists.
-    const sentTime = this.transcript.length > 0
-      ? this.transcript[this.transcript.length - 1].transportDetails.sentTime + 0.001
-      : 0;
-    this._replaceItemInTranscript(
-      message,
-      modelUtils.createFailedItem(message, sentTime)
-    );
+    const sentTime = this.transcript.length > 0 ? this.transcript[this.transcript.length - 1].transportDetails.sentTime + 0.001 : 0;
+    this._replaceItemInTranscript(message, modelUtils.createFailedItem(message, sentTime));
   }
 
   _isRoundTripSystemEvent(item) {
@@ -534,35 +512,32 @@ class ChatSession {
   }
 
   _addItemsToTranscript(items) {
-
     let self = this;
 
     if (items.length === 0) {
       return;
     }
 
-    items = items.filter(item => !this._isRoundTripSystemEvent(item));
+    items = items.filter((item) => !this._isRoundTripSystemEvent(item));
 
-    const newItemMap = items.reduce((acc, item) => ({...acc, [item.id]: item}), {});
-    
-    const newTranscript = this.transcript.filter(item => newItemMap[item.id] === undefined);
-  
+    const newItemMap = items.reduce((acc, item) => ({ ...acc, [item.id]: item }), {});
+
+    const newTranscript = this.transcript.filter((item) => newItemMap[item.id] === undefined);
+
     newTranscript.push(...items);
-    newTranscript.sort(
-      (a, b) => {
-        const isASending = a.transportDetails.status === Status.Sending;
-        const isBSending = b.transportDetails.status === Status.Sending;
-        if ((isASending && !isBSending) || (!isASending && isBSending)) {
-          return isASending ? 1 : -1;
-        }
-        return a.transportDetails.sentTime - b.transportDetails.sentTime;
+    newTranscript.sort((a, b) => {
+      const isASending = a.transportDetails.status === Status.Sending;
+      const isBSending = b.transportDetails.status === Status.Sending;
+      if ((isASending && !isBSending) || (!isASending && isBSending)) {
+        return isASending ? 1 : -1;
       }
-    );   
+      return a.transportDetails.sentTime - b.transportDetails.sentTime;
+    });
 
-    newTranscript.forEach(function(item){
-      if(item.transportDetails.direction === Direction.Incoming){
+    newTranscript.forEach(function (item) {
+      if (item.transportDetails.direction === Direction.Incoming) {
         item = self.incomingItemDecorator(item);
-      }else{
+      } else {
         item = self.outgoingItemDecorator(item);
       }
       item.lastReadReceipt = false;
@@ -579,8 +554,7 @@ class ChatSession {
     //Corner case: lastMessage is not read and Customer typed a new message
     //so we need to explicitly fire readReceipt for the last received/incoming message.
     //Note: ChatJS has a mapper and prevents duplicate event if its already fired!
-    if(lastIncomingMessageIdx !== -1 &&
-       lastOutgoingMessageIdx > lastIncomingMessageIdx) {
+    if (lastIncomingMessageIdx !== -1 && lastOutgoingMessageIdx > lastIncomingMessageIdx) {
       const { type, id } = newTranscript[lastIncomingMessageIdx];
       this.sendReadReceipt(id, type === ATTACHMENT_MESSAGE ? { disableThrottle: true } : {});
     }
@@ -605,7 +579,7 @@ class ChatSession {
   }
 
   _findItemInTranscriptUsingMessageId(messageId) {
-    const index = this.transcript.findIndex(transcript => transcript.id === messageId);
+    const index = this.transcript.findIndex((transcript) => transcript.id === messageId);
     if (index !== -1) {
       return this.transcript[index];
     }
@@ -615,10 +589,9 @@ class ChatSession {
   _findLastMessageReceiptInTranscript(messageReceiptType, transcript) {
     const size = transcript.length - 1;
     let lastReceiptIdx = -1;
-    for(let index=size; index>=0; index--) {
+    for (let index = size; index >= 0; index--) {
       const transportDetails = transcript[index].transportDetails;
-      if (transportDetails && transportDetails.direction === Direction.Outgoing &&
-        transportDetails.messageReceiptType === messageReceiptType) {
+      if (transportDetails && transportDetails.direction === Direction.Outgoing && transportDetails.messageReceiptType === messageReceiptType) {
         lastReceiptIdx = index;
         break;
       }
@@ -629,7 +602,7 @@ class ChatSession {
   _findLastMessageInTranscript(direction, transcript) {
     const size = transcript.length - 1;
     let lastReceiptIdx = -1;
-    for(let index=size; index>=0; index--) {
+    for (let index = size; index >= 0; index--) {
       const transportDetails = transcript[index].transportDetails;
 
       if (transportDetails && transportDetails.direction === direction) {
@@ -641,38 +614,30 @@ class ChatSession {
   }
 
   _isRoundtripMessage(item) {
-    return this.thisParticipant.participantId === item.ParticipantId
+    return this.thisParticipant.participantId === item.ParticipantId;
   }
-  
+
   /** called when transcript has chat ended message */
-  _handleEndedEvent(){
+  _handleEndedEvent() {
     this._updateContactStatus(CONTACT_STATUS.ENDED);
     this._triggerEvent("chat-disconnected");
   }
 
   // TYPING PARTICIPANTS
-  
+
   _handleTypingEvent(dataInput) {
     var data = dataInput.data;
     if (this._isRoundtripMessage(data)) {
       return;
     }
-    var incomingTypingParticipant = modelUtils.createTypingParticipant(
-      data,
-      this.thisParticipant.participantId
-    );
+    var incomingTypingParticipant = modelUtils.createTypingParticipant(data, this.thisParticipant.participantId);
     incomingTypingParticipant.callback = setTimeout(() => {
-      this._removeTypingParticipant(
-        incomingTypingParticipant.participantId
-      );
+      this._removeTypingParticipant(incomingTypingParticipant.participantId);
     }, 12 * 1000);
     var newTypingParticipants = [];
     for (var i = 0; i < this.typingParticipants.length; i++) {
       var existingParticipantTyping = this.typingParticipants[i];
-      if (
-        existingParticipantTyping.participantId ===
-        incomingTypingParticipant.participantId
-      ) {
+      if (existingParticipantTyping.participantId === incomingTypingParticipant.participantId) {
         clearTimeout(existingParticipantTyping.callback);
       } else {
         newTypingParticipants.push(existingParticipantTyping);

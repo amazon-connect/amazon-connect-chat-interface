@@ -169,6 +169,12 @@ module.exports = {
             ascii_only: true,
           },
         },
+        // Use multi-process parallel running to improve the build speed
+        // Default number of concurrent runs: os.cpus().length - 1
+        parallel: true,
+        // Enable file caching
+        cache: true,
+        sourceMap: shouldUseSourceMap,
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
@@ -222,7 +228,8 @@ module.exports = {
       'connect-images': paths.appSrc +'/assets/images',
       'connect-prop-types': paths.appSrc+'/propTypes',
       'connect-theme': paths.appSrc +'/theme',
-      'connect-app-context':  paths.appSrc +'/context'
+      'connect-app-context':  paths.appSrc +'/context',
+      react: path.resolve('./node_modules/react')
     },
     plugins: [
       // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -350,7 +357,7 @@ module.exports = {
           {
             test: cssRegex,
             exclude: cssModuleRegex,
-            use: getStyleLoaders({
+            loader: getStyleLoaders({
               importLoaders: 1,
               sourceMap: shouldUseSourceMap,
             }),
@@ -364,7 +371,7 @@ module.exports = {
           // using the extension .module.css
           {
             test: cssModuleRegex,
-            use: getStyleLoaders({
+            loader: getStyleLoaders({
               importLoaders: 1,
               sourceMap: shouldUseSourceMap,
               modules: true,
@@ -379,7 +386,7 @@ module.exports = {
           {
             test: sassRegex,
             exclude: sassModuleRegex,
-            use: getStyleLoaders(
+            loader: getStyleLoaders(
               {
                 importLoaders: 2,
                 sourceMap: shouldUseSourceMap,
@@ -396,7 +403,7 @@ module.exports = {
           // using the extension .module.scss or .module.sass
           {
             test: sassModuleRegex,
-            use: getStyleLoaders(
+            loader: getStyleLoaders(
               {
                 importLoaders: 2,
                 sourceMap: shouldUseSourceMap,

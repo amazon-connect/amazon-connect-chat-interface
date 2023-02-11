@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import ChatSession from "./ChatSession";
 import { AttachmentErrorType, ContentType } from "./datamodel/Model";
 
@@ -24,10 +27,10 @@ const transcriptResponse = {
           direction: "Outgoing",
           status: "SendSuccess",
         },
-        ParticipantRole: 'CUSTOMER',
+        ParticipantRole: "CUSTOMER",
         content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
-          data: "data",
+          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+          data: "*italics*",
         },
       },
       {
@@ -35,7 +38,7 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "123",
         AbsoluteTime: AbsoluteTime + 1000,
-        ParticipantRole: 'AGENT',
+        ParticipantRole: "AGENT",
         transportDetails: {
           direction: "Incoming",
           messageReceiptType: "delivered",
@@ -53,8 +56,8 @@ const transcriptResponse = {
         },
         lastDeliveredReceipt: true,
         content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
-          data: "data",
+          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+          data: "**bold**",
         },
       },
       {
@@ -62,14 +65,14 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "456",
         AbsoluteTime: AbsoluteTime + 2000,
-        ParticipantRole: 'AGENT',
+        ParticipantRole: "AGENT",
         transportDetails: {
           direction: "Incoming",
           status: "SendSuccess",
         },
         content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
-          data: "data",
+          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+          data: "1. item1 \n 1. item2",
         },
       },
       {
@@ -77,14 +80,14 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "123",
         AbsoluteTime: AbsoluteTime + 3000,
-        ParticipantRole: 'CUSTOMER',
+        ParticipantRole: "CUSTOMER",
         transportDetails: {
           direction: "Outgoing",
           status: "SendSuccess",
         },
         content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
-          data: "data",
+          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+          data: "* item3 \n * item4",
         },
       },
       {
@@ -93,8 +96,7 @@ const transcriptResponse = {
           MessageId: "31bf18c9-d80b-4f75-8145-c47946a26e03",
           Receipts: [],
         },
-        Content:
-          "Amazon Connect will now simulate rolling dice by using the Distribute randomly block,,,now rolling,,,,,,,",
+        Content: "Amazon Connect will now simulate rolling dice by using the Distribute randomly block,,,now rolling,,,,,,,",
         ContentType: "text/plain",
         DisplayName: "SYSTEM_MESSAGE",
         Id: "31bf18c9-d80b-4f75-8145-c47946a26e03",
@@ -107,7 +109,7 @@ const transcriptResponse = {
         Type: "message",
         ParticipantId: "123",
         AbsoluteTime: AbsoluteTime + 5000,
-        ParticipantRole: 'CUSTOMER',
+        ParticipantRole: "CUSTOMER",
         transportDetails: {
           direction: "Outgoing",
           status: "SendSuccess",
@@ -218,24 +220,12 @@ describe("ChatSession", () => {
           const returnVal = session.sendAttachment(transcriptItem);
           returnVal
             .then(() => {
-              if (
-                transcriptItem.transportDetails.error.type ===
-                AttachmentErrorType.ServiceQuotaExceededException
-              ) {
-                expect(transcriptItem.transportDetails.error.message).toEqual(
-                  "Attachment failed to send. The maximum number of attachments allowed, has been reached"
-                );
-              } else if (
-                transcriptItem.transportDetails.error.type ===
-                AttachmentErrorType.ValidationException
-              ) {
-                expect(transcriptItem.transportDetails.error.message).toEqual(
-                  DEFAULT_MESSAGE
-                );
+              if (transcriptItem.transportDetails.error.type === AttachmentErrorType.ServiceQuotaExceededException) {
+                expect(transcriptItem.transportDetails.error.message).toEqual("Attachment failed to send. The maximum number of attachments allowed, has been reached");
+              } else if (transcriptItem.transportDetails.error.type === AttachmentErrorType.ValidationException) {
+                expect(transcriptItem.transportDetails.error.message).toEqual(DEFAULT_MESSAGE);
               } else {
-                expect(transcriptItem.transportDetails.error.message).toEqual(
-                  "Attachment failed to send"
-                );
+                expect(transcriptItem.transportDetails.error.message).toEqual("Attachment failed to send");
               }
             })
             .catch((e) => {
@@ -297,7 +287,7 @@ describe("ChatSession", () => {
         csmService: {
           addCountMetric: jest.fn().mockImplementation(() => {}),
           addLatencyMetric: jest.fn().mockImplementation(() => {}),
-        }
+        },
       };
     });
     afterAll(() => {
@@ -312,10 +302,8 @@ describe("ChatSession", () => {
     test("should not update transcript if messageId not found", async () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
-      const readCallback =
-        session.client.session.onReadReceipt.mock.calls[0][0];
-      const connectionEstablishedCallback =
-        session.client.session.onConnectionEstablished.mock.calls[0][0];
+      const readCallback = session.client.session.onReadReceipt.mock.calls[0][0];
+      const connectionEstablishedCallback = session.client.session.onConnectionEstablished.mock.calls[0][0];
       await connectionEstablishedCallback();
       const readReceiptMessage = {
         data: {
@@ -341,12 +329,9 @@ describe("ChatSession", () => {
     test("should call handleMessageReceipt to update the transcript", async () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
-      const readCallback =
-        session.client.session.onReadReceipt.mock.calls[0][0];
-      const deliveredCallback =
-        session.client.session.onDeliveredReceipt.mock.calls[0][0];
-      const connectionEstablishedCallback =
-        session.client.session.onConnectionEstablished.mock.calls[0][0];
+      const readCallback = session.client.session.onReadReceipt.mock.calls[0][0];
+      const deliveredCallback = session.client.session.onDeliveredReceipt.mock.calls[0][0];
+      const connectionEstablishedCallback = session.client.session.onConnectionEstablished.mock.calls[0][0];
       await connectionEstablishedCallback();
       const readReceiptMessage = {
         data: {
@@ -365,8 +350,8 @@ describe("ChatSession", () => {
           ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
         },
         chatDetails: {
-          participantId: "participantId"
-        }
+          participantId: "participantId",
+        },
       };
       expect(session.transcript[0].lastReadReceipt).toEqual(false);
       readCallback(readReceiptMessage);
@@ -388,8 +373,8 @@ describe("ChatSession", () => {
           ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
         },
         chatDetails: {
-          participantId: "participantId"
-        }
+          participantId: "participantId",
+        },
       };
       expect(session.transcript[3].lastDeliveredReceipt).toEqual(false);
       deliveredCallback(deliverReceiptMessage);
@@ -415,18 +400,11 @@ describe("ChatSession", () => {
       expect(session.client.session.sendEvent).toBeCalled();
       expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({
         content: "{}",
-        contentType:
-          "application/vnd.amazonaws.connect.event.message.delivered",
+        contentType: "application/vnd.amazonaws.connect.event.message.delivered",
       });
     });
     test("should call sendDeliveredReceipt when an new incoming message is received", () => {
-      const session = new ChatSession(
-        chatDetails,
-        "",
-        region,
-        stage,
-        true
-      );
+      const session = new ChatSession(chatDetails, "", region, stage, true);
       session.client.onMessage = jest.fn();
       session.client.session.onMessage.mockClear();
       session.client.session.sendEvent.mockClear();
@@ -439,19 +417,12 @@ describe("ChatSession", () => {
       expect(session.client.session.sendEvent).toBeCalled();
       expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({
         content: '{"messageId":"ID"}',
-        contentType:
-          "application/vnd.amazonaws.connect.event.message.delivered",
+        contentType: "application/vnd.amazonaws.connect.event.message.delivered",
       });
     });
 
     test("should not call sendDeliveredReceipt when an participantRole is not Customer or Agent", () => {
-      const session = new ChatSession(
-        chatDetails,
-        "",
-        region,
-        stage,
-        true
-      );
+      const session = new ChatSession(chatDetails, "", region, stage, true);
       session.client.onMessage = jest.fn();
       session.client.session.onMessage.mockClear();
       session.client.session.sendEvent.mockClear();

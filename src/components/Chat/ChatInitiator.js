@@ -1,7 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import request from '../../utils/fetchRequest';
+import request from "../../utils/fetchRequest";
+import { START_CHAT_CLIENT_TIMEOUT_MS } from "../../constants/http";
 
 function safeParse(jsonString, defaultValue) {
   try {
@@ -14,9 +15,9 @@ function safeParse(jsonString, defaultValue) {
 /**
  * Initiate a chat session within Amazon Connect, proxying initial StartChatContact request
  * through your API Gateway.
- * 
+ *
  * https://docs.aws.amazon.com/connect/latest/APIReference/API_StartChatContact.html
- * 
+ *
  * @param {Object} input - data to initate chat
  * @param {string} input.instanceId
  * @param {string} input.contactFlowId
@@ -26,6 +27,7 @@ function safeParse(jsonString, defaultValue) {
  * @param {string} input.region
  * @param {string} input.contactAttributes
  * @param {object} input.headers
+ * @param {string} input.supportedMessagingContentTypes
  * @returns {Promise} Promise object that resolves to chatDetails objects
  */
 export function initiateChat(input) {
@@ -33,19 +35,18 @@ export function initiateChat(input) {
     InstanceId: input.instanceId,
     ContactFlowId: input.contactFlowId,
     ParticipantDetails: {
-      DisplayName: input.name
+      DisplayName: input.name,
     },
     Username: input.username,
   };
 
-  if(input.persistentChat) {
+  if (input.persistentChat) {
     if (input.persistentChat.sourceContactId && input.persistentChat.rehydrationType) {
       initiateChatRequest.PersistentChat = {
         SourceContactId: input.persistentChat.sourceContactId,
-        RehydrationType: input.persistentChat.rehydrationType
-      }
+        RehydrationType: input.persistentChat.rehydrationType,
+      };
     }
-
   }
 
   const attributes = safeParse(input.contactAttributes, null);
@@ -56,8 +57,12 @@ export function initiateChat(input) {
   if (input.initialMessage) {
     initiateChatRequest.InitialMessage = {
       ContentType: "text/plain",
-      Content: input.initialMessage
+      Content: input.initialMessage,
     };
+  }
+
+  if (input.supportedMessagingContentTypes) {
+    initiateChatRequest.SupportedMessagingContentTypes = input.supportedMessagingContentTypes.split(",");
   }
 
   let headers = new Headers();
@@ -66,10 +71,13 @@ export function initiateChat(input) {
     headers = input.headers;
   }
 
-  return request(input.apiGatewayEndpoint, {
-    headers,
-    method: 'post',
-    body: JSON.stringify(initiateChatRequest)
-  })
-    .then(res => res.json.data);
-};
+  return request(
+    input.apiGatewayEndpoint,
+    {
+      headers,
+      method: "post",
+      body: JSON.stringify(initiateChatRequest),
+    },
+    START_CHAT_CLIENT_TIMEOUT_MS
+  ).then((res) => res.json.data);
+}

@@ -71,6 +71,10 @@
                         contactAttributes: JSON.stringify({
                             "customerName": customerName
                         }),
+                        featurePermissions: {
+                            "ATTACHMENTS": false,  // this is the override flag from user for attachments
+                        },
+                        supportedMessagingContentTypes: "text/plain,text/markdown", // enable rich messaging
                         contactFlowId,
                         instanceId
                     },successHandler, failureHandler);
