@@ -11,7 +11,7 @@ import {
 } from "../InteractiveMessage";
 import styled from "styled-components";
 import PT from "prop-types";
-import Linkify from "react-linkify";
+import RichLinkRenderer from "./RichLinkRenderer";
  
 const ElementTitle = styled(Text)`
     font-weight: bold;
@@ -68,16 +68,10 @@ export default function Panel({ content, addMessage }) {
       </ImageContainer>
       }
       <TextSection>
-        <Title>
-          <Linkify properties={{ target: "_blank" }}>
-            {title}
-          </Linkify>
-        </Title>
-        {subtitle && <Subtitle>
-            <Linkify properties={{ target: "_blank" }}>
-                {subtitle}
-            </Linkify>
-         </Subtitle>}
+        <RichLinkRenderer content={title} styledElement={Title} />
+        {subtitle && (
+          <RichLinkRenderer content={subtitle} styledElement={Subtitle} />
+        )}
       </TextSection>
       <ResponsesSection>
         <div>

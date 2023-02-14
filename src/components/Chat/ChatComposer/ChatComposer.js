@@ -8,9 +8,8 @@ import PT from "prop-types";
 import { CONTACT_STATUS, KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 import TextareaAutosize from "react-textarea-autosize";
 import SendMessageButton from "./SendMessageButton";
-import { RichTextEditor } from "../RichMessageComponents";
-
 import { ATTACHMENT_ACCEPT_CONTENT_TYPES, ContentType } from "../datamodel/Model";
+import { RichTextEditor } from "../RichMessageComponents"
 
 const ChatComposerWrapper = styled.div`
   margin: 0;

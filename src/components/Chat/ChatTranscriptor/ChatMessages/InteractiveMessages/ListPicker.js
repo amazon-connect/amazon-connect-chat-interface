@@ -12,7 +12,7 @@ import {
   Title,
   Subtitle
 } from "../InteractiveMessage";
-import Linkify from "react-linkify";
+import RichLinkRenderer from "./RichLinkRenderer";
  
 // have to calculate max height to maintain 16:9 aspect ratio
 const ImageContainer = styled.div`
@@ -103,17 +103,9 @@ export default function ListPicker({ content, addMessage }) {
       </ImageContainer>
       }
       <TextSection>
-      <Title>
-          <Linkify properties={{ target: "_blank" }}>
-            {title}
-          </Linkify>
-        </Title>
+        <RichLinkRenderer content={title} styledElement={Title} />
         {subtitle && (
-          <Subtitle>
-            <Linkify properties={{ target: "_blank" }}>
-              {subtitle}
-            </Linkify>
-          </Subtitle>
+          <RichLinkRenderer content={subtitle} styledElement={Subtitle} />
         )}
       </TextSection>
       <ResponsesSection>

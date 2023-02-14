@@ -11,7 +11,8 @@ import { InteractiveMessage } from "./InteractiveMessage";
 import { InView } from "react-intersection-observer";
 import { shouldDisplayMessageForType } from "../../../../utils/helper";
 import { modelUtils } from "../../datamodel/Utils";
-import { RichMessageRenderer } from "../../RichMessageComponents";
+import RichLinkRenderer from "./InteractiveMessages/RichLinkRenderer";
+import { RichMessageRenderer } from "../../RichMessageComponents"
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding} ${({ theme }) => theme.spacing.base};
@@ -294,9 +295,16 @@ export class ParticipantMessage extends PureComponent {
     if (contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
       const { data, templateType } = JSON.parse(content);
       if (this.props.isLatestMessage) {
-        return <InteractiveMessage content={data.content} templateType={templateType} addMessage={this.props.mediaOperations.addMessage} textInputRef={this.props.textInputRef} />;
+        return (
+          <InteractiveMessage
+            content={data.content}
+            templateType={templateType}
+            addMessage={this.props.mediaOperations.addMessage}
+            textInputRef={this.props.textInputRef}
+          />
+        );
       }
-      textContent = data.content.title;
+      textContent = <RichLinkRenderer content={data.content.title}></RichLinkRenderer>
     }
 
     if (contentType === ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN) {

@@ -1,4 +1,3 @@
-# Keep compatible webpack@4.x - Reference: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
 
 version: 2
 updates:
@@ -6,6 +5,9 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     ignore:
-      - dependency-name: "webpack"
+      # Keep compatible webpack@4.x - Reference: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
+      - dependency-name: "webpack" 
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

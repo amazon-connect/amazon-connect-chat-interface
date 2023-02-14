@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Style should match the snapshot 1`] = `
+exports[`<Panel /> Style should match the snapshot 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": .c3 {
@@ -189,32 +189,26 @@ Object {
         <p
           class="c3 c4"
         >
-          <span
-            class="Linkify"
+          PanelTitle 
+          <a
+            href="https://www.amazon.com/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
-            PanelTitle 
-            <a
-              href="https://www.amazon.com/"
-              target="_blank"
-            >
-              https://www.amazon.com/
-            </a>
-          </span>
+            https://www.amazon.com/
+          </a>
         </p>
         <p
           class="c3 c5"
         >
-          <span
-            class="Linkify"
+          PanelSubTitle 
+          <a
+            href="https://www.amazon.com/"
+            rel="noopener noreferrer"
+            target="_blank"
           >
-            PanelSubTitle 
-            <a
-              href="https://www.amazon.com/"
-              target="_blank"
-            >
-              https://www.amazon.com/
-            </a>
-          </span>
+            https://www.amazon.com/
+          </a>
         </p>
       </div>
       <div
@@ -265,32 +259,26 @@ Object {
       <p
         class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
       >
-        <span
-          class="Linkify"
+        PanelTitle 
+        <a
+          href="https://www.amazon.com/"
+          rel="noopener noreferrer"
+          target="_blank"
         >
-          PanelTitle 
-          <a
-            href="https://www.amazon.com/"
-            target="_blank"
-          >
-            https://www.amazon.com/
-          </a>
-        </span>
+          https://www.amazon.com/
+        </a>
       </p>
       <p
         class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
       >
-        <span
-          class="Linkify"
+        PanelSubTitle 
+        <a
+          href="https://www.amazon.com/"
+          rel="noopener noreferrer"
+          target="_blank"
         >
-          PanelSubTitle 
-          <a
-            href="https://www.amazon.com/"
-            target="_blank"
-          >
-            https://www.amazon.com/
-          </a>
-        </span>
+          https://www.amazon.com/
+        </a>
       </p>
     </div>
     <div

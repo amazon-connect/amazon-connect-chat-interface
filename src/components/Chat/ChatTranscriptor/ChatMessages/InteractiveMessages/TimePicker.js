@@ -11,7 +11,7 @@ import {
   Title,
   Subtitle
 } from "../InteractiveMessage";
-import Linkify from "react-linkify";
+import RichLinkRenderer from "./RichLinkRenderer";
  
 const NUM_TIMESLOTS_PER_PAGE = 3;
  
@@ -233,16 +233,10 @@ export default function TimePicker({ content, addMessage }) {
   return (
     <>
       <TextSection>
-        <Title>
-          <Linkify properties={{ target: "_blank" }}>
-            {title}
-          </Linkify>
-        </Title>
-        {subtitle && <Subtitle>
-            <Linkify properties={{ target: "_blank" }}>
-                {subtitle}
-            </Linkify>
-        </Subtitle>}
+        <RichLinkRenderer content={title} styledElement={Title} />
+        {subtitle && (
+          <RichLinkRenderer content={subtitle} styledElement={Subtitle} />
+        )}
       </TextSection>
       <ResponsesSection>
         <DatePicker>
