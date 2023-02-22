@@ -74,7 +74,7 @@ Render and send read/delivered message receipts with feature enabled in [your co
 
 ![View receipts](./screenshots/view-receipts.png)
 
-## Rich Text Formatting
+### Rich Text Formatting
 Send and receive messages with rich text formatting. Render the rich toolbar used to apply markdown styling and display the emoji picker.
 
 Enable/disable feature by updating the `initiateChat()` config:
@@ -98,6 +98,21 @@ Referencing [PR#92](https://github.com/amazon-connect/amazon-connect-chat-interf
  <!-- TODO: replace with reusable components - https://app.asana.com/0/1203611591691532/1203611591691556/f -->
 
 ![Chat Widget with rich messaging enabled screenshot](./screenshots/send-rich-messages.png)
+
+### Custom Chat Duration
+
+Learn more about chat duration: https://docs.aws.amazon.com/connect/latest/APIReference/API_StartChatContact.html#connect-StartChatContact-request-ChatDurationInMinutes
+
+You can set custom chat duration by updating the `initiateChat()` config:
+
+```diff
+connect.ChatInterface.initiateChat({
+    ...backendEndpoints,
+    // ...
++   chatDurationInMinutes: 1500, // min 60, max 10080 - default 1500 (25 hours)
+    // ...
+});
+```
 
 ### Audio Notifications
 A commonly requested feature for the Connect Chat Interface is to play a sound when a new message is received from the agent. This can be done via the ![ChatJs](https://github.com/amazon-connect/amazon-connect-chatjs#chatsessiononmessage) `onMessage` event.
