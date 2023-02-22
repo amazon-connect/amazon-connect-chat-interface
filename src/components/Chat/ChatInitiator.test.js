@@ -162,3 +162,57 @@ it("should attach headers if supplied and the optional field supportedMessagingC
     START_CHAT_CLIENT_TIMEOUT_MS
   );
 });
+
+it("should forward chatDurationInMinutes when optional field is set", async () => {
+  const inputWithHeaders = {
+    ...input,
+    chatDurationInMinutes: 1500,
+    headers: {
+      testHeader: "testHeaderValue",
+    },
+  };
+  await initiateChat(inputWithHeaders);
+
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(request).toHaveBeenCalledWith(
+    input.apiGatewayEndpoint,
+    {
+      headers: inputWithHeaders.headers,
+      method: "post",
+      body: JSON.stringify({
+        ParticipantDetails: {
+          DisplayName: inputWithHeaders.name,
+        },
+        ChatDurationInMinutes: 1500
+      }),
+    },
+    START_CHAT_CLIENT_TIMEOUT_MS
+  );
+});
+
+it("should only forward number if chatDurationInMinutes field is set", async () => {
+  const inputWithHeaders = {
+    ...input,
+    chatDurationInMinutes: "1500",
+    headers: {
+      testHeader: "testHeaderValue",
+    },
+  };
+  await initiateChat(inputWithHeaders);
+
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(request).toHaveBeenCalledWith(
+    input.apiGatewayEndpoint,
+    {
+      headers: inputWithHeaders.headers,
+      method: "post",
+      body: JSON.stringify({
+        ParticipantDetails: {
+          DisplayName: inputWithHeaders.name,
+        },
+        ChatDurationInMinutes: 1500
+      }),
+    },
+    START_CHAT_CLIENT_TIMEOUT_MS
+  );
+});

@@ -28,6 +28,7 @@ function safeParse(jsonString, defaultValue) {
  * @param {string} input.contactAttributes
  * @param {object} input.headers
  * @param {string} input.supportedMessagingContentTypes
+ * @param {number} input.chatDurationInMinutes
  * @returns {Promise} Promise object that resolves to chatDetails objects
  */
 export function initiateChat(input) {
@@ -63,6 +64,10 @@ export function initiateChat(input) {
 
   if (input.supportedMessagingContentTypes) {
     initiateChatRequest.SupportedMessagingContentTypes = input.supportedMessagingContentTypes.split(",");
+  }
+
+  if (input.chatDurationInMinutes) {
+    initiateChatRequest.ChatDurationInMinutes = Number(input.chatDurationInMinutes);
   }
 
   let headers = new Headers();
