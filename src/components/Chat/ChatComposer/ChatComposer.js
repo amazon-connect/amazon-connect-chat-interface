@@ -323,8 +323,6 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
 
   const defaultComposer = (
     <DefaultChatComposerWrapper>
-      {contactStatus === CONTACT_STATUS.CONNECTED && (
-        <React.Fragment>
           {composerConfig && composerConfig.attachmentsEnabled && (
             <PaperClipContainer
               tabIndex={0}
@@ -389,10 +387,16 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
           <SendMessageButtonContainer>
             <SendMessageButton isActive={!!message || attachment} sendMessage={sendMessage.bind(this)} />
           </SendMessageButtonContainer>
-        </React.Fragment>
-      )}
     </DefaultChatComposerWrapper>
   );
 
-  return <ChatComposerWrapper>{composerConfig && composerConfig.richMessagingEnabled ? richMessagingComposer : defaultComposer}</ChatComposerWrapper>;
+  return (
+    <ChatComposerWrapper>
+      { contactStatus === CONTACT_STATUS.CONNECTED && (
+          composerConfig && composerConfig.richMessagingEnabled
+              ? richMessagingComposer
+              : defaultComposer)
+      }
+    </ChatComposerWrapper>
+  );
 }
