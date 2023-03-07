@@ -8,7 +8,7 @@
 class EventBus {
 
   constructor() {
-    this._eventMap = {};
+    this._eventMap = new Map();
     if(window.connect && window.connect.LogManager) {
       this.logger = window.connect.LogManager.getLogger({ prefix: "ChatInterface-EventBus" });
     }
@@ -16,8 +16,10 @@ class EventBus {
 
   on(name, handler) {
     if (name && handler) {
-      this._eventMap[name] = this._eventMap[name] || [];
-      this._eventMap[name].push(handler);
+      const eventHandlers = this._eventMap.get(name) || new Map();
+      const handlerKey = generateHashKey(handler);
+      eventHandlers.set(handlerKey, handler);
+      this._eventMap.set(name, eventHandlers);
       this.logger && this.logger.info(`EventBus added event: [${name}].`);
     } else {
       this.logger && this.logger.error("For binding an event 'name' and 'handler' is mandatory", "provided parameters are", name, handler)
@@ -26,33 +28,50 @@ class EventBus {
 
   off(name, handler) {
     if (!handler) {
-      delete this._eventMap[name];
+      this._eventMap.delete(name);
       this.logger && this.logger.info(`EventBus cleared all event listeners: [${name}]`);
       return;
     }
 
-    if (this._eventMap[name]) {
-      const idx = this._eventMap[name].indexOf(handler);
+    const handlers = this._eventMap.get(name);
+    if (handlers) {
+      handlers.delete(generateHashKey(handler));
       this.logger && this.logger.info(`EventBus cleared event listener: [${name}]`)
-      if (idx !== -1) {
-        this._eventMap[name].splice(idx);
-      }
     }
   }
 
   cleanup(){
-    this._eventMap = {};
+    this._eventMap = new Map();
   }
 
   trigger(name, ...parameters) {
-    if (this._eventMap[name]) {
-      this.logger && this.logger.info(`Event: [${name}] in EventBus is triggered.`)
-      this._eventMap[name].forEach(function (handler) {
+    const handlers = this._eventMap.get(name);
+    if (handlers) {
+      this.logger && this.logger.info(`Event: [${name}] in EventBus is triggered.`);
+      for (const handler of handlers.values()) {
         handler(...parameters);
-      });
+      }
     }
     // Ignoring silently incase of non registered event
   }
+}
+
+function generateHashKey(handler) {
+  if (handler.toString().includes('[native code]')) {
+    return createHashCode(handler.name);
+  } else {
+    return createHashCode(handler);
+  }
+}
+
+function createHashCode(handler) {
+  let hash = 0;
+  for (let i = 0; i < handler.length; i++) {
+      let char = handler.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0;
+  }
+  return hash;
 }
 
 export default new EventBus();
