@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <script src="amazon-connect-chat-interface.js"></script>
+    <script src="backendEndpoints.js"></script>
 </head>
 <body>
 
@@ -42,21 +42,20 @@
                 </fieldset>
             </form>
         </section>
-        <section class="section-chat" id="section-chat" style="display: none; float: right; width: 50%;">
+        <section class="section-chat" id="section-chat" style="float: right; width: 50%; transition: opacity 1s; opacity: 0;">
             <div id="root"></div>
         </section>
     </div>
-    <script src="backendEndpoints.js"></script>
     <script>
-        $(function () {
+        (function () {
             connect.ChatInterface.init({
                 containerId: 'root' // This is the id of the container where you want the widget to reside
             });
 
-            $('#contactDetails').submit(function (e) {
+            document.getElementById('contactDetails').addEventListener('submit', function (e) {
                 e.preventDefault();
 
-                customerName = $('#firstName').val();
+                customerName = document.getElementById('firstName').value;
                 if (!customerName) {
                     alert('you must enter a name & username');
                     document.getElementById("contactDetails").reset();
@@ -78,17 +77,16 @@
                         contactFlowId,
                         instanceId
                     },successHandler, failureHandler);
-
                 }
             });
-        });
+        })();
 
         function successHandler(chatSession) {
             console.log("success!");
-            $('#section-chat').fadeIn(400);
+            document.getElementById('section-chat').style.opacity = 1;
 
             chatSession.onChatDisconnected(function(data) {
-                $('#section-chat').hide('slide');
+                document.getElementById('section-chat').style.opacity = 0;
             });
         }
 
