@@ -68,9 +68,9 @@ export function InteractiveMessage({ content, templateType, addMessage }) {
  
   function renderTemplate(){
     if (templateType === InteractiveMessageType.LIST_PICKER) {
-      return <ListPicker content={content} addMessage={onAddMessage}/>
+      return <ListPicker content={content} addMessage={onAddMessage} templateType={templateType}/>
     } else if (templateType === InteractiveMessageType.PANEL) {
-      return <Panel content={content} addMessage={onAddMessage}/>
+      return <Panel content={content} addMessage={onAddMessage} templateType={templateType}/>
     } else if (templateType === InteractiveMessageType.TIME_PICKER) {
       return <TimePicker content={content} addMessage={onAddMessage}/>
     }

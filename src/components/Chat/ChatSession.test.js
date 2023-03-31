@@ -96,7 +96,8 @@ const transcriptResponse = {
           MessageId: "31bf18c9-d80b-4f75-8145-c47946a26e03",
           Receipts: [],
         },
-        Content: "Amazon Connect will now simulate rolling dice by using the Distribute randomly block,,,now rolling,,,,,,,",
+        Content:
+          "Amazon Connect will now simulate rolling dice by using the Distribute randomly block,,,now rolling,,,,,,,",
         ContentType: "text/plain",
         DisplayName: "SYSTEM_MESSAGE",
         Id: "31bf18c9-d80b-4f75-8145-c47946a26e03",
@@ -220,12 +221,24 @@ describe("ChatSession", () => {
           const returnVal = session.sendAttachment(transcriptItem);
           returnVal
             .then(() => {
-              if (transcriptItem.transportDetails.error.type === AttachmentErrorType.ServiceQuotaExceededException) {
-                expect(transcriptItem.transportDetails.error.message).toEqual("Attachment failed to send. The maximum number of attachments allowed, has been reached");
-              } else if (transcriptItem.transportDetails.error.type === AttachmentErrorType.ValidationException) {
-                expect(transcriptItem.transportDetails.error.message).toEqual(DEFAULT_MESSAGE);
+              if (
+                transcriptItem.transportDetails.error.type ===
+                AttachmentErrorType.ServiceQuotaExceededException
+              ) {
+                expect(transcriptItem.transportDetails.error.message).toEqual(
+                  "Attachment failed to send. The maximum number of attachments allowed, has been reached"
+                );
+              } else if (
+                transcriptItem.transportDetails.error.type ===
+                AttachmentErrorType.ValidationException
+              ) {
+                expect(transcriptItem.transportDetails.error.message).toEqual(
+                  DEFAULT_MESSAGE
+                );
               } else {
-                expect(transcriptItem.transportDetails.error.message).toEqual("Attachment failed to send");
+                expect(transcriptItem.transportDetails.error.message).toEqual(
+                  "Attachment failed to send"
+                );
               }
             })
             .catch((e) => {
@@ -302,8 +315,10 @@ describe("ChatSession", () => {
     test("should not update transcript if messageId not found", async () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
-      const readCallback = session.client.session.onReadReceipt.mock.calls[0][0];
-      const connectionEstablishedCallback = session.client.session.onConnectionEstablished.mock.calls[0][0];
+      const readCallback =
+        session.client.session.onReadReceipt.mock.calls[0][0];
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
       await connectionEstablishedCallback();
       const readReceiptMessage = {
         data: {
@@ -329,9 +344,12 @@ describe("ChatSession", () => {
     test("should call handleMessageReceipt to update the transcript", async () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
-      const readCallback = session.client.session.onReadReceipt.mock.calls[0][0];
-      const deliveredCallback = session.client.session.onDeliveredReceipt.mock.calls[0][0];
-      const connectionEstablishedCallback = session.client.session.onConnectionEstablished.mock.calls[0][0];
+      const readCallback =
+        session.client.session.onReadReceipt.mock.calls[0][0];
+      const deliveredCallback =
+        session.client.session.onDeliveredReceipt.mock.calls[0][0];
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
       await connectionEstablishedCallback();
       const readReceiptMessage = {
         data: {
@@ -400,7 +418,8 @@ describe("ChatSession", () => {
       expect(session.client.session.sendEvent).toBeCalled();
       expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({
         content: "{}",
-        contentType: "application/vnd.amazonaws.connect.event.message.delivered",
+        contentType:
+          "application/vnd.amazonaws.connect.event.message.delivered",
       });
     });
     test("should call sendDeliveredReceipt when an new incoming message is received", () => {
@@ -417,7 +436,8 @@ describe("ChatSession", () => {
       expect(session.client.session.sendEvent).toBeCalled();
       expect(session.client.session.sendEvent.mock.calls[0][0]).toEqual({
         content: '{"messageId":"ID"}',
-        contentType: "application/vnd.amazonaws.connect.event.message.delivered",
+        contentType:
+          "application/vnd.amazonaws.connect.event.message.delivered",
       });
     });
 
@@ -433,6 +453,86 @@ describe("ChatSession", () => {
       );
       callbackFn(dataInput);
       expect(session.client.session.sendEvent).not.toBeCalled();
+    });
+
+    test('Interactive message test. The message of clicking "Show more" button should not be added to transcript, and transcript should only contain the latest interactive message with the same referenceId', () => {
+      const session = new ChatSession(chatDetails, "", region, stage);
+      session.client.onMessage = jest.fn();
+      session.openChatSession(true);
+      const callbackFn = session.client.onMessage.mock.calls[0][0];
+      const baseMessageObj = {
+        data: {
+          AbsoluteTime: "2023-03-17T08:25:45.992Z",
+          Type: "MESSAGE",
+          ParticipantId: "ParticipantId",
+          DisplayName: "BOT",
+          ParticipantRole: "SYSTEM",
+          InitialContactId: "InitialContactId",
+          ContactId: "InitialContactId",
+          ContentType: "application/vnd.amazonaws.connect.message.interactive",
+        },
+        chatDetails: {
+          initialContactId: "InitialContactId",
+          contactId: "InitialContactId",
+          participantId: "ParticipantId",
+          participantToken: "participantToken",
+        },
+      };
+
+      // This object is sent and then receive from web socket when user click "Show more" button
+      // This message is not added to transcript
+      const interactiveMessageRes1 = {
+        ...baseMessageObj,
+        data: {
+          ...baseMessageObj.data,
+          Content:
+            '{"version":"1.0","data":{"actionName":"Show more","preIndex":-1,"nextIndex":5,"listId":"serviceList","templateType":"ListPicker","referenceId":"0c210016-60d9-47f8-9342-551158f09110"},"action":"Show more"}',
+          Id: "id1",
+        },
+      };
+
+      // interactiveMessageRes2 and interactiveMessageRes3 contain the same referenceId, means they are from the same interactive message session
+      // interactiveMessageRes3 is added after interactiveMessageRes2, so transcript should only contain interactiveMessageRes3, interactiveMessageRes2 should be removed.
+      const interactiveMessageRes2 = {
+        ...baseMessageObj,
+        data: {
+          ...baseMessageObj.data,
+          Content:
+            '{"templateType":"ListPicker","version":"1.0","data":{"content":{"listId":"serviceList","title":"What produce would you like to buy?","subtitle":"Tap to select option","referenceId":"referenceId","elements":[{"title":"Acupuncture","subtitle":"$1.00"},{"title":"Chiropractor","subtitle":"$1.00"},{"title":"Naturopath","subtitle":"$1.00"},{"title":"Show more"}],"preIndex":-1,"nextIndex":5}}}',
+          Id: "id2",
+        },
+      };
+      const interactiveMessageRes3 = {
+        ...baseMessageObj,
+        data: {
+          ...baseMessageObj.data,
+          Content:
+            '{"templateType":"ListPicker","version":"1.0","data":{"content":{"listId":"serviceList","title":"What produce would you like to buy?","subtitle":"Tap to select option","referenceId":"referenceId","elements":[{"title":"Acupuncture","subtitle":"$1.00"},{"title":"Chiropractor","subtitle":"$1.00"},{"title":"Show more"}],"preIndex":-1,"nextIndex":5}}}',
+          Id: "id3",
+        },
+      };
+
+      // interactiveMessageRes4 is added after interactiveMessageRes3
+      // their referenceIds are different, that means they are from different interactive message session
+      // so interactiveMessageRes4 should be added to transcript.
+      const interactiveMessageRes4 = {
+        ...baseMessageObj,
+        data: {
+          ...baseMessageObj.data,
+          Content:
+            '{"templateType":"ListPicker","version":"1.0","data":{"content":{"listId":"serviceList","title":"What produce would you like to buy?","subtitle":"Tap to select option","referenceId":"newReferenceId","elements":[{"title":"Chiropractor","subtitle":"$1.00"},{"title":"Show more"}],"preIndex":-1,"nextIndex":5}}}',
+          Id: "id4",
+        },
+      };
+      callbackFn(interactiveMessageRes1);
+      callbackFn(interactiveMessageRes2);
+      callbackFn(interactiveMessageRes3);
+      callbackFn(interactiveMessageRes4);
+      // interactiveMessageRes1: The message of clicking "Show more" button is not added to transcript
+      // interactiveMessageRes2 and interactiveMessageRes3 are from the same interavtive message session, so only the latest one(interactiveMessageRes3) is added to transcript
+      // interactiveMessageRes4 is from a new session, so it can be added to transcript
+      // so there are totally 2 messages in transcript
+      expect(session.transcript.length).toEqual(2);
     });
   });
 });

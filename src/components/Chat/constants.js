@@ -21,3 +21,11 @@ export const CHAT_FEATURE_TYPES = {
 };
 
 export const FAIL_AFTER_NO_RETURN_SECONDS = 10;
+
+export const INTERACTIVE_MESSAGE = {
+  ACTIONS: {
+    SHOW_MORE: "SHOW_MORE",
+    PREVIOUS_OPTIONS: 'PREVIOUS_OPTIONS'
+  },
+  VERSION: "1.0"
+}

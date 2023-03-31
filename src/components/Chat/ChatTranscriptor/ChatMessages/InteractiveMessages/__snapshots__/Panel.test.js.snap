@@ -142,7 +142,7 @@ Object {
 }
 
 .c0 {
-  max-height: calc(95vw * (9/16));
+  max-height: calc(95vw * (9 / 16));
   overflow: hidden;
   display: none;
 }
@@ -251,7 +251,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-iRbamj jrMTlI"
+      class="sc-iRbamj dZAEsV"
     >
       <img
         alt="PanelImageDescription"
@@ -298,25 +298,25 @@ Object {
     >
       <div>
         <button
-          class="sc-gzVnrw fgSGc sc-jlyJG jWSCXn"
+          class="sc-gzVnrw fgSGc sc-jlyJG bLgwDh"
           data-selected="false"
           type="default"
           value="PanelElementTitle"
         >
           <p
-            class="sc-bZQynM fraGhu sc-gPEVay jLVYop"
+            class="sc-bZQynM fraGhu sc-gPEVay fXmaZh"
           >
             PanelElementTitle
           </p>
         </button>
         <button
-          class="sc-gzVnrw fgSGc sc-jlyJG jWSCXn"
+          class="sc-gzVnrw fgSGc sc-jlyJG bLgwDh"
           data-selected="false"
           type="default"
           value="AnotherPanelElementTitle"
         >
           <p
-            class="sc-bZQynM fraGhu sc-gPEVay jLVYop"
+            class="sc-bZQynM fraGhu sc-gPEVay fXmaZh"
           >
             AnotherPanelElementTitle
           </p>
