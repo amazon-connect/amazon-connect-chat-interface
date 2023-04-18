@@ -5,7 +5,8 @@ import "amazon-connect-chatjs";
 import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
 import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE, AttachmentErrorType, PARTICIPANT_TYPES } from "./datamodel/Model";
-import { getTimeFromTimeStamp, isJson } from "../../utils/helper";
+import { getTimeFromTimeStamp } from "../../utils/helper";
+import isJson from "is-json";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
@@ -692,16 +693,22 @@ class ChatSession {
 
   // The message of clicking "Show more" or "Previous options" in interactive message should not add to transcript
   _shouldAddToTranscript(message) {
-    if(message.content && message.content.data) {
-      const str = message.content.data;
-      if(isJson(str)) {
-        const { data } = JSON.parse(str);
-        if(data.actionName) {
-          return false;
+    try {
+      if(message.content && message.content.data) {
+        const str = message.content.data;
+        if(isJson(str)) {
+          const { data } = JSON.parse(str);
+          if(data.actionName) {
+            return false;
+          }
         }
       }
+      return true;
+    } catch (err) {
+      console.warn("error while evaluating ChatSession:_shouldAddToTranscript", err);
+      return true;
     }
-    return true;
+    
   }
 }
 
