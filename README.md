@@ -1,6 +1,6 @@
 # Amazon Connect Chat Interface
 
-## Table of content
+## Table of contents
 
   - [Overview](#overview)
   - [Building the package](#building-the-package)
