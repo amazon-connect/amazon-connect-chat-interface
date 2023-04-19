@@ -395,7 +395,7 @@ Object {
             type="default"
             value="2020-10-31T17:00+00:00"
           >
-            5:00 PM UTC
+            5:00 PM UTC
           </button>
         </div>
         <div
@@ -531,7 +531,7 @@ Object {
           type="default"
           value="2020-10-31T17:00+00:00"
         >
-          5:00 PM UTC
+          5:00 PM UTC
         </button>
       </div>
       <div
