@@ -39,6 +39,7 @@ export const ContentType = {
     AUDIO_X_WAV: "audio/x-wav", //Firefox
     AUDIO_VND_WAVE: "audio/vnd.wave", //IE
     INTERACTIVE_MESSAGE: "application/vnd.amazonaws.connect.message.interactive",
+    INTERACTIVE_RESPONSE: "application/vnd.amazonaws.connect.message.interactive.response",
   },
 };
 

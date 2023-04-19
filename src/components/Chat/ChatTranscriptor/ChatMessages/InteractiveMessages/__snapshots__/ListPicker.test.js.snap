@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Style should match the snapshot 1`] = `
+exports[`<ListPicker /> Style should match the snapshot 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": .c3 {
@@ -138,7 +138,7 @@ Object {
 }
 
 .c0 {
-  max-height: calc(95vw * (9/16));
+  max-height: calc(95vw * (9 / 16));
   overflow: hidden;
   display: none;
 }
@@ -148,10 +148,10 @@ Object {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
   width: 100%;
   max-width: none;
   border: 1px solid #DDDDDD;
@@ -226,6 +226,7 @@ Object {
           <button
             class="c7 c8"
             data-selected="false"
+            data-testid="listElementButton0"
             type="default"
             value="ListPickerElementTitle"
           >
@@ -254,6 +255,7 @@ Object {
           <button
             class="c7 c8"
             data-selected="false"
+            data-testid="listElementButton1"
             type="default"
             value="AnotherListPickerElementTitle"
           >
@@ -285,7 +287,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-gPEVay doYKXd"
+      class="sc-gPEVay cLlmav"
     >
       <img
         alt="ListPickerImageDescription"
@@ -326,13 +328,14 @@ Object {
     >
       <div>
         <button
-          class="sc-gzVnrw fgSGc sc-iRbamj kdjCbN"
+          class="sc-gzVnrw fgSGc sc-iRbamj icJGSx"
           data-selected="false"
+          data-testid="listElementButton0"
           type="default"
           value="ListPickerElementTitle"
         >
           <div
-            class="sc-jlyJG inoXrD"
+            class="sc-jlyJG livHos"
           >
             <img
               alt="ListPickerElementImageDescription"
@@ -354,13 +357,14 @@ Object {
           </div>
         </button>
         <button
-          class="sc-gzVnrw fgSGc sc-iRbamj kdjCbN"
+          class="sc-gzVnrw fgSGc sc-iRbamj icJGSx"
           data-selected="false"
+          data-testid="listElementButton1"
           type="default"
           value="AnotherListPickerElementTitle"
         >
           <div
-            class="sc-jlyJG inoXrD"
+            class="sc-jlyJG livHos"
           >
             <img
               alt="AnotherListPickerElementImageDescription"

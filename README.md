@@ -1,4 +1,26 @@
 # Amazon Connect Chat Interface
+
+## Table of content
+
+  - [Overview](#overview)
+  - [Building the package](#building-the-package)
+    - [Local](#local)
+    - [Production](#production)
+  - [Customization](#customization)
+    - [Logger Configuration](#logger-configuration)
+    - [Theme](#theme)
+    - [Message Receipts](#message-receipts)
+    - [Rich Text Formatting](#rich-text-formatting)
+    - [Custom Chat Duration](#custom-chat-duration)
+    - [Audio Notifications](#audio-notifications)
+  - [Components](#components)
+    - [Chat.js (src/components/Chat)](#chatjs-srccomponentschat)
+    - [Chat Transcriptor (src/components/Chat/ChatTranscriptor)](#chat-transcriptor-srccomponentschatchattranscriptor)
+    - [Chat Action Bar](#chat-action-bar)
+    - [Chat Composer](#chat-composer)
+  - [Interactive message](#interactive-message)
+    - [Implement action buttons in interactive message](#implement-action-buttons-in-interactive-message)
+
 ## Overview
 Amazon Connect Chat Interface is a light interface to create a customer widget for getting started with Amazon Connect chat. This package contains
 some lightweight components to render chat out of the box in your website, with a thin layer on top of [ChatJS](https://github.com/amazon-connect/amazon-connect-chatjs)
@@ -177,3 +199,13 @@ Changes can be made here for the hint text ("Type a message"), as well as the ed
 Example changing `FormattedMessage` hint text to "What's on your mind?":
 
 <img src="./screenshots/hint-text-composer.png" width=250px>
+
+## Interactive message
+
+Interactive messages are rich messages that present a prompt and pre-configured display options for a customer to choose. These messages are powered by Amazon Lex and configured through Amazon Lex using a Lambda. [Learn more](https://docs.aws.amazon.com/connect/latest/adminguide/interactive-messages.html)
+
+### Implement action buttons in interactive message
+
+Currently the max number of list picker options that return from server(via Lex) is 6(10 for panel picker), but our customers would like to provide more options to their end customers. In order to achieve this goal, we have implemented the idea of "Show more" and "Previous options" buttons in our interactive message UI. These changes will require customers to provide some new data when they configure the interactive message so that they are able to use this new feature. [Learn more about setting up action buttons](./.github/docs/InteractiveMessageActionButtonImplementation.md)
+
+<img src="./screenshots/interactive-message-action-buttons.png" width=250px>

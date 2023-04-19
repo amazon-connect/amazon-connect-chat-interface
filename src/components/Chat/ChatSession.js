@@ -6,6 +6,7 @@ import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
 import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE, AttachmentErrorType, PARTICIPANT_TYPES } from "./datamodel/Model";
 import { getTimeFromTimeStamp } from "../../utils/helper";
+import isJson from "is-json";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
@@ -256,7 +257,7 @@ class ChatSession {
     );
     this.logger && this.logger.info(`Adding outgoing message. ContactId: ${this.contactId}`);
 
-    this._addItemsToTranscript([message]);
+    this._shouldAddToTranscript(message) && this._addItemsToTranscript([message]);
 
     this.isOutgoingMessageInFlight = true;
 
@@ -265,7 +266,7 @@ class ChatSession {
       .then((response) => {
         console.log("send success");
         console.log(response);
-        this._replaceItemInTranscript(message, modelUtils.createTranscriptItemFromSuccessResponse(message, response));
+        this._shouldAddToTranscript(message) && this._replaceItemInTranscript(message, modelUtils.createTranscriptItemFromSuccessResponse(message, response));
 
         this.isOutgoingMessageInFlight = false;
         return response;
@@ -456,7 +457,7 @@ class ChatSession {
       const shouldBypassAddItemToTranscript = this.isOutgoingMessageInFlight === true && item.participantRole === PARTICIPANT_TYPES.CUSTOMER;
 
       if (!shouldBypassAddItemToTranscript) {
-        this._addItemsToTranscript([item]);
+        this._shouldAddToTranscript(item) && this._addItemsToTranscript([item]);
       }
     } else {
       console.log("_handleIncomingData NOT NOT item created");
@@ -523,7 +524,7 @@ class ChatSession {
     const newItemMap = items.reduce((acc, item) => ({ ...acc, [item.id]: item }), {});
 
     const newTranscript = this.transcript.filter((item) => newItemMap[item.id] === undefined);
-
+    self._removePreviousInteractiveMessage(newTranscript, items);
     newTranscript.push(...items);
     newTranscript.sort((a, b) => {
       const isASending = a.transportDetails.status === Status.Sending;
@@ -568,6 +569,34 @@ class ChatSession {
     }
 
     this._updateTranscript(newTranscript);
+  }
+
+  _removePreviousInteractiveMessage(oldTranscript, newTranscript) {
+    try {
+      const newInteractiveMessage = newTranscript.find((message) => {
+        const contentType = message.content.type;
+        return contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE;
+      })
+      if(newInteractiveMessage) {
+        const content = JSON.parse(newInteractiveMessage.content.data);
+        const referenceId = content.data.content.referenceId;
+        const previousInteractiveMsgIndex = oldTranscript.findIndex((oldMessage) => {
+          if(oldMessage.participantRole === 'SYSTEM' && isJson(oldMessage.content.data)) {
+            const newMessageContent = JSON.parse(oldMessage.content.data);
+            if(referenceId === newMessageContent.data.content.referenceId) {
+              return true;
+            }
+          }
+          return false;
+        })
+        if(previousInteractiveMsgIndex !== -1) {
+          oldTranscript.splice(previousInteractiveMsgIndex, 1);
+        }
+      }
+    } catch (error) {
+      this.logger && this.logger.error("Remove previous interactive message error: ", error);
+    }
+    
   }
 
   _replaceItemInTranscript(oldItem, newItem) {
@@ -660,6 +689,26 @@ class ChatSession {
     //  tp => tp.participantDetails.participantId !== participantId
     //);
     this._updateTypingParticipants([]);
+  }
+
+  // The message of clicking "Show more" or "Previous options" in interactive message should not add to transcript
+  _shouldAddToTranscript(message) {
+    try {
+      if(message.content && message.content.data) {
+        const str = message.content.data;
+        if(isJson(str)) {
+          const { data } = JSON.parse(str);
+          if(data.actionName) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } catch (err) {
+      console.warn("error while evaluating ChatSession:_shouldAddToTranscript", err);
+      return true;
+    }
+    
   }
 }
 
