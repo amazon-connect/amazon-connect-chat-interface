@@ -44,7 +44,7 @@ Content-type: application/json
       "SourceContactId": "string"
    },
    "RelatedContactId": "string",
-   "SupportedMessagingContentTypes": [ "application/vnd.amazonaws.connect.message.interactive.response" ] <--- Add contentType here
+   "SupportedMessagingContentTypes": [ ..., "application/vnd.amazonaws.connect.message.interactive.response" ] <--- Add contentType here
 }
 ```
 
