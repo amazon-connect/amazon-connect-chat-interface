@@ -11,7 +11,7 @@
 ## Context
 
 Currently the max number of list picker options that return from server(via Lex) is 6(10 for panel picker), but our customers would like to provide more options to their end customers.
-In order to achieve this goal, we have implemented the idea of "Show more" and "Previous options" buttons in our interactive message UI. These changes will require customers to provide some new data when they configure the interactive message so that they are able to use this new feature.
+In order to achieve this goal, we have implemented the feature of "Show more" and "Previous options" buttons in our interactive message UI. These changes will require customers to provide some new data when they configure the interactive message so that they are able to use this new feature.
 
 ## Configuration and new fields explanation:
 
