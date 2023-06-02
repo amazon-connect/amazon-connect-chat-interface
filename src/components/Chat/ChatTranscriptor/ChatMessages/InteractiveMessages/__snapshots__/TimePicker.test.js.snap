@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Style should match the snapshot 1`] = `
+exports[`<TimePicker /> Style should match the snapshot 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": .c1 {
@@ -274,33 +274,15 @@ Object {
       >
         <p
           class="c1 c2"
+          style="margin: 0px;"
         >
-          <span
-            class="Linkify"
-          >
-            TimePickerTitle 
-            <a
-              href="https://www.amazon.com/"
-              target="_blank"
-            >
-              https://www.amazon.com/
-            </a>
-          </span>
+          TimePickerTitle
         </p>
         <p
           class="c1 c3"
+          style="margin: 0px;"
         >
-          <span
-            class="Linkify"
-          >
-            TimePickerSubtitle 
-            <a
-              href="https://www.amazon.com/"
-              target="_blank"
-            >
-              https://www.amazon.com/
-            </a>
-          </span>
+          TimePickerSubtitle
         </p>
       </div>
       <div
@@ -406,54 +388,36 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-kEYyzF ckIbiJ"
+      class="sc-fAjcbJ bJnSGf"
     >
       <p
-        class="sc-bZQynM fraGhu sc-jKJlTe axADD"
+        class="sc-bZQynM fraGhu sc-fMiknA guHZOl"
+        style="margin: 0px;"
       >
-        <span
-          class="Linkify"
-        >
-          TimePickerTitle 
-          <a
-            href="https://www.amazon.com/"
-            target="_blank"
-          >
-            https://www.amazon.com/
-          </a>
-        </span>
+        TimePickerTitle
       </p>
       <p
-        class="sc-bZQynM fraGhu sc-eNQAEJ fUfAFZ"
+        class="sc-bZQynM fraGhu sc-dVhcbM fmjyml"
+        style="margin: 0px;"
       >
-        <span
-          class="Linkify"
-        >
-          TimePickerSubtitle 
-          <a
-            href="https://www.amazon.com/"
-            target="_blank"
-          >
-            https://www.amazon.com/
-          </a>
-        </span>
+        TimePickerSubtitle
       </p>
     </div>
     <div
-      class="sc-kkGfuU cfPhzB"
+      class="sc-caSCKo eMgFmA"
     >
       <div
-        class="sc-iAyFgw hMgEHm"
+        class="sc-cHGsZl kpeViL"
       >
         <button
-          class="sc-gzVnrw fgSGc sc-hSdWYo sc-eHgmQL bNskMA"
+          class="sc-gzVnrw fgSGc sc-TOsTZ sc-kgAjT cxxbiC"
           data-selected="false"
           data-testid="time-picker-prev-date-button"
           disabled=""
           type="default"
         >
           <div
-            class="sc-jWBwVP bnPjCx"
+            class="sc-ksYbfQ kgnwri"
             direction="left"
           >
             <svg
@@ -486,13 +450,13 @@ Object {
           Saturday, October 31
         </span>
         <button
-          class="sc-gzVnrw fgSGc sc-hSdWYo sc-cvbbAY iYwLML"
+          class="sc-gzVnrw fgSGc sc-TOsTZ sc-cJSrbW krSpzL"
           data-selected="false"
           data-testid="time-picker-next-date-button"
           type="default"
         >
           <div
-            class="sc-jWBwVP jawwfc"
+            class="sc-ksYbfQ leEBYp"
             direction="right"
           >
             <svg
@@ -523,7 +487,7 @@ Object {
         </button>
       </div>
       <div
-        class="sc-brqgnP fQgvlG"
+        class="sc-hmzhuo cAkzWi"
       >
         <button
           class="sc-gzVnrw fgSGc"
@@ -535,7 +499,7 @@ Object {
         </button>
       </div>
       <div
-        class="sc-cMljjf jwGaPE"
+        class="sc-frDJqD cxKniI"
       />
     </div>
   </div>,

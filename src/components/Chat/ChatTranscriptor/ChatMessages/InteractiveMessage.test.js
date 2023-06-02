@@ -1,9 +1,167 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 import React from "react";
 import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
 import { ThemeProvider } from "../../../../theme";
 import { screen } from "@testing-library/dom";
+import { HeaderText } from "./InteractiveMessage";
 import { InteractiveMessage } from "./InteractiveMessage";
+import { mockQuickReplyContent } from "./InteractiveMessages/QuickReply.test";
+import { mockCarouselContent } from "./InteractiveMessages/Carousel.test";
+
+describe("HeaderText", () => {
+  const MOCK_TITLE = "MockTitle";
+  const MOCK_SUBTITLE = "MockSubtitle";
+
+  const renderComponent = (customProps) => {
+    render(
+      <ThemeProvider>
+        <HeaderText {...customProps} />
+      </ThemeProvider>
+    );
+  };
+
+  it("should render plain text header", () => {
+    renderComponent({
+      title: MOCK_TITLE,
+      subtitle: MOCK_SUBTITLE,
+    });
+
+    expect(screen.getByText(MOCK_TITLE)).toBeInTheDocument();
+    expect(screen.getByText(MOCK_SUBTITLE)).toBeInTheDocument();
+  });
+
+  it("should render without subtitle prop", () => {
+    renderComponent({
+      title: MOCK_TITLE,
+      subtitle: null,
+    });
+
+    expect(screen.getByText(MOCK_TITLE)).toBeInTheDocument();
+    expect(() => screen.getByText(MOCK_SUBTITLE)).toThrow(
+      "Unable to find an element"
+    );
+  });
+
+  it.each([
+    ["**", "strong"],
+    ["__", "strong"],
+    ["*", "em"],
+    ["_", "em"],
+  ])(
+    "should render rich text header title: [%s]",
+    (markdownSyntax, expectedElem) => {
+      renderComponent({
+        title: `${markdownSyntax}${MOCK_TITLE}${markdownSyntax}`,
+        subtitle: `${markdownSyntax}${MOCK_SUBTITLE}${markdownSyntax}`,
+      });
+
+      const titleElem = screen.getByText(MOCK_TITLE);
+      expect(titleElem).toBeInTheDocument();
+      expect(titleElem.parentElement.innerHTML).toBe(
+        `<${expectedElem}>${MOCK_TITLE}</${expectedElem}>`
+      );
+      const subtitleElem = screen.getByText(MOCK_SUBTITLE);
+      expect(subtitleElem).toBeInTheDocument();
+      expect(subtitleElem.parentElement.innerHTML).toBe(
+        `<${expectedElem}>${MOCK_SUBTITLE}</${expectedElem}>`
+      );
+    }
+  );
+
+  it.each([
+    [
+      "https://plainlink",
+      '<a style="margin: 0px; text-decoration: none;" href="https://plainlink" target="_blank" rel="noopener noreferrer">https://plainlink</a>',
+    ],
+    [
+      "http://plainlink",
+      '<a style="margin: 0px; text-decoration: none;" href="http://plainlink" target="_blank" rel="noopener noreferrer">http://plainlink</a>',
+    ],
+    [
+      "https://amazon.com",
+      '<a style="margin: 0px; text-decoration: none;" href="https://amazon.com" target="_blank" rel="noopener noreferrer">https://amazon.com</a>',
+    ],
+    [
+      "https://aws.amazon.com",
+      '<a style="margin: 0px; text-decoration: none;" href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">https://aws.amazon.com</a>',
+    ],
+  ])("should detect and render plain link: [%s]", (plainText, expectedHTML) => {
+    renderComponent({
+      title: `${MOCK_TITLE} ${plainText}`,
+      subtitle: `${MOCK_SUBTITLE} ${plainText}`,
+    });
+
+    const titleElem = screen.getByText(MOCK_TITLE);
+    expect(titleElem).toBeInTheDocument();
+    expect(titleElem.innerHTML).toBe(`${MOCK_TITLE} ${expectedHTML}`);
+    const subtitleElem = screen.getByText(MOCK_SUBTITLE);
+    expect(subtitleElem).toBeInTheDocument();
+    expect(subtitleElem.innerHTML).toBe(`${MOCK_SUBTITLE} ${expectedHTML}`);
+  });
+
+  it.each([
+    [
+      "[aws.amazon.com](https://aws.amazon.com)",
+      '<a style="margin: 0px; text-decoration: none;" href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">aws.amazon.com</a>',
+    ],
+    [
+      "[custom text](https://aws.amazon.com)",
+      '<a style="margin: 0px; text-decoration: none;" href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">custom text</a>',
+    ],
+    [
+      "[custom text](customLink)",
+      '<a style="margin: 0px; text-decoration: none;" href="http://customLink" target="_blank" rel="noopener noreferrer">custom text</a>',
+    ],
+  ])(
+    "should detect and render markdown syntax link: [%s]",
+    (plainText, expectedHTML) => {
+      renderComponent({
+        title: `${MOCK_TITLE} ${plainText}`,
+        subtitle: `${MOCK_SUBTITLE} ${plainText}`,
+      });
+
+      const titleElem = screen.getByText(MOCK_TITLE);
+      expect(titleElem).toBeInTheDocument();
+      expect(titleElem.innerHTML).toBe(`${MOCK_TITLE} ${expectedHTML}`);
+      const subtitleElem = screen.getByText(MOCK_SUBTITLE);
+      expect(subtitleElem).toBeInTheDocument();
+      expect(subtitleElem.innerHTML).toBe(`${MOCK_SUBTITLE} ${expectedHTML}`);
+    }
+  );
+
+  it.each([
+    [
+      "[aws.amazon.com](https://aws.amazon.com)<!--rehype:target=_self-->",
+      '<a style="margin: 0px; text-decoration: none;" href="https://aws.amazon.com">aws.amazon.com</a>',
+    ],
+    [
+      "[aws.amazon.com](https://aws.amazon.com)<!--rehype:style=color:pink-->",
+      '<a style="margin: 0px; text-decoration: none;" href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">aws.amazon.com</a>',
+    ],
+    [
+      "[aws.amazon.com](https://aws.amazon.com)<!--rehype:rel=external-->",
+      '<a style="margin: 0px; text-decoration: none;" href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">aws.amazon.com</a>',
+    ],
+  ])(
+    "should detect and render rehype attribute syntax link: [%s]",
+    (plainText, expectedHTML) => {
+      renderComponent({
+        title: `${MOCK_TITLE} ${plainText}`,
+        subtitle: `${MOCK_SUBTITLE} ${plainText}`,
+      });
+
+      const titleElem = screen.getByText(MOCK_TITLE);
+      expect(titleElem).toBeInTheDocument();
+      expect(titleElem.innerHTML).toBe(`${MOCK_TITLE} ${expectedHTML}`);
+      const subtitleElem = screen.getByText(MOCK_SUBTITLE);
+      expect(subtitleElem).toBeInTheDocument();
+      expect(subtitleElem.innerHTML).toBe(`${MOCK_SUBTITLE} ${expectedHTML}`);
+    }
+  );
+});
 
 describe("Interactive message", () => {
   const mockProps = {
@@ -78,5 +236,21 @@ describe("Interactive message", () => {
       content: timePickerContent,
     });
     expect(screen.getByText("Schedule appointment")).toBeInTheDocument();
+  });
+  it("should render interactive message -> quickreply component correctly", () => {
+    renderComponent({
+      ...mockProps,
+      templateType: "QuickReply",
+      content: mockQuickReplyContent,
+    });
+    expect(screen.getByText(mockQuickReplyContent.title)).toBeInTheDocument();
+  });
+  it("should render interactive message -> carousel component correctly", () => {
+    renderComponent({
+      ...mockProps,
+      templateType: "Carousel",
+      content: mockCarouselContent,
+    });
+    expect(screen.getByText(mockCarouselContent.title)).toBeInTheDocument();
   });
 });

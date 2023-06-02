@@ -1,20 +1,16 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
- 
+
 import React, { useState } from "react";
 import PT from "prop-types";
 import { Button } from "connect-core";
 import styled from "styled-components";
-import {
-  TextSection,
-  ResponsesSection,
-  Title,
-  Subtitle
-} from "../InteractiveMessage";
-import Linkify from "react-linkify";
- 
+import { ResponsesSection, HeaderText } from "../InteractiveMessage";
+import { truncateStrFromCharLimit } from "../../../../../utils/helper";
+import { InteractiveMessageType } from "../../../datamodel/Model";
+
 const NUM_TIMESLOTS_PER_PAGE = 3;
- 
+
 const DatePicker = styled.div`
   background-color: white;
   display: flex;
@@ -28,7 +24,6 @@ const DatePicker = styled.div`
     flex-grow: 2;
   }
 `;
- 
 const DatePickerButton = styled(Button)`
   border: ${({ theme }) => theme.globals.baseBorder};
   padding: 0;
@@ -44,15 +39,15 @@ const DatePickerButton = styled(Button)`
     display: flex;
   }
 `;
- 
+
 DatePicker.PrevDateButton = styled(DatePickerButton)`
   align-self: flex-start;
 `;
- 
+
 DatePicker.NextDateButton = styled(DatePickerButton)`
   align-self: flex-end;
 `;
- 
+
 const ChevronIcon = styled.div`
   font-size: 0;
   transform: rotate(${props => props.direction === "left" ? "180" : "0"}deg);
@@ -62,7 +57,7 @@ const ChevronIcon = styled.div`
     height: 12px;
   }
 `;
- 
+
 const TimeslotsList = styled.div`
   padding: 0 ${({ theme }) => theme.spacing.large};
   
@@ -79,8 +74,7 @@ const TimeslotsList = styled.div`
     }
   }
 `;
- 
- 
+
 const TimeslotControls = styled.div`
   display: flex;
   justify-content: space-between;
@@ -96,23 +90,22 @@ const TimeslotControls = styled.div`
 	  }
   }
 `;
- 
+
 const PrevTimeslotsButton = styled.button`
   background-color: #fff;
   align-self: flex-start;
 `;
- 
+
 const NextTimeslotsButton = styled.button`
   background-color: #fff;
   align-self: flex-end;
 `;
- 
- 
+
 const ConfirmControlsButton = styled.button`
   background-color: #3F5773;
   color: #fff !important;
 `;
- 
+
 const ConfirmSelectionButton = styled(ConfirmControlsButton)`
   flex-grow: 2;
 `;
@@ -124,14 +117,15 @@ const ResetSelectionButton = styled(ConfirmControlsButton)`
     height: ${({theme}) => theme.fontsSize.small};
   }
 `;
- 
+
 function getLocale(){
   return (navigator.languages && navigator.languages.length > 0 ? navigator.languages[0] : navigator.language) || 'en-US';
 }
- 
-function TimeslotButton({timeslot, timezoneOffset, onClick, onKeyPress, selected }) {
+
+function TimeslotButton({timeslot, onClick, onKeyPress, selected }) {
     const { date } = timeslot;
     const parsedDate = new Date(date);
+
     const start = parsedDate.toLocaleTimeString(
       `${getLocale()}`,
       {
@@ -140,19 +134,19 @@ function TimeslotButton({timeslot, timezoneOffset, onClick, onKeyPress, selected
         timeZoneName: "short"
       }
     );
- 
+
     return (
         <Button selected={selected} value={date} onKeyPress={onKeyPress} onClick={onClick}>
             {`${start}` }
         </Button>
     );
 }
- 
+
 TimePicker.propTypes = {
   content: PT.object.isRequired,
   addMessage: PT.func.isRequired
 };
- 
+
 function Chevron({ direction }){
   return (
     <ChevronIcon direction={direction}>
@@ -165,85 +159,76 @@ function Chevron({ direction }){
     </ChevronIcon>
   )
 }
- 
+
 export default function TimePicker({ content, addMessage }) {
-  const { title, subtitle, timezoneOffset, timeslots } = content;
- 
-  const timeslotsGroupedByDate = getTimeslotsGroupedByDate(timeslots);
+  const { title: inputTitle, subtitle: inputSubtitle, timeZoneOffset, timeslots } = content;
+  const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.TIME_PICKER, "titleCharLimit");
+  const subtitle = truncateStrFromCharLimit(inputSubtitle, InteractiveMessageType.TIME_PICKER, "subtitleCharLimit");
+
+  const timeSlotsWithTimeZoneOffset = getTimeslotsWithTimeZoneOffset(timeslots, timeZoneOffset);
+  const timeslotsGroupedByDate = getTimeslotsGroupedByDate(timeSlotsWithTimeZoneOffset);
   const availableDates = Object.keys(timeslotsGroupedByDate);
- 
+
   const [datePageIndex, setDatePageIndex] = useState(0);
   const selectedDate = availableDates[datePageIndex];
   const timeslotsForSelectedDate = timeslotsGroupedByDate[selectedDate];
- 
+
   const [selectedTimeslot, setSelectedTimeslot] = useState(null);
   const [timeslotPageIndex, setTimeslotPageIndex] = useState(0);
   const timeslotStartIndex = timeslotPageIndex * NUM_TIMESLOTS_PER_PAGE;
   const timeslotNextPageStartIndex = timeslotStartIndex + NUM_TIMESLOTS_PER_PAGE;
   const visibleTimeslotsForSelectedDate = timeslotsForSelectedDate.slice(timeslotStartIndex, Math.min(timeslotsForSelectedDate.length, timeslotNextPageStartIndex));
- 
+
   function showEarlierDate() {
     changeDate(datePageIndex - 1);
   }
- 
+
   function showLaterDate() {
     changeDate(datePageIndex + 1);
   }
- 
+
   function changeDate(pageIndex) {
     setDatePageIndex(pageIndex);
     setTimeslotPageIndex(0);
     setSelectedTimeslot(null);
   }
- 
+
   function showEarlierTimeslots() {
     setTimeslotPageIndex(timeslotPageIndex - 1);
   }
- 
+
   function showLaterTimeslots() {
     setTimeslotPageIndex(timeslotPageIndex + 1);
   }
- 
+
   function onTimeslotSelect(e) {
     setSelectedTimeslot(e.currentTarget.value);
   }
- 
+
   function resetSelection(){
     setSelectedTimeslot(null);
   }
- 
+
   function confirmSelection() {
     addMessage({ text: selectedTimeslot });
   }
- 
+
   function renderTimeslot(timeslot) {
     const selected = new Date(selectedTimeslot).getTime() === new Date(timeslot.date).getTime();
-    return <TimeslotButton selected={selected} key={`timeslot${timeslot.date}`} timeslot={timeslot} timezoneOffset={timezoneOffset} onKeypress={onTimeslotSelect} onClick={onTimeslotSelect}/>;
+    return <TimeslotButton selected={selected} key={`timeslot${timeslot.date}`} timeslot={timeslot} onKeypress={onTimeslotSelect} onClick={onTimeslotSelect}/>;
   }
- 
-  const dateString = new Date(selectedDate).toLocaleDateString(getLocale(),
-    {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
+    const dateString = new Date(selectedDate).toLocaleDateString(getLocale(),
+      {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      });
   const showDateControls = availableDates.length > 0;
   const showTimeslotPaginationButtons = selectedTimeslot == null && timeslotsForSelectedDate.length > NUM_TIMESLOTS_PER_PAGE;
- 
+
   return (
     <>
-      <TextSection>
-        <Title>
-          <Linkify properties={{ target: "_blank" }}>
-            {title}
-          </Linkify>
-        </Title>
-        {subtitle && <Subtitle>
-            <Linkify properties={{ target: "_blank" }}>
-                {subtitle}
-            </Linkify>
-        </Subtitle>}
-      </TextSection>
+      <HeaderText title={title} subtitle={subtitle} />
       <ResponsesSection>
         <DatePicker>
           {showDateControls &&
@@ -281,7 +266,7 @@ export default function TimePicker({ content, addMessage }) {
     </>
   );
 }
- 
+
 function getTimeslotsGroupedByDate(timeslots){
   //iso dates are lexicographically sortable, may hve to switch to comparing by date objects though
   timeslots.sort((a, b) => a.date.localeCompare(b.date));
@@ -294,4 +279,26 @@ function getTimeslotsGroupedByDate(timeslots){
     slotMap[dateKey].push(slot)
     return slotMap;
   }, {});
+}
+
+function applyTimeZoneOffset(date, timeZoneOffset) {
+    if (timeZoneOffset) {
+        const dateStringToMilli = new Date(date).getTime();
+        const timeZoneOffsetMinutesToMilli = 60000 * timeZoneOffset;
+        const totalMilliWithTimeZoneOffset = dateStringToMilli + timeZoneOffsetMinutesToMilli;
+        return new Date(totalMilliWithTimeZoneOffset).toISOString().slice(0, -2) + "+00:00";
+    } else {
+        // timeZoneOffset is optional. If none is provided, then return just the date.
+        return date;
+    }
+}
+
+function getTimeslotsWithTimeZoneOffset(timeslots, timeZoneOffset) {
+    const timeslotsWithTimeZoneOffset = timeslots.map((ts) => {
+        return {
+            ...ts,
+            date: applyTimeZoneOffset(ts.date, timeZoneOffset),
+        }
+    });
+    return timeslotsWithTimeZoneOffset
 }

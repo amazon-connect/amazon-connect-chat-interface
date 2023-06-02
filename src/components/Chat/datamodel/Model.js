@@ -67,7 +67,14 @@ export const InteractiveMessageType = {
   LIST_PICKER: "ListPicker",
   TIME_PICKER: "TimePicker",
   PANEL: "Panel",
+  QUICK_REPLY: "QuickReply",
+  CAROUSEL: "Carousel"
 };
+
+export const InteractiveMessageSelectionType = {
+  ACTION: "action", // default - user clicks button and responds to lex box
+  HYPERLINK: "hyperlink" // clickable link element - no response sent to lex bot
+}
 
 export const Status = {
   Sending: "Sending",
