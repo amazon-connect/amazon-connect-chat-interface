@@ -26,8 +26,7 @@
     "clean": "rm -rf build/ node_modules build",
     "test": "node scripts/test.js",
     "coverage": "node scripts/test.js --coverage",
-    "test:watch": "node scripts/test.js --watchAll",
-    "preinstall": "npx npm-force-resolutions"
+    "test:watch": "node scripts/test.js --watchAll"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -186,9 +185,10 @@
     "webpack-dev-server": "^4.1.1",
     "webpack-manifest-plugin": "2.0.4"
   },
-  "resolutions": {
+  "overrides": {
     "glob-parent": "^5.1.2",
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "css-loader": {
+      "webpack": "^4.46.0"
+    }
   }
 }
