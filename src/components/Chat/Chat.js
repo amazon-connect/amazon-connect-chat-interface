@@ -10,8 +10,6 @@ import React, { Component } from "react";
 import {Text} from "connect-core";
 import styled from "styled-components";
 
-import renderHTML from 'react-render-html';
-
 const ChatWrapper = styled.div`
   position: relative;
   display: flex;
@@ -89,7 +87,9 @@ function Header({ headerConfig }){
   const config = Object.assign({}, defaultHeaderConfig, headerConfig);
 
   if(config.isHTML){
-    return renderHTML(config.render());
+    return (<div dangerouslySetInnerHTML={{
+      __html: config.render()
+    }}></div>)
   }else{
     return config.render();
   }

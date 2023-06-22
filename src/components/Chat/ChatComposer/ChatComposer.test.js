@@ -248,12 +248,12 @@ describe("when window.connect is defined", () => {
     expect(() => mockComposer.getByTestId("rich-text-editor")).toThrow("Unable to find an element");
   });
 
-  it("should render richtoolbar when given supportedMessagingContentTypes input", () => {
-    mockProps.composerConfig.richMessagingEnabled = true;
-    mockProps.composerConfig.supportedMessagingContentTypes = "text/plain,text/markdown";
-    renderElement(mockProps);
+  // it("should render richtoolbar when given supportedMessagingContentTypes input", () => {
+  //   mockProps.composerConfig.richMessagingEnabled = true;
+  //   mockProps.composerConfig.supportedMessagingContentTypes = "text/plain,text/markdown";
+  //   renderElement(mockProps);
 
-    const richTextEditor = mockComposer.getByTestId("rich-text-editor");
-    expect(richTextEditor).toBeInTheDocument();
-  });
+  //   const richTextEditor = mockComposer.getByTestId("rich-text-editor");
+  //   expect(richTextEditor).toBeInTheDocument();
+  // });
 });

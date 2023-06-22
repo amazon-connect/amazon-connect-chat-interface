@@ -11,7 +11,7 @@ import { InteractiveMessage } from "./InteractiveMessage";
 import { InView } from "react-intersection-observer";
 import { shouldDisplayMessageForType } from "../../../../utils/helper";
 import { modelUtils } from "../../datamodel/Utils";
-import { RichMessageRenderer } from "../../RichMessageComponents";
+// import { RichMessageRenderer } from "../../RichMessageComponents";
 
 export const MessageBox = styled.div`
   padding: ${({ theme }) => theme.globals.basePadding} ${({ theme }) => theme.spacing.base};
@@ -299,9 +299,9 @@ export class ParticipantMessage extends PureComponent {
       textContent = data.content.title;
     }
 
-    if (contentType === ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN) {
-      return <RichMessageRenderer content={textContent} />;
-    }
+    // if (contentType === ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN) {
+    //   return <RichMessageRenderer content={textContent} />;
+    // }
     return <PlainTextMessage content={textContent} />;
   }
 

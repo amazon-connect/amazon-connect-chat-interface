@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, {PureComponent} from "react"
-import { ClipLoader, BeatLoader} from "react-spinners";
+import ClipLoader from "react-spinners/ClipLoader";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default class Loader extends PureComponent {
   render() {

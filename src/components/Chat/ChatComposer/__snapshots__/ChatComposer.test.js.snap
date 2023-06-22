@@ -240,25 +240,25 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-kGXeez bsulgI"
+      class="sc-bwzfXH iCGSIH"
     >
       <div
-        class="sc-kpOJdX yKUIE"
+        class="sc-htpNat cBLfXq"
       >
         <div
-          class="sc-ckVGcZ bSJpNg"
+          class="sc-ifAKCX pOVqI"
           data-testid="customer-chat-attachment-icon"
           tabindex="0"
         >
           <button
             aria-label="Attach a file"
-            class="sc-jKJlTe iesImO"
+            class="sc-EHOje gQMuAY"
           >
             <label
               for="customer-chat-file-select-12344"
             >
               <div
-                class="sc-kEYyzF gxVqSG"
+                class="sc-htoDjs hpKmfn"
               >
                 <svg
                   height="24"
@@ -288,14 +288,14 @@ Object {
         </div>
         <textarea
           aria-label="Type a message"
-          class="sc-hMqMXs hOdWwg"
+          class="sc-gzVnrw gJEKd"
           data-testid="customer-chat-text-input"
           placeholder="Type a message"
           spellcheck="true"
           tabindex="0"
         />
         <div
-          class="sc-dxgOiQ jhaimo"
+          class="sc-bxivhb fCxIqY"
         >
           <div
             aria-label="Send Message"
@@ -616,25 +616,25 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-kGXeez bsulgI"
+      class="sc-bwzfXH iCGSIH"
     >
       <div
-        class="sc-kpOJdX yKUIE"
+        class="sc-htpNat cBLfXq"
       >
         <div
-          class="sc-ckVGcZ bSJpNg"
+          class="sc-ifAKCX pOVqI"
           data-testid="customer-chat-attachment-icon"
           tabindex="0"
         >
           <button
             aria-label="Attach a file"
-            class="sc-jKJlTe iesImO"
+            class="sc-EHOje gQMuAY"
           >
             <label
               for="customer-chat-file-select-12344"
             >
               <div
-                class="sc-kEYyzF gxVqSG"
+                class="sc-htoDjs hpKmfn"
               >
                 <svg
                   height="24"
@@ -664,14 +664,14 @@ Object {
         </div>
         <textarea
           aria-label="Type a message"
-          class="sc-hMqMXs hOdWwg"
+          class="sc-gzVnrw gJEKd"
           data-testid="customer-chat-text-input"
           placeholder="Type a message"
           spellcheck="true"
           tabindex="0"
         />
         <div
-          class="sc-dxgOiQ jhaimo"
+          class="sc-bxivhb fCxIqY"
         >
           <div
             aria-label="Send Message"

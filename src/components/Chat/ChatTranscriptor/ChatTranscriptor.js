@@ -7,7 +7,6 @@ import PT from "prop-types";
 import styled from "styled-components";
 import { modelUtils } from "../datamodel/Utils";
 import { Direction, PARTICIPANT_MESSAGE, ATTACHMENT_MESSAGE } from "../datamodel/Model";
-import renderHTML from 'react-render-html';
 import {
   MessageBox,
   ParticipantMessage,
@@ -130,7 +129,11 @@ export default class ChatTranscriptor extends PureComponent {
 
     return (
       <MessageBox key={key} textAlign={textAlign}>
-        {config.isHTML ? renderHTML(content) : content}
+        {config.isHTML ? 
+        (<div dangerouslySetInnerHTML={{
+            __html: content
+          }}></div>)
+        : content}
       </MessageBox>
     );
   };

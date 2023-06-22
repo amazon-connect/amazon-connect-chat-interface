@@ -208,32 +208,32 @@ test("Should not be able to download an rejected attachment", () => {
   expect(mockProps.downloadAttachment).toHaveBeenCalledTimes(0);
 });
 
-test("Should be able to render bold, italics, numbered list, bulleted list and hyperlink, but not image", () => {
-  mockProps.transcript = mockRichMessagingTranscript;
-  renderElement(mockProps);
-  // bold
-  const boldMessage = document.querySelector("strong");
-  expect(boldMessage).toBeInTheDocument();
-  expect(boldMessage).toHaveTextContent("bold");
-  // italic
-  const italicMessage = document.querySelector("em");
-  expect(italicMessage).toBeInTheDocument();
-  expect(italicMessage).toHaveTextContent("italic");
-  // numbered list & bulleted list
-  const messageList = document.querySelectorAll("li");
-  expect(messageList).toHaveLength(4);
-  expect(messageList[0]).toHaveTextContent("item1");
-  expect(messageList[1]).toHaveTextContent("item2");
-  expect(messageList[2]).toHaveTextContent("item3");
-  expect(messageList[3]).toHaveTextContent("item4");
-  // hyperlink
-  const hyperlinkMessage = document.querySelector("a");
-  expect(hyperlinkMessage).toBeInTheDocument();
-  expect(hyperlinkMessage).toHaveTextContent("hyperlink");
-  // image
-  const messageContainer = document.querySelector("img");
-  expect(messageContainer).not.toBeInTheDocument();
-});
+// test("Should be able to render bold, italics, numbered list, bulleted list and hyperlink, but not image", () => {
+//   mockProps.transcript = mockRichMessagingTranscript;
+//   renderElement(mockProps);
+//   // bold
+//   const boldMessage = document.querySelector("strong");
+//   expect(boldMessage).toBeInTheDocument();
+//   expect(boldMessage).toHaveTextContent("bold");
+//   // italic
+//   const italicMessage = document.querySelector("em");
+//   expect(italicMessage).toBeInTheDocument();
+//   expect(italicMessage).toHaveTextContent("italic");
+//   // numbered list & bulleted list
+//   const messageList = document.querySelectorAll("li");
+//   expect(messageList).toHaveLength(4);
+//   expect(messageList[0]).toHaveTextContent("item1");
+//   expect(messageList[1]).toHaveTextContent("item2");
+//   expect(messageList[2]).toHaveTextContent("item3");
+//   expect(messageList[3]).toHaveTextContent("item4");
+//   // hyperlink
+//   const hyperlinkMessage = document.querySelector("a");
+//   expect(hyperlinkMessage).toBeInTheDocument();
+//   expect(hyperlinkMessage).toHaveTextContent("hyperlink");
+//   // image
+//   const messageContainer = document.querySelector("img");
+//   expect(messageContainer).not.toBeInTheDocument();
+// });
 test("Should be able to see Message Receipts", () => {
   mockProps.transcript = mockRichMessagingTranscript;
   renderElement(mockProps);

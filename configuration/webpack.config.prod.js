@@ -193,7 +193,7 @@ module.exports = {
         },
       }),
     ],
- 
+    minimize: true,
     // Keep the runtime chunk seperated to enable long term caching
     // https://twitter.com/wSokra/status/969679223278505985
     runtimeChunk: false,
@@ -511,7 +511,7 @@ module.exports = {
         silent: true,
         formatter: typescriptFormatter,
       }),
-      // new BundleAnalyzerPlugin(),
+       //new BundleAnalyzerPlugin(),
   ].filter(Boolean),
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

@@ -8,7 +8,7 @@ import PT from "prop-types";
 import { CONTACT_STATUS, KEYBOARD_KEY_CONSTANTS } from "connect-constants";
 import TextareaAutosize from "react-textarea-autosize";
 import SendMessageButton from "./SendMessageButton";
-import { RichTextEditor } from "../RichMessageComponents";
+// import { RichTextEditor } from "../RichMessageComponents";
 
 import { ATTACHMENT_ACCEPT_CONTENT_TYPES, ContentType } from "../datamodel/Model";
 
@@ -310,16 +310,16 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
   const ariaLabel = "Type a message";
   const placeholder = attachment == null ? ariaLabel : "";
 
-  const richMessagingComposer = (
-    <RichTextEditor
-      allowedFileContentTypes={ATTACHMENT_ACCEPT_CONTENT_TYPES}
-      attachmentsEnabled={composerConfig && composerConfig.attachmentsEnabled}
-      sendMessage={sendMarkdownMessage}
-      sendAttachment={sendAttachmentGivenFile}
-      placeholder={placeholder}
-      onTyping={throttledOnTyping}
-    ></RichTextEditor>
-  );
+  // const richMessagingComposer = (
+  //   <RichTextEditor
+  //     allowedFileContentTypes={ATTACHMENT_ACCEPT_CONTENT_TYPES}
+  //     attachmentsEnabled={composerConfig && composerConfig.attachmentsEnabled}
+  //     sendMessage={sendMarkdownMessage}
+  //     sendAttachment={sendAttachmentGivenFile}
+  //     placeholder={placeholder}
+  //     onTyping={throttledOnTyping}
+  //   ></RichTextEditor>
+  // );
 
   const defaultComposer = (
     <DefaultChatComposerWrapper>
@@ -392,10 +392,7 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
 
   return (
     <ChatComposerWrapper>
-      { contactStatus === CONTACT_STATUS.CONNECTED && (
-          composerConfig && composerConfig.richMessagingEnabled
-              ? richMessagingComposer
-              : defaultComposer)
+      { contactStatus === CONTACT_STATUS.CONNECTED && defaultComposer
       }
     </ChatComposerWrapper>
   );
