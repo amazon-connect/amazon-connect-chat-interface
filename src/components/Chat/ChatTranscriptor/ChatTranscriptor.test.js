@@ -134,11 +134,7 @@ const mockAttachmentsTranscript = [
     id: "2210",
     type: ATTACHMENT_MESSAGE,
     transportDetails: {
-      direction: "Outgoing",
-      error: {
-        type: AttachmentErrorType.InternalServerException,
-        message: "transport error",
-      },
+      direction: "Outgoing"
     },
     Attachments: [
       {
@@ -203,9 +199,15 @@ test("Should be able to see and download an attachment", () => {
 test("Should not be able to download an rejected attachment", () => {
   renderElement(mockProps);
   expect(mockTranscriptor.getByText("testDownloadError.pdf")).toBeDefined();
-  expect(mockTranscriptor.getByText("transport error")).toBeDefined();
   fireEvent.click(mockTranscriptor.getByText("testDownloadError.pdf"));
   expect(mockProps.downloadAttachment).toHaveBeenCalledTimes(0);
+});
+
+test("Should show error message for rejected attachment", () => {
+  renderElement(mockProps);
+  const errorMessage = document.querySelector('span');
+  expect(errorMessage).toBeInTheDocument();
+  expect(errorMessage).toHaveTextContent('Attachment was rejected.');
 });
 
 test("Should be able to render bold, italics, numbered list, bulleted list and hyperlink, but not image", () => {

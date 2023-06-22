@@ -305,6 +305,11 @@ export class ParticipantMessage extends PureComponent {
       ) {
         content = this.props.messageDetails.Attachments[0];
         contentType = content.ContentType;
+        if (content.Status === AttachmentStatus.REJECTED && error === undefined) {
+          error = {
+            message: "Attachment was rejected."
+          }
+        }
       } else {
         content = {
           AttachmentName: this.props.messageDetails.content.name,
