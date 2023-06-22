@@ -1,5 +1,5 @@
 /* eslint-disable */
-'use strict';Object.defineProperty(exports,'__esModule',{value:true});var React=require('react'),ReactMarkdown=require('react-markdown'),draftJs=require('draft-js'),styled=require('styled-components'),PropTypes=require('prop-types');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}function _interopNamespace(e){if(e&&e.__esModule)return e;var n=Object.create(null);if(e){Object.keys(e).forEach(function(k){if(k!=='default'){var d=Object.getOwnPropertyDescriptor(e,k);Object.defineProperty(n,k,d.get?d:{enumerable:true,get:function(){return e[k]}});}})}n["default"]=e;return Object.freeze(n)}var React__default=/*#__PURE__*/_interopDefaultLegacy(React);var React__namespace=/*#__PURE__*/_interopNamespace(React);var ReactMarkdown__default=/*#__PURE__*/_interopDefaultLegacy(ReactMarkdown);var styled__default=/*#__PURE__*/_interopDefaultLegacy(styled);var PropTypes__default=/*#__PURE__*/_interopDefaultLegacy(PropTypes);function _objectWithoutPropertiesLoose(source, excluded) {
+import*as React from'react';import React__default,{useState,useRef,useEffect}from'react';import ReactMarkdown from'react-markdown';import {Modifier,EditorState,RichUtils,CompositeDecorator,convertToRaw,Editor}from'draft-js';import styled from'styled-components';import PropTypes from'prop-types';function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
   var target = {};
   var sourceKeys = Object.keys(source);
@@ -1699,19 +1699,19 @@ function ccount$1(source, character) {
   }
 
   return count
-}var convert_1 = convert$2;
+}var convert_1 = convert$3;
 
-function convert$2(test) {
+function convert$3(test) {
   if (test == null) {
-    return ok
+    return ok$1
   }
 
   if (typeof test === 'string') {
-    return typeFactory(test)
+    return typeFactory$1(test)
   }
 
   if (typeof test === 'object') {
-    return 'length' in test ? anyFactory(test) : allFactory(test)
+    return 'length' in test ? anyFactory$1(test) : allFactory(test)
   }
 
   if (typeof test === 'function') {
@@ -1737,12 +1737,12 @@ function allFactory(test) {
   }
 }
 
-function anyFactory(tests) {
+function anyFactory$1(tests) {
   var checks = [];
   var index = -1;
 
   while (++index < tests.length) {
-    checks[index] = convert$2(tests[index]);
+    checks[index] = convert$3(tests[index]);
   }
 
   return any
@@ -1762,7 +1762,7 @@ function anyFactory(tests) {
 
 // Utility to convert a string into a function which checks a given node’s type
 // for said string.
-function typeFactory(test) {
+function typeFactory$1(test) {
   return type
 
   function type(node) {
@@ -1771,25 +1771,25 @@ function typeFactory(test) {
 }
 
 // Utility to return true.
-function ok() {
+function ok$1() {
   return true
-}var color_1 = color$1;
-function color$1(d) {
+}var color_1 = color$2;
+function color$2(d) {
   return '\u001B[33m' + d + '\u001B[39m'
-}var unistUtilVisitParents = visitParents;
+}var unistUtilVisitParents = visitParents$1;
 
-var convert$1 = convert_1;
-var color = color_1;
+var convert$2 = convert_1;
+var color$1 = color_1;
 
-var CONTINUE = true;
-var SKIP = 'skip';
-var EXIT = false;
+var CONTINUE$1 = true;
+var SKIP$1 = 'skip';
+var EXIT$1 = false;
 
-visitParents.CONTINUE = CONTINUE;
-visitParents.SKIP = SKIP;
-visitParents.EXIT = EXIT;
+visitParents$1.CONTINUE = CONTINUE$1;
+visitParents$1.SKIP = SKIP$1;
+visitParents$1.EXIT = EXIT$1;
 
-function visitParents(tree, test, visitor, reverse) {
+function visitParents$1(tree, test, visitor, reverse) {
   var step;
   var is;
 
@@ -1799,7 +1799,7 @@ function visitParents(tree, test, visitor, reverse) {
     test = null;
   }
 
-  is = convert$1(test);
+  is = convert$2(test);
   step = reverse ? -1 : 1;
 
   factory(tree, null, [])();
@@ -1817,7 +1817,7 @@ function visitParents(tree, test, visitor, reverse) {
           : undefined;
 
       visit.displayName =
-        'node (' + color(value.type + (name ? '<' + name + '>' : '')) + ')';
+        'node (' + color$1(value.type + (name ? '<' + name + '>' : '')) + ')';
     }
 
     return visit
@@ -1829,20 +1829,20 @@ function visitParents(tree, test, visitor, reverse) {
       var offset;
 
       if (!test || is(node, index, parents[parents.length - 1] || null)) {
-        result = toResult(visitor(node, parents));
+        result = toResult$1(visitor(node, parents));
 
-        if (result[0] === EXIT) {
+        if (result[0] === EXIT$1) {
           return result
         }
       }
 
-      if (node.children && result[0] !== SKIP) {
+      if (node.children && result[0] !== SKIP$1) {
         offset = (reverse ? node.children.length : -1) + step;
 
         while (offset > -1 && offset < node.children.length) {
           subresult = factory(node.children[offset], offset, grandparents)();
 
-          if (subresult[0] === EXIT) {
+          if (subresult[0] === EXIT$1) {
             return subresult
           }
 
@@ -1856,13 +1856,13 @@ function visitParents(tree, test, visitor, reverse) {
   }
 }
 
-function toResult(value) {
+function toResult$1(value) {
   if (value !== null && typeof value === 'object' && 'length' in value) {
     return value
   }
 
   if (typeof value === 'number') {
-    return [CONTINUE, value]
+    return [CONTINUE$1, value]
   }
 
   return [value]
@@ -1878,8 +1878,8 @@ function toResult(value) {
 		.replace(/-/g, '\\x2d');
 };var mdastUtilFindAndReplace = findAndReplace$1;
 
-var visit = unistUtilVisitParents;
-var convert = convert_1;
+var visit$1 = unistUtilVisitParents;
+var convert$1 = convert_1;
 var escape = escapeStringRegexp;
 
 var splice = [].splice;
@@ -1984,10 +1984,10 @@ function findAndReplace$1(tree, find, replace, options) {
 }
 
 function search$1(tree, settings, handler) {
-  var ignored = convert(settings.ignore || []);
+  var ignored = convert$1(settings.ignore || []);
   var result = [];
 
-  visit(tree, 'text', visitor);
+  visit$1(tree, 'text', visitor);
 
   return result
 
@@ -3224,77 +3224,609 @@ function gfm(options) {
     if (data[field]) data[field].push(value);
     else data[field] = [value];
   }
-}var _excluded = ["node"],
-    _excluded2 = ["node"],
-    _excluded3 = ["node"],
-    _excluded4 = ["node"];
+}/**
+ * @typedef {import('unist').Node} Node
+ * @typedef {import('unist').Parent} Parent
+ */
 
-var RichMessageRenderer = function RichMessageRenderer(props) {
-  return /*#__PURE__*/React__default["default"].createElement(ReactMarkdown__default["default"], {
-    children: props.content,
-    remarkPlugins: [remarkGfm],
-    disallowedElements: ["img"],
-    components: {
-      p: function p(_ref) {
-        _ref.node;
-            var props = _objectWithoutProperties(_ref, _excluded);
+/**
+ * Generate an assertion from a test.
+ *
+ * Useful if you’re going to test many nodes, for example when creating a
+ * utility where something else passes a compatible test.
+ *
+ * The created function is a bit faster because it expects valid input only:
+ * a `node`, `index`, and `parent`.
+ *
+ * @param test
+ *   *   when nullish, checks if `node` is a `Node`.
+ *   *   when `string`, works like passing `(node) => node.type === test`.
+ *   *   when `function` checks if function passed the node is true.
+ *   *   when `object`, checks that all keys in test are in node, and that they have (strictly) equal values.
+ *   *   when `array`, checks if any one of the subtests pass.
+ * @returns
+ *   An assertion.
+ */
+const convert =
+  /**
+   * @type {(
+   *   (<Kind extends Node>(test: PredicateTest<Kind>) => AssertPredicate<Kind>) &
+   *   ((test?: Test) => AssertAnything)
+   * )}
+   */
+  (
+    /**
+     * @param {Test} [test]
+     * @returns {AssertAnything}
+     */
+    function (test) {
+      if (test === undefined || test === null) {
+        return ok
+      }
 
-        return /*#__PURE__*/React__default["default"].createElement("p", Object.assign({
-          style: {
-            margin: '0'
+      if (typeof test === 'string') {
+        return typeFactory(test)
+      }
+
+      if (typeof test === 'object') {
+        return Array.isArray(test) ? anyFactory(test) : propsFactory(test)
+      }
+
+      if (typeof test === 'function') {
+        return castFactory(test)
+      }
+
+      throw new Error('Expected function, string, or object as test')
+    }
+  );
+
+/**
+ * @param {Array<string | Props | TestFunctionAnything>} tests
+ * @returns {AssertAnything}
+ */
+function anyFactory(tests) {
+  /** @type {Array<AssertAnything>} */
+  const checks = [];
+  let index = -1;
+
+  while (++index < tests.length) {
+    checks[index] = convert(tests[index]);
+  }
+
+  return castFactory(any)
+
+  /**
+   * @this {unknown}
+   * @param {Array<unknown>} parameters
+   * @returns {boolean}
+   */
+  function any(...parameters) {
+    let index = -1;
+
+    while (++index < checks.length) {
+      if (checks[index].call(this, ...parameters)) return true
+    }
+
+    return false
+  }
+}
+
+/**
+ * Turn an object into a test for a node with a certain fields.
+ *
+ * @param {Props} check
+ * @returns {AssertAnything}
+ */
+function propsFactory(check) {
+  return castFactory(all)
+
+  /**
+   * @param {Node} node
+   * @returns {boolean}
+   */
+  function all(node) {
+    /** @type {string} */
+    let key;
+
+    for (key in check) {
+      // @ts-expect-error: hush, it sure works as an index.
+      if (node[key] !== check[key]) return false
+    }
+
+    return true
+  }
+}
+
+/**
+ * Turn a string into a test for a node with a certain type.
+ *
+ * @param {string} check
+ * @returns {AssertAnything}
+ */
+function typeFactory(check) {
+  return castFactory(type)
+
+  /**
+   * @param {Node} node
+   */
+  function type(node) {
+    return node && node.type === check
+  }
+}
+
+/**
+ * Turn a custom test into a test for a node that passes that test.
+ *
+ * @param {TestFunctionAnything} check
+ * @returns {AssertAnything}
+ */
+function castFactory(check) {
+  return assertion
+
+  /**
+   * @this {unknown}
+   * @param {unknown} node
+   * @param {Array<unknown>} parameters
+   * @returns {boolean}
+   */
+  function assertion(node, ...parameters) {
+    return Boolean(
+      node &&
+        typeof node === 'object' &&
+        'type' in node &&
+        // @ts-expect-error: fine.
+        Boolean(check.call(this, node, ...parameters))
+    )
+  }
+}
+
+function ok() {
+  return true
+}/**
+ * @param {string} d
+ * @returns {string}
+ */
+function color(d) {
+  return '\u001B[33m' + d + '\u001B[39m'
+}/**
+ * @typedef {import('unist').Node} Node
+ * @typedef {import('unist').Parent} Parent
+ * @typedef {import('unist-util-is').Test} Test
+ */
+
+/**
+ * Continue traversing as normal.
+ */
+const CONTINUE = true;
+
+/**
+ * Stop traversing immediately.
+ */
+const EXIT = false;
+
+/**
+ * Do not traverse this node’s children.
+ */
+const SKIP = 'skip';
+
+/**
+ * Visit nodes, with ancestral information.
+ *
+ * This algorithm performs *depth-first* *tree traversal* in *preorder*
+ * (**NLR**) or if `reverse` is given, in *reverse preorder* (**NRL**).
+ *
+ * You can choose for which nodes `visitor` is called by passing a `test`.
+ * For complex tests, you should test yourself in `visitor`, as it will be
+ * faster and will have improved type information.
+ *
+ * Walking the tree is an intensive task.
+ * Make use of the return values of the visitor when possible.
+ * Instead of walking a tree multiple times, walk it once, use `unist-util-is`
+ * to check if a node matches, and then perform different operations.
+ *
+ * You can change the tree.
+ * See `Visitor` for more info.
+ *
+ * @param tree
+ *   Tree to traverse.
+ * @param test
+ *   `unist-util-is`-compatible test
+ * @param visitor
+ *   Handle each node.
+ * @param reverse
+ *   Traverse in reverse preorder (NRL) instead of the default preorder (NLR).
+ * @returns
+ *   Nothing.
+ */
+const visitParents =
+  /**
+   * @type {(
+   *   (<Tree extends Node, Check extends Test>(tree: Tree, test: Check, visitor: BuildVisitor<Tree, Check>, reverse?: boolean | null | undefined) => void) &
+   *   (<Tree extends Node>(tree: Tree, visitor: BuildVisitor<Tree>, reverse?: boolean | null | undefined) => void)
+   * )}
+   */
+  (
+    /**
+     * @param {Node} tree
+     * @param {Test} test
+     * @param {Visitor<Node>} visitor
+     * @param {boolean | null | undefined} [reverse]
+     * @returns {void}
+     */
+    function (tree, test, visitor, reverse) {
+      if (typeof test === 'function' && typeof visitor !== 'function') {
+        reverse = visitor;
+        // @ts-expect-error no visitor given, so `visitor` is test.
+        visitor = test;
+        test = null;
+      }
+
+      const is = convert(test);
+      const step = reverse ? -1 : 1;
+
+      factory(tree, undefined, [])();
+
+      /**
+       * @param {Node} node
+       * @param {number | undefined} index
+       * @param {Array<Parent>} parents
+       */
+      function factory(node, index, parents) {
+        /** @type {Record<string, unknown>} */
+        // @ts-expect-error: hush
+        const value = node && typeof node === 'object' ? node : {};
+
+        if (typeof value.type === 'string') {
+          const name =
+            // `hast`
+            typeof value.tagName === 'string'
+              ? value.tagName
+              : // `xast`
+              typeof value.name === 'string'
+              ? value.name
+              : undefined;
+
+          Object.defineProperty(visit, 'name', {
+            value:
+              'node (' + color(node.type + (name ? '<' + name + '>' : '')) + ')'
+          });
+        }
+
+        return visit
+
+        function visit() {
+          /** @type {ActionTuple} */
+          let result = [];
+          /** @type {ActionTuple} */
+          let subresult;
+          /** @type {number} */
+          let offset;
+          /** @type {Array<Parent>} */
+          let grandparents;
+
+          if (!test || is(node, index, parents[parents.length - 1] || null)) {
+            result = toResult(visitor(node, parents));
+
+            if (result[0] === EXIT) {
+              return result
+            }
           }
-        }, props));
-      },
-      ol: function ol(_ref2) {
-        _ref2.node;
-            var props = _objectWithoutProperties(_ref2, _excluded2);
 
-        return /*#__PURE__*/React__default["default"].createElement("ol", Object.assign({
-          style: {
-            margin: '0',
-            padding: '0 30px',
-            listStyleType: 'decimal'
+          // @ts-expect-error looks like a parent.
+          if (node.children && result[0] !== SKIP) {
+            // @ts-expect-error looks like a parent.
+            offset = (reverse ? node.children.length : -1) + step;
+            // @ts-expect-error looks like a parent.
+            grandparents = parents.concat(node);
+
+            // @ts-expect-error looks like a parent.
+            while (offset > -1 && offset < node.children.length) {
+              // @ts-expect-error looks like a parent.
+              subresult = factory(node.children[offset], offset, grandparents)();
+
+              if (subresult[0] === EXIT) {
+                return subresult
+              }
+
+              offset =
+                typeof subresult[1] === 'number' ? subresult[1] : offset + step;
+            }
           }
-        }, props));
-      },
-      ul: function ul(_ref3) {
-        _ref3.node;
-            var props = _objectWithoutProperties(_ref3, _excluded3);
 
-        return /*#__PURE__*/React__default["default"].createElement("ul", Object.assign({
-          style: {
-            margin: '0',
-            padding: '0 30px',
-            listStyleType: 'disc'
-          }
-        }, props));
-      },
-      a: function a(_ref4) {
-        _ref4.node;
-            var props = _objectWithoutProperties(_ref4, _excluded4);
-
-        return /*#__PURE__*/React__default["default"].createElement("a", Object.assign({
-          style: {
-            margin: '0',
-            textDecoration: 'none'
-          },
-          target: "_blank"
-        }, props, {
-          href: updateURLValue(props.href)
-        }));
+          return result
+        }
       }
     }
-  });
-};
+  );
 
+/**
+ * Turn a return value into a clean result.
+ *
+ * @param {VisitorResult} value
+ *   Valid return values from visitors.
+ * @returns {ActionTuple}
+ *   Clean result.
+ */
+function toResult(value) {
+  if (Array.isArray(value)) {
+    return value
+  }
+
+  if (typeof value === 'number') {
+    return [CONTINUE, value]
+  }
+
+  return [value]
+}/**
+ * @typedef {import('unist').Node} Node
+ * @typedef {import('unist').Parent} Parent
+ * @typedef {import('unist-util-is').Test} Test
+ * @typedef {import('unist-util-visit-parents').VisitorResult} VisitorResult
+ */
+
+/**
+ * Visit nodes.
+ *
+ * This algorithm performs *depth-first* *tree traversal* in *preorder*
+ * (**NLR**) or if `reverse` is given, in *reverse preorder* (**NRL**).
+ *
+ * You can choose for which nodes `visitor` is called by passing a `test`.
+ * For complex tests, you should test yourself in `visitor`, as it will be
+ * faster and will have improved type information.
+ *
+ * Walking the tree is an intensive task.
+ * Make use of the return values of the visitor when possible.
+ * Instead of walking a tree multiple times, walk it once, use `unist-util-is`
+ * to check if a node matches, and then perform different operations.
+ *
+ * You can change the tree.
+ * See `Visitor` for more info.
+ *
+ * @param tree
+ *   Tree to traverse.
+ * @param test
+ *   `unist-util-is`-compatible test
+ * @param visitor
+ *   Handle each node.
+ * @param reverse
+ *   Traverse in reverse preorder (NRL) instead of the default preorder (NLR).
+ * @returns
+ *   Nothing.
+ */
+const visit =
+  /**
+   * @type {(
+   *   (<Tree extends Node, Check extends Test>(tree: Tree, test: Check, visitor: BuildVisitor<Tree, Check>, reverse?: boolean | null | undefined) => void) &
+   *   (<Tree extends Node>(tree: Tree, visitor: BuildVisitor<Tree>, reverse?: boolean | null | undefined) => void)
+   * )}
+   */
+  (
+    /**
+     * @param {Node} tree
+     * @param {Test} test
+     * @param {Visitor} visitor
+     * @param {boolean | null | undefined} [reverse]
+     * @returns {void}
+     */
+    function (tree, test, visitor, reverse) {
+      if (typeof test === 'function' && typeof visitor !== 'function') {
+        reverse = visitor;
+        visitor = test;
+        test = null;
+      }
+
+      visitParents(tree, test, overload, reverse);
+
+      /**
+       * @param {Node} node
+       * @param {Array<Parent>} parents
+       */
+      function overload(node, parents) {
+        const parent = parents[parents.length - 1];
+        return visitor(
+          node,
+          parent ? parent.children.indexOf(node) : null,
+          parent
+        )
+      }
+    }
+  );const getURLParameters = (url = '') => (url.match(/([^?=&]+)(=([^&]*))/g) || []).reduce((a, v) => ((a[v.slice(0, v.indexOf('='))] = v.slice(v.indexOf('=') + 1)), a), {});
+const prevChild = (data = [], index) => {
+    let i = index;
+    while (i > -1) {
+        i--;
+        if (!data[i])
+            return;
+        if ((data[i] && data[i].value && data[i].value.replace(/(\n|\s)/g, '') !== '') || data[i].type !== 'text') {
+            if (!/^rehype:/.test(data[i].value) || data[i].type !== 'comment')
+                return;
+            return data[i];
+        }
+    }
+    return;
+};
+const nextChild = (data = [], index, tagName, codeBlockParames) => {
+    let i = index;
+    while (i < data.length) {
+        i++;
+        if (tagName) {
+            const element = data[i];
+            if (element && element.value && element.value.replace(/(\n|\s)/g, '') !== '' || data[i] && data[i].type === 'element') {
+                return element.tagName === tagName ? element : undefined;
+            }
+        }
+        else {
+            const element = data[i];
+            if (!element || element.type === 'element')
+                return;
+            if (element.type === 'text' && element.value.replace(/(\n|\s)/g, '') !== '')
+                return;
+            if (element.type && /^(comment|raw)$/ig.test(element.type)) {
+                if (element.value && !/^rehype:/.test(element.value.replace(/^(\s+)?<!--(.*?)-->/, '$2') || '')) {
+                    return;
+                }
+                if (codeBlockParames) {
+                    const nextNode = nextChild(data, i, 'pre', codeBlockParames);
+                    if (nextNode)
+                        return;
+                    element.value = (element.value || '').replace(/^(\n|\s)+/, '');
+                    return element;
+                }
+                else {
+                    element.value = (element.value || '').replace(/^(\n|\s)+/, '');
+                    return element;
+                }
+            }
+        }
+    }
+    return;
+};
+/**
+ * 获取代码注视的位置
+ * @param data 数据
+ * @param index 当前数据所在的位置
+ * @returns 返回 当前参数数据 Object，`{}`
+ */
+const getCommentObject = ({ value = '' }) => {
+    const param = getURLParameters(value.replace(/^<!--(.*?)-->/, '$1').replace(/^rehype:/, ''));
+    Object.keys(param).forEach((keyName) => {
+        if (param[keyName] === 'true') {
+            param[keyName] = true;
+        }
+        if (param[keyName] === 'false') {
+            param[keyName] = false;
+        }
+        if (typeof param[keyName] === 'string' && !/^0/.test(param[keyName]) && !isNaN(+param[keyName])) {
+            param[keyName] = +param[keyName];
+        }
+    });
+    return param;
+};
+const propertiesHandle = (defaultAttrs, attrs, type) => {
+    if (type === 'string') {
+        return { ...defaultAttrs, 'data-config': JSON.stringify({ ...attrs, rehyp: true }) };
+    }
+    else if (type === 'attr') {
+        return { ...defaultAttrs, ...attrs };
+    }
+    return { ...defaultAttrs, 'data-config': { ...attrs, rehyp: true } };
+};const rehypeAttrs = (options = {}) => {
+    const { properties = 'data', codeBlockParames = true } = options;
+    return (tree) => {
+        visit(tree, 'element', (node, index, parent) => {
+            if (codeBlockParames && node.tagName === 'pre' && node && Array.isArray(node.children) && parent && Array.isArray(parent.children) && parent.children.length > 1) {
+                const firstChild = node.children[0];
+                if (firstChild && firstChild.tagName === 'code' && typeof index === 'number') {
+                    const child = prevChild(parent.children, index);
+                    if (child) {
+                        const attr = getCommentObject(child);
+                        if (Object.keys(attr).length > 0) {
+                            node.properties = { ...node.properties, ...{ 'data-type': 'rehyp' } };
+                            firstChild.properties = propertiesHandle(firstChild.properties, attr, properties);
+                        }
+                    }
+                }
+            }
+            if (/^(em|strong|b|a|i|p|pre|kbd|blockquote|h(1|2|3|4|5|6)|code|table|img|del|ul|ol)$/.test(node.tagName) && parent && Array.isArray(parent.children) && typeof index === 'number') {
+                const child = nextChild(parent.children, index, '', codeBlockParames);
+                if (child) {
+                    const attr = getCommentObject(child);
+                    if (Object.keys(attr).length > 0) {
+                        node.properties = propertiesHandle(node.properties, attr, properties);
+                    }
+                }
+            }
+        });
+    };
+};
+var rehypeAttrs$1 = rehypeAttrs;var _excluded = ["node"],
+  _excluded2 = ["node"],
+  _excluded3 = ["node"];
 var updateURLValue = function updateURLValue(urlValue) {
   var updatedUrlValue = urlValue;
-
   if (!/^https?:\/\//i.test(urlValue)) {
     updatedUrlValue = 'http://' + urlValue;
   }
-
   return updatedUrlValue;
+};
+
+/**
+ * RichMessage renderer detecting and formatting markdown syntax
+ * Supports styledWrapper prop to render within styled-component
+*/
+var RichMessageRenderer = function RichMessageRenderer(_ref) {
+  var styledWrapper = _ref.styledWrapper,
+    content = _ref.content;
+  var StyledWrapper = styledWrapper || React__default.Fragment;
+  var ParaRenderer = function ParaRenderer(_ref2) {
+    _ref2.node;
+      var props = _objectWithoutProperties(_ref2, _excluded);
+    // Outputs the final formatted element
+    var REHYPE_ATTRIBUTE_RE = /<!--.+-->/;
+    var parsedChildren = props.children ? props.children.filter(function (child) {
+      return typeof child === 'string' ? !REHYPE_ATTRIBUTE_RE.test(child) : true;
+    }) : [];
+    if (styledWrapper) {
+      return /*#__PURE__*/React__default.createElement(StyledWrapper, {
+        style: {
+          margin: '0'
+        }
+      }, parsedChildren);
+    }
+    return /*#__PURE__*/React__default.createElement("p", Object.assign({
+      style: {
+        margin: '0'
+      }
+    }, props), parsedChildren);
+  };
+  var LinkRenderer = function LinkRenderer(props) {
+    return /*#__PURE__*/React__default.createElement("a", Object.assign({
+      style: {
+        margin: '0',
+        textDecoration: 'none'
+      },
+      href: updateURLValue(props.href)
+    }, props.target === '_self' ? {} : {
+      target: "_blank",
+      rel: "noopener noreferrer"
+    }), props.children);
+  };
+  var OrderedListRenderer = function OrderedListRenderer(_ref3) {
+    _ref3.node;
+      var props = _objectWithoutProperties(_ref3, _excluded2);
+    return /*#__PURE__*/React__default.createElement("ol", Object.assign({
+      style: {
+        margin: '0',
+        padding: '0 30px',
+        listStyleType: 'decimal'
+      }
+    }, props));
+  };
+  var UnorderedListRenderer = function UnorderedListRenderer(_ref4) {
+    _ref4.node;
+      var props = _objectWithoutProperties(_ref4, _excluded3);
+    return /*#__PURE__*/React__default.createElement("ul", Object.assign({
+      style: {
+        margin: '0',
+        padding: '0 30px',
+        listStyleType: 'disc'
+      }
+    }, props));
+  };
+  return /*#__PURE__*/React__default.createElement(ReactMarkdown, {
+    children: content,
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [[rehypeAttrs$1, {
+      properties: 'attr'
+    }]],
+    disallowedElements: ["img"],
+    components: {
+      p: ParaRenderer,
+      a: LinkRenderer,
+      ol: OrderedListRenderer,
+      ul: UnorderedListRenderer
+    }
+  });
 };function _defineProperty$1(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -3901,64 +4433,6 @@ function draftToMarkdown(rawDraftObject, options) {
   return markdownString;
 }// List of valid entities
 
-// List of valid html blocks names, accorting to commonmark spec
-// http://jgm.github.io/CommonMark/spec.html#html-blocks
-
-var html_blocks = {};
-
-[
-  'article',
-  'aside',
-  'button',
-  'blockquote',
-  'body',
-  'canvas',
-  'caption',
-  'col',
-  'colgroup',
-  'dd',
-  'div',
-  'dl',
-  'dt',
-  'embed',
-  'fieldset',
-  'figcaption',
-  'figure',
-  'footer',
-  'form',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'header',
-  'hgroup',
-  'hr',
-  'iframe',
-  'li',
-  'map',
-  'object',
-  'ol',
-  'output',
-  'p',
-  'pre',
-  'progress',
-  'script',
-  'section',
-  'style',
-  'table',
-  'tbody',
-  'td',
-  'textarea',
-  'tfoot',
-  'th',
-  'tr',
-  'thead',
-  'ul',
-  'video'
-].forEach(function (name) { html_blocks[name] = true; });
-
 // Proceess escaped chars and hardbreaks
 
 var ESCAPED = [];
@@ -4021,11 +4495,10 @@ replace$1(/^(?:open_tag|close_tag|comment|processing|declaration|cdata)/)
   ('declaration', declaration)
   ('cdata', cdata)
   ();function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
     o.__proto__ = p;
     return o;
   };
-
   return _setPrototypeOf(o, p);
 }function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
@@ -4125,12 +4598,12 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
         resetErrorBoundary: this.resetErrorBoundary
       };
 
-      if ( /*#__PURE__*/React__namespace.isValidElement(fallback)) {
+      if ( /*#__PURE__*/React.isValidElement(fallback)) {
         return fallback;
       } else if (typeof fallbackRender === 'function') {
         return fallbackRender(_props);
       } else if (FallbackComponent) {
-        return /*#__PURE__*/React__namespace.createElement(FallbackComponent, _props);
+        return /*#__PURE__*/React.createElement(FallbackComponent, _props);
       } else {
         throw new Error('react-error-boundary requires either a fallback, fallbackRender, or FallbackComponent prop');
       }
@@ -4140,7 +4613,7 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
   };
 
   return ErrorBoundary;
-}(React__namespace.Component);var RICH_FORMATS = {
+}(React.Component);var RICH_FORMATS = {
   BOLD: 'BOLD',
   ITALICS: 'ITALIC',
   HYPERLINK: 'HYPERLINK',
@@ -4161,7 +4634,7 @@ var KEY_CODE = {
   TAB: 9
 };
 var NUM_OF_BUTTONS = 7;
-var CSM_CATEGORY = {
+var CSM_CATEGORY$1 = {
   UI: "UI"
 };
 var RICH_MESSAGE_EVENT = {
@@ -4173,7 +4646,7 @@ var RICH_MESSAGE_EVENT = {
   SEND_MESSAGE_BY_ENTER_KEY: 'SEND_MESSAGE_BY_ENTER_KEY',
   SEND_MESSAGE_BY_SEND_BUTTON: 'SEND_MESSAGE_BY_SEND_BUTTON'
 };
-var RICH_MESSAGE_ERROR = 'RICH_MESSAGE_ERROR';function _taggedTemplateLiteral(strings, raw) {
+var RICH_MESSAGE_ERROR$1 = 'RICH_MESSAGE_ERROR';function _taggedTemplateLiteral(strings, raw) {
   if (!raw) {
     raw = strings.slice(0);
   }
@@ -4184,27 +4657,26 @@ var RICH_MESSAGE_ERROR = 'RICH_MESSAGE_ERROR';function _taggedTemplateLiteral(st
     }
   }));
 }var _templateObject$2, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18;
-var RichToolbarContainer = styled__default["default"].div(_templateObject$2 || (_templateObject$2 = _taggedTemplateLiteral(["\n  height: 30px;\n  width: 100%;\n  background: #ffffff;\n\n  border-top: 1px solid rgba(196, 196, 196, 0.5);\n  border-bottom: 1px solid rgba(196, 196, 196, 0.5);\n"])));
-var EditorContainer = styled__default["default"].div(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["\n  position: relative;\n  max-height: 70px;\n  line-height: 1.5rem;\n  overflow: auto;\n  word-break: break-word;\n  padding: 10px;\n  padding-left: 0;\n  padding-right: 10px 44px 10px 0px;\n  resize: none;\n  margin-left: 10px;\n  min-height: 44px;\n  z-index: 2;\n  font-family: inherit;\n  border-left: 0;\n  border-right: 0;\n  padding-right: 45px;\n"])));
-var SendMessageButtonContainer = styled__default["default"].div(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\n  position: absolute;\n  padding: 10px 10px 0px 10px;\n  top: 0;\n  right: 0;\n  z-index: 2;\n"])));
-var RichToolbarFormattingContainer = styled__default["default"].div(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n  float: left;\n  height: 100%;\n  display: flex;\n  justify-content: space-evenly;\n"])));
-var RichToolbarAttachmentsContainer = styled__default["default"].div(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["\n  float: right;\n  height: 100%;\n"])));
-var AttachmentsIcon = styled__default["default"].div(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["\n  border: none;\n  background: none;\n\n  margin-left: 2px;\n  margin-right: 2px;\n  margin-top: 1px;\n  margin-bottom: 1px;\n\n  cursor: pointer;\n\n  &:hover {\n    background: #c4c4c4;\n  }\n\n  label {\n    cursor: pointer;\n  }\n\n  input {\n    display: none;\n  }\n"])));
-var IconButton = styled__default["default"].button(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["\n  background-color: transparent;\n  border: 1px solid transparent;\n  position: relative;\n  padding: 0;\n  margin: 0;\n  height: 100%;\n  display: block !important;\n  height: 10px;\n  width: 10px;\n"])));
-var CloseIcon = styled__default["default"].div(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["\n  display: flex;\n  font-size: 0;\n  svg {\n    width: \"0.75rem\";\n    height: \"0.75rem\";\n  }\n"])));
-var AttachmentOuterContainer = styled__default["default"].div(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["\n  height: 46px;\n\n  border-bottom: 1px solid rgba(196, 196, 196, 0.5);\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n"])));
-var AttachmentInnerContainer = styled__default["default"].div(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["\n  display: flex;\n"])));
-var AttachmentContainer = styled__default["default"].div(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["\n  display: flex;\n  background-color: #AADFB4;\n  border-radius: 5px;\n  margin: 5px;\n  padding: 6px;\n  min-width: 0;\n\n  width: fit-content;\n\n  & > div {\n    span {\n      overflow-wrap: break-word;\n    }\n\n    button {\n      align-items: center;\n      display: inline-flex;\n      cursor: pointer;\n      margin-left: 5px;\n    }\n  }\n\n  & + div {\n    padding-left: 0;\n  }\n"])));
-var URLInputContainer = styled__default["default"].div(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["\n    position: relative;\n    background: #FFFFFF;\n    border: 1px solid #CCCCCC;\n    box-sizing: border-box;\n    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);\n    font-family: Amazon Ember;\n    font-size: 14px;\n    line-height: 16px;\n    margin-left: 5%;\n    width: 90%;\n    height: 70px;\n"])));
-var URLInput = styled__default["default"].input(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["\n    width: 90%;\n    height: 25px;\n    margin-left: 5%;\n    margin-top: 3px;\n    padding: 0px;\n    border: 0px;\n    outline: none;\n    color: #000000;\n"])));
-var URLInputLabel = styled__default["default"].div(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["\n    height: 17px;\n    margin-left: 5%;\n    margin-top: 12px;\n    color: #000000;\n"])));
-var URLLink = styled__default["default"].a(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["\n    color: #3b5998;\n    text-decoration: none;\n"])));
-var URLConfirmIcon = styled__default["default"].div(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["\n    position: absolute;\n    width: 10px;\n    height: 10px;\n    left: calc(90% - 20px);\n    top: 7px;\n    opacity: 0.68;\n    cursor: pointer;\n"])));
-var URLRemoveIcon = styled__default["default"].div(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["\n    position: absolute;\n    width: 10px;\n    height: 10px;\n    left: 90%;\n    top: 7px;\n    opacity: 0.68;\n    cursor: pointer;\n"])));
-var EmojiPickerWrapper = styled__default["default"].div(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["\n    .emoji-mart-anchors, .emoji-mart-search, .emoji-mart-category-label, .emoji-mart-preview-shortnames,\n     .emoji-mart-preview-emoticons {\n        display: none;\n    }\n    & .emoji-mart-preview {\n        height: 30px;\n    }\n    & .emoji-mart-scroll {\n        height: 70px;\n        padding: 0px !important;\n    }\n    & .emoji-mart-title-label {\n        font-size: 26px;\n    }\n    & .emoji-mart-preview-emoji span {\n        font-size: 27px !important;\n    }\n    & .emoji-mart {\n        position:absolute;\n        button[title|=man-kiss-man], button[title|=woman-kiss-man], button[title|=woman-kiss-woman],\n        button[title|=man-heart-man], button[title|=woman-heart-man], button[title|=woman-heart-woman] {\n            display: none;\n        } \n        @media(max-width:640px) {\n             width: auto !important;\n         }       \n    }\n"])));/**
+var RichToolbarContainer = styled.div(_templateObject$2 || (_templateObject$2 = _taggedTemplateLiteral(["\n  height: 30px;\n  width: 100%;\n  background: #ffffff;\n\n  border-top: 1px solid rgba(196, 196, 196, 0.5);\n  border-bottom: 1px solid rgba(196, 196, 196, 0.5);\n"])));
+var EditorContainer = styled.div(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["\n  position: relative;\n  max-height: 70px;\n  line-height: 1.5rem;\n  overflow: auto;\n  word-break: break-word;\n  padding: 10px;\n  padding-left: 0;\n  padding-right: 10px 44px 10px 0px;\n  resize: none;\n  margin-left: 10px;\n  min-height: 44px;\n  z-index: 2;\n  font-family: inherit;\n  border-left: 0;\n  border-right: 0;\n  padding-right: 45px;\n"])));
+var SendMessageButtonContainer = styled.div(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\n  position: absolute;\n  padding: 10px 10px 0px 10px;\n  top: 0;\n  right: 0;\n  z-index: 2;\n"])));
+var RichToolbarFormattingContainer = styled.div(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n  float: left;\n  height: 100%;\n  display: flex;\n  justify-content: space-evenly;\n"])));
+var RichToolbarAttachmentsContainer = styled.div(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["\n  float: right;\n  height: 100%;\n"])));
+var AttachmentsIcon = styled.div(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["\n  border: none;\n  background: none;\n\n  margin-left: 2px;\n  margin-right: 2px;\n  margin-top: 1px;\n  margin-bottom: 1px;\n\n  cursor: pointer;\n\n  &:hover {\n    background: #c4c4c4;\n  }\n\n  label {\n    cursor: pointer;\n  }\n\n  input {\n    display: none;\n  }\n"])));
+var IconButton = styled.button(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["\n  background-color: transparent;\n  border: 1px solid transparent;\n  position: relative;\n  padding: 0;\n  margin: 0;\n  height: 100%;\n  display: block !important;\n  height: 10px;\n  width: 10px;\n"])));
+var CloseIcon = styled.div(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["\n  display: flex;\n  font-size: 0;\n  svg {\n    width: \"0.75rem\";\n    height: \"0.75rem\";\n  }\n"])));
+var AttachmentOuterContainer = styled.div(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["\n  height: 46px;\n\n  border-bottom: 1px solid rgba(196, 196, 196, 0.5);\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n"])));
+var AttachmentInnerContainer = styled.div(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["\n  display: flex;\n"])));
+var AttachmentContainer = styled.div(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["\n  display: flex;\n  background-color: #AADFB4;\n  border-radius: 5px;\n  margin: 5px;\n  padding: 6px;\n  min-width: 0;\n\n  width: fit-content;\n\n  & > div {\n    span {\n      overflow-wrap: break-word;\n    }\n\n    button {\n      align-items: center;\n      display: inline-flex;\n      cursor: pointer;\n      margin-left: 5px;\n    }\n  }\n\n  & + div {\n    padding-left: 0;\n  }\n"])));
+var URLInputContainer = styled.div(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["\n    position: relative;\n    background: #FFFFFF;\n    border: 1px solid #CCCCCC;\n    box-sizing: border-box;\n    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);\n    font-family: Amazon Ember;\n    font-size: 14px;\n    line-height: 16px;\n    margin-left: 5%;\n    width: 90%;\n    height: 70px;\n"])));
+var URLInput = styled.input(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["\n    width: 90%;\n    height: 25px;\n    margin-left: 5%;\n    margin-top: 3px;\n    padding: 0px;\n    border: 0px;\n    outline: none;\n    color: #000000;\n"])));
+var URLInputLabel = styled.div(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["\n    height: 17px;\n    margin-left: 5%;\n    margin-top: 12px;\n    color: #000000;\n"])));
+var URLLink = styled.a(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["\n    color: #3b5998;\n    text-decoration: none;\n"])));
+var URLConfirmIcon = styled.div(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["\n    position: absolute;\n    width: 10px;\n    height: 10px;\n    left: calc(90% - 20px);\n    top: 7px;\n    opacity: 0.68;\n    cursor: pointer;\n"])));
+var URLRemoveIcon = styled.div(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["\n    position: absolute;\n    width: 10px;\n    height: 10px;\n    left: 90%;\n    top: 7px;\n    opacity: 0.68;\n    cursor: pointer;\n"])));
+var EmojiPickerWrapper = styled.div(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["\n    .emoji-mart-anchors, .emoji-mart-search, .emoji-mart-category-label, .emoji-mart-preview-shortnames,\n     .emoji-mart-preview-emoticons {\n        display: none;\n    }\n    & .emoji-mart-preview {\n        height: 30px;\n    }\n    & .emoji-mart-scroll {\n        height: 70px;\n        padding: 0px !important;\n    }\n    & .emoji-mart-title-label {\n        font-size: 26px;\n    }\n    & .emoji-mart-preview-emoji span {\n        font-size: 27px !important;\n    }\n    & .emoji-mart {\n        position:absolute;\n        button[title|=man-kiss-man], button[title|=woman-kiss-man], button[title|=woman-kiss-woman],\n        button[title|=man-heart-man], button[title|=woman-heart-man], button[title|=woman-heart-woman] {\n            display: none;\n        } \n        @media(max-width:640px) {\n             width: auto !important;\n         }       \n    }\n"])));/**
  * Clear all content from the editor.
  */
-
 function clearEditorContent(editorState) {
   var blocks = editorState.getCurrentContent().getBlockMap().toList();
   var updatedSelection = editorState.getSelection().merge({
@@ -4213,170 +4685,167 @@ function clearEditorContent(editorState) {
     focusKey: blocks.last().get("key"),
     focusOffset: blocks.last().getLength()
   });
-  var newContentState = draftJs.Modifier.removeRange(editorState.getCurrentContent(), updatedSelection, "forward");
-  return draftJs.EditorState.push(editorState, newContentState, "remove-range");
+  var newContentState = Modifier.removeRange(editorState.getCurrentContent(), updatedSelection, "forward");
+  return EditorState.push(editorState, newContentState, "remove-range");
 }
+
 /**
  * Remove block styles from the editor if any are selected.
  */
-
 function removeSelectedBlocksStyle(editorState) {
-  var newContentState = draftJs.RichUtils.tryToRemoveBlockStyle(editorState);
-
+  var newContentState = RichUtils.tryToRemoveBlockStyle(editorState);
   if (newContentState) {
-    return draftJs.EditorState.push(editorState, newContentState, 'change-block-type');
+    return EditorState.push(editorState, newContentState, 'change-block-type');
   }
-
   return editorState;
 }
+
 /**
  * Set focus to the last or next element in rich tool bar
  */
-
 function focusLastOrNextElement(currentIndex, delta) {
   if (currentIndex + delta >= NUM_OF_BUTTONS || currentIndex + delta < 0) {
     return;
   }
-
   var currentElement = document.getElementById("richToolbarButton_".concat(currentIndex));
   currentElement.tabIndex = -1;
   var targetElement = document.getElementById("richToolbarButton_".concat(currentIndex + delta));
   targetElement.tabIndex = 0;
   targetElement.focus();
 }var _RICH_FORMAT_ICONS, _RICH_FORMAT_ICONS_SE;
-var RICH_FORMAT_ICONS = (_RICH_FORMAT_ICONS = {}, _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.BOLD, /*#__PURE__*/React__default["default"].createElement("svg", {
+var RICH_FORMAT_ICONS = (_RICH_FORMAT_ICONS = {}, _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.BOLD, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#000000"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.ITALICS, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.ITALICS, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#000000"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.NUMBERED_LIST, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.NUMBERED_LIST, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#000000"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.BULLETED_LIST, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.BULLETED_LIST, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#000000"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.HYPERLINK, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.HYPERLINK, /*#__PURE__*/React__default.createElement("svg", {
   width: "16",
   height: "16",
   viewBox: "0 0 16 16",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   fillRule: "evenodd",
   clipRule: "evenodd",
   d: "M2.26667 7.33333C2.26667 6.19333 3.19333 5.26667 4.33333 5.26667H7V4H4.33333C2.49333 4 1 5.49333 1 7.33333C1 9.17333 2.49333 10.6667 4.33333 10.6667H7V9.4H4.33333C3.19333 9.4 2.26667 8.47333 2.26667 7.33333ZM5 8H10.3333V6.66667H5V8ZM8.33333 4H11C12.84 4 14.3333 5.49333 14.3333 7.33333C14.3333 9.17333 12.84 10.6667 11 10.6667H8.33333V9.4H11C12.14 9.4 13.0667 8.47333 13.0667 7.33333C13.0667 6.19333 12.14 5.26667 11 5.26667H8.33333V4Z",
   fill: "black",
   fillOpacity: "0.8"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.EMOJIS, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS, RICH_FORMATS.EMOJIS, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   version: "1.0",
   width: "20px",
   height: "20px",
   viewBox: "0 0 210.000000 225.000000",
   preserveAspectRatio: "xMidYMid meet"
-}, /*#__PURE__*/React__default["default"].createElement("g", {
+}, /*#__PURE__*/React__default.createElement("g", {
   transform: "translate(0.000000,210.000000) scale(0.090000,-0.090000)",
   fill: "#000000",
   stroke: "none"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M905 2184 c-388 -86 -708 -399 -807 -790 -20 -77 -23 -114 -22 -274 0 -167 3 -194 27 -283 104 -388 427 -694 817 -773 128 -25 375 -16 493 20 182 54 319 136 452 270 141 141 234 302 287 496 20 75 23 107 23 275 0 168 -3 200 -23 275 -53 194 -146 355 -287 496 -133 134 -270 215 -452 270 -78 24 -108 27 -263 30 -131 3 -192 0 -245 -12z m478 -148 c301 -89 537 -328 634 -643 25 -82 27 -101 27 -268 0 -167 -2 -186 -27 -268 -52 -168 -140 -311 -262 -426 -117 -109 -226 -173 -372 -218 -80 -24 -104 -27 -253 -27 -143 -1 -176 2 -243 22 -315 91 -556 330 -653 647 -26 84 -28 102 -28 270 0 168 2 186 28 270 94 308 337 555 629 640 101 29 148 34 292 30 115 -2 156 -8 228 -29z"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M746 1570 c-43 -13 -90 -49 -117 -88 -20 -29 -24 -48 -24 -107 0 -62 4 -77 28 -112 84 -122 265 -113 335 17 33 62 28 150 -11 207 -46 67 -142 105 -211 83z"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M1408 1571 c-89 -29 -140 -93 -146 -185 -3 -50 1 -69 20 -106 91 -170 350 -118 366 74 5 67 -10 114 -50 155 -55 56 -130 81 -190 62z"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M473 961 c20 -256 213 -495 461 -570 389 -118 783 137 846 547 7 40 9 80 6 88 -5 12 -99 14 -662 14 l-657 0 6 -79z m1153 -99 c-58 -164 -188 -293 -346 -343 -88 -28 -221 -28 -310 0 -158 50 -288 179 -346 343 l-13 38 514 0 514 0 -13 -38z"
 })))), _RICH_FORMAT_ICONS);
-var RICH_FORMAT_ICONS_SELECTED = (_RICH_FORMAT_ICONS_SE = {}, _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.BOLD, /*#__PURE__*/React__default["default"].createElement("svg", {
+var RICH_FORMAT_ICONS_SELECTED = (_RICH_FORMAT_ICONS_SE = {}, _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.BOLD, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#ffffff"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.ITALICS, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.ITALICS, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#ffffff"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.NUMBERED_LIST, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.NUMBERED_LIST, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#ffffff"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.BULLETED_LIST, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.BULLETED_LIST, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#ffffff"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.HYPERLINK, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.HYPERLINK, /*#__PURE__*/React__default.createElement("svg", {
   width: "16",
   height: "16",
   viewBox: "0 0 16 16",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   fillRule: "evenodd",
   clipRule: "evenodd",
   d: "M2.26667 7.33333C2.26667 6.19333 3.19333 5.26667 4.33333 5.26667H7V4H4.33333C2.49333 4 1 5.49333 1 7.33333C1 9.17333 2.49333 10.6667 4.33333 10.6667H7V9.4H4.33333C3.19333 9.4 2.26667 8.47333 2.26667 7.33333ZM5 8H10.3333V6.66667H5V8ZM8.33333 4H11C12.84 4 14.3333 5.49333 14.3333 7.33333C14.3333 9.17333 12.84 10.6667 11 10.6667H8.33333V9.4H11C12.14 9.4 13.0667 8.47333 13.0667 7.33333C13.0667 6.19333 12.14 5.26667 11 5.26667H8.33333V4Z",
   fill: "white",
   fillOpacity: "0.8"
-}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.EMOJIS, /*#__PURE__*/React__default["default"].createElement("svg", {
+}))), _defineProperty$1(_RICH_FORMAT_ICONS_SE, RICH_FORMATS.EMOJIS, /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   version: "1.0",
   width: "20px",
@@ -4384,51 +4853,51 @@ var RICH_FORMAT_ICONS_SELECTED = (_RICH_FORMAT_ICONS_SE = {}, _defineProperty$1(
   viewBox: "0 0 210.000000 225.000000",
   preserveAspectRatio: "xMidYMid meet",
   fill: "#ffffff"
-}, /*#__PURE__*/React__default["default"].createElement("g", {
+}, /*#__PURE__*/React__default.createElement("g", {
   transform: "translate(0.000000,210.000000) scale(0.090000,-0.090000)",
   fill: "#ffffff",
   stroke: "none"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M905 2184 c-388 -86 -708 -399 -807 -790 -20 -77 -23 -114 -22 -274 0 -167 3 -194 27 -283 104 -388 427 -694 817 -773 128 -25 375 -16 493 20 182 54 319 136 452 270 141 141 234 302 287 496 20 75 23 107 23 275 0 168 -3 200 -23 275 -53 194 -146 355 -287 496 -133 134 -270 215 -452 270 -78 24 -108 27 -263 30 -131 3 -192 0 -245 -12z m478 -148 c301 -89 537 -328 634 -643 25 -82 27 -101 27 -268 0 -167 -2 -186 -27 -268 -52 -168 -140 -311 -262 -426 -117 -109 -226 -173 -372 -218 -80 -24 -104 -27 -253 -27 -143 -1 -176 2 -243 22 -315 91 -556 330 -653 647 -26 84 -28 102 -28 270 0 168 2 186 28 270 94 308 337 555 629 640 101 29 148 34 292 30 115 -2 156 -8 228 -29z"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M746 1570 c-43 -13 -90 -49 -117 -88 -20 -29 -24 -48 -24 -107 0 -62 4 -77 28 -112 84 -122 265 -113 335 17 33 62 28 150 -11 207 -46 67 -142 105 -211 83z"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M1408 1571 c-89 -29 -140 -93 -146 -185 -3 -50 1 -69 20 -106 91 -170 350 -118 366 74 5 67 -10 114 -50 155 -55 56 -130 81 -190 62z"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M473 961 c20 -256 213 -495 461 -570 389 -118 783 137 846 547 7 40 9 80 6 88 -5 12 -99 14 -662 14 l-657 0 6 -79z m1153 -99 c-58 -164 -188 -293 -346 -343 -88 -28 -221 -28 -310 0 -158 50 -288 179 -346 343 l-13 38 514 0 514 0 -13 -38z"
 })))), _RICH_FORMAT_ICONS_SE);
-var ATTACHMENTS_ICON = /*#__PURE__*/React__default["default"].createElement("svg", {
+var ATTACHMENTS_ICON = /*#__PURE__*/React__default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   height: "24px",
   viewBox: "0 0 24 24",
   width: "24px",
   fill: "#000000"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   d: "M0 0h24v24H0V0z",
   fill: "none"
-}), /*#__PURE__*/React__default["default"].createElement("path", {
+}), /*#__PURE__*/React__default.createElement("path", {
   d: "M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
 }));
-var CONFIRM_LINK_ICON = /*#__PURE__*/React__default["default"].createElement("svg", {
+var CONFIRM_LINK_ICON = /*#__PURE__*/React__default.createElement("svg", {
   width: "10",
   height: "10",
   viewBox: "0 0 18 14",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   opacity: "0.680028",
   fillRule: "evenodd",
   clipRule: "evenodd",
   d: "M5.99991 11.17L1.82991 7L0.409912 8.41L5.99991 14L17.9999 2L16.5899 0.589996L5.99991 11.17Z",
   fill: "black"
 }));
-var REMOVE_LINK_ICON = /*#__PURE__*/React__default["default"].createElement("svg", {
+var REMOVE_LINK_ICON = /*#__PURE__*/React__default.createElement("svg", {
   width: "10",
   height: "10",
   viewBox: "0 0 10 10",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, /*#__PURE__*/React__default["default"].createElement("path", {
+}, /*#__PURE__*/React__default.createElement("path", {
   opacity: "0.680028",
   fillRule: "evenodd",
   clipRule: "evenodd",
@@ -4437,11 +4906,12 @@ var REMOVE_LINK_ICON = /*#__PURE__*/React__default["default"].createElement("svg
 }));var _templateObject$1;
 var ACTIVE_COLOR = '#222222';
 var INACTIVE_COLOR = '#EDEDED';
-var SendButton = styled__default["default"].div(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteral(["\n  cursor: ", ";\n\n  &>svg {\n    fill: ", ";\n  }\n"])), function (props) {
+var SendButton = styled.div(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteral(["\n  cursor: ", ";\n\n  &>svg {\n    fill: ", ";\n  }\n"])), function (props) {
   return props.isActive ? 'pointer' : 'default';
 }, function (props) {
   return props.isActive ? ACTIVE_COLOR : INACTIVE_COLOR;
 });
+
 /**
  * Send message button for the RichTextEditor.
  * 
@@ -4449,11 +4919,10 @@ var SendButton = styled__default["default"].div(_templateObject$1 || (_templateO
  * @param {boolean} props.isActive
  * @param {Function} props.sendMessage
  */
-
 function SendMessageButton(_ref) {
   var isActive = _ref.isActive,
-      sendMessage = _ref.sendMessage;
-  return /*#__PURE__*/React__default["default"].createElement(SendButton, {
+    sendMessage = _ref.sendMessage;
+  return /*#__PURE__*/React__default.createElement(SendButton, {
     isActive: isActive,
     onClick: sendMessage,
     "data-testid": 'chat-send-message-button',
@@ -4465,15 +4934,15 @@ function SendMessageButton(_ref) {
         sendMessage(e);
       }
     }
-  }, /*#__PURE__*/React__default["default"].createElement("svg", {
+  }, /*#__PURE__*/React__default.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     height: "24px",
     viewBox: "0 0 24 24",
     width: "24px"
-  }, /*#__PURE__*/React__default["default"].createElement("path", {
+  }, /*#__PURE__*/React__default.createElement("path", {
     d: "M0 0h24v24H0z",
     fill: "none"
-  }), /*#__PURE__*/React__default["default"].createElement("path", {
+  }), /*#__PURE__*/React__default.createElement("path", {
     d: "M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
   })));
 }function _arrayWithHoles(arr) {
@@ -4523,52 +4992,49 @@ function SendMessageButton(_ref) {
 }function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }var _templateObject;
-var RichToolbarButtonContainer = styled__default["default"].div(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n  border: none;\n  background: ", ";\n  margin-left: 2px;\n  margin-right: 2px;\n  margin-top: 1px;\n  margin-bottom: 1px;\n\n  display: flex;\n  justify-content: center;\n  flex-direction: column;\n\n  cursor: pointer;\n\n  &:hover {\n    background: ", ";\n  }\n"])), function (props) {
+var RichToolbarButtonContainer = styled.div(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n  border: none;\n  background: ", ";\n  margin-left: 2px;\n  margin-right: 2px;\n  margin-top: 1px;\n  margin-bottom: 1px;\n\n  display: flex;\n  justify-content: center;\n  flex-direction: column;\n\n  cursor: pointer;\n\n  &:hover {\n    background: ", ";\n  }\n"])), function (props) {
   return props.active ? '#676767' : 'none';
 }, function (props) {
   return props.active ? '#676767' : '#C4C4C4';
 });
-
 var RichToolbarButton = function RichToolbarButton(_ref) {
   var id = _ref.id,
-      index = _ref.index,
-      buttonSvg = _ref.buttonSvg,
-      onFormatToggled = _ref.onFormatToggled,
-      onButtonClicked = _ref.onButtonClicked,
-      isActiveButton = _ref.isActiveButton;
-
-  var _useState = React.useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
-      isActive = _useState2[0],
-      setIsActive = _useState2[1];
-
-  var firstToggle = React.useRef(true);
-  React.useEffect(function () {
+    index = _ref.index,
+    buttonSvg = _ref.buttonSvg,
+    onFormatToggled = _ref.onFormatToggled,
+    onButtonClicked = _ref.onButtonClicked,
+    isActiveButton = _ref.isActiveButton,
+    buttonName = _ref.buttonName;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isActive = _useState2[0],
+    setIsActive = _useState2[1];
+  var firstToggle = useRef(true);
+  useEffect(function () {
     if (firstToggle.current) {
       firstToggle.current = false;
       return;
     }
-
     if (onFormatToggled) {
       onFormatToggled(isActive);
     }
   }, [isActive]);
-
   function clickButton() {
     setIsActive(!isActive);
-
     if (onButtonClicked) {
       onButtonClicked();
     }
-  } // TODO: Fix bug with un-focusing toolbar initially requires two clicks to register button selection
+  }
+
+  // TODO: Fix bug with un-focusing toolbar initially requires two clicks to register button selection
   //  https://app.asana.com/0/1201057534450490/1201449806518231/f
-
-
-  return /*#__PURE__*/React__default["default"].createElement(RichToolbarButtonContainer, {
+  return /*#__PURE__*/React__default.createElement(RichToolbarButtonContainer, {
     id: id,
     active: isActiveButton,
     tabIndex: index === 0 ? 0 : -1,
     "data-testid": "chat-rich-toolbar-button_".concat(index),
+    "aria-label": buttonName ? "".concat(buttonName, " button") : "Rich formatting button",
+    "aria-pressed": isActiveButton,
     onMouseDown: function onMouseDown(e) {
       e.preventDefault();
       clickButton();
@@ -4586,7 +5052,518 @@ var RichToolbarButton = function RichToolbarButton(_ref) {
       }
     }
   }, buttonSvg);
-};var css_248z = ".emoji-mart,\n.emoji-mart * {\n  box-sizing: border-box;\n  line-height: 1.15;\n}\n\n.emoji-mart {\n  font-family: -apple-system, BlinkMacSystemFont, \"Helvetica Neue\", sans-serif;\n  font-size: 16px;\n  display: inline-block;\n  color: #222427;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  background: #fff;\n}\n\n.emoji-mart .emoji-mart-emoji {\n  padding: 6px;\n}\n\n.emoji-mart-bar {\n  border: 0 solid #d9d9d9;\n}\n.emoji-mart-bar:first-child {\n  border-bottom-width: 1px;\n  border-top-left-radius: 5px;\n  border-top-right-radius: 5px;\n}\n.emoji-mart-bar:last-child {\n  border-top-width: 1px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n}\n\n.emoji-mart-anchors {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding: 0 6px;\n  line-height: 0;\n}\n\n.emoji-mart-anchor {\n  position: relative;\n  display: block;\n  flex: 1 1 auto;\n  color: #858585;\n  text-align: center;\n  padding: 12px 4px;\n  overflow: hidden;\n  transition: color .1s ease-out;\n  margin: 0;\n  box-shadow: none;\n  background: none;\n  border: none;\n}\n.emoji-mart-anchor:focus { outline: 0 }\n.emoji-mart-anchor:hover,\n.emoji-mart-anchor:focus,\n.emoji-mart-anchor-selected {\n  color: #464646;\n}\n\n.emoji-mart-anchor-selected .emoji-mart-anchor-bar {\n  bottom: 0;\n}\n\n.emoji-mart-anchor-bar {\n  position: absolute;\n  bottom: -3px; left: 0;\n  width: 100%; height: 3px;\n  background-color: #464646;\n}\n\n.emoji-mart-anchors i {\n  display: inline-block;\n  width: 100%;\n  max-width: 22px;\n}\n\n.emoji-mart-anchors svg,\n.emoji-mart-anchors img {\n  fill: currentColor;\n  height: 18px;\n  width: 18px;\n}\n\n.emoji-mart-scroll {\n  overflow-y: scroll;\n  overflow-x: hidden;\n  height: 270px;\n  padding: 0 6px 6px 6px;\n  will-change: transform; /* avoids \"repaints on scroll\" in mobile Chrome */\n}\n\n.emoji-mart-search {\n  margin-top: 6px;\n  padding: 0 6px;\n  position: relative;\n}\n\n.emoji-mart-search input {\n  font-size: 16px;\n  display: block;\n  width: 100%;\n  padding: 5px 25px 6px 10px;\n  border-radius: 5px;\n  border: 1px solid #d9d9d9;\n  outline: 0;\n}\n\n.emoji-mart-search input,\n.emoji-mart-search input::-webkit-search-decoration,\n.emoji-mart-search input::-webkit-search-cancel-button,\n.emoji-mart-search input::-webkit-search-results-button,\n.emoji-mart-search input::-webkit-search-results-decoration {\n  /* remove webkit/blink styles for <input type=\"search\">\n   * via https://stackoverflow.com/a/9422689 */\n  -webkit-appearance: none;\n}\n\n.emoji-mart-search-icon {\n  position: absolute;\n  top: 7px;\n  right: 11px;\n  z-index: 2;\n  padding: 2px 5px 1px;\n  border: none;\n  background: none;\n}\n\n.emoji-mart-category .emoji-mart-emoji span {\n  z-index: 1;\n  position: relative;\n  text-align: center;\n  cursor: default;\n}\n\n.emoji-mart-category .emoji-mart-emoji:hover:before {\n  z-index: 0;\n  content: \"\";\n  position: absolute;\n  top: 0; left: 0;\n  width: 100%; height: 100%;\n  background-color: #f4f4f4;\n  border-radius: 100%;\n}\n\n.emoji-mart-category-label {\n  z-index: 2;\n  position: relative;\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n}\n\n.emoji-mart-category-label span {\n  display: block;\n  width: 100%;\n  font-weight: 500;\n  padding: 5px 6px;\n  background-color: #fff;\n  background-color: rgba(255, 255, 255, .95);\n}\n\n.emoji-mart-category-list {\n  margin: 0;\n  padding: 0;\n}\n\n.emoji-mart-category-list li {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  display: inline-block;\n}\n\n.emoji-mart-emoji {\n  position: relative;\n  display: inline-block;\n  font-size: 0;\n  margin: 0;\n  padding: 0;\n  border: none;\n  background: none;\n  box-shadow: none;\n}\n\n.emoji-mart-emoji-native {\n  font-family: \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Segoe UI\", \"Apple Color Emoji\", \"Twemoji Mozilla\", \"Noto Color Emoji\", \"Android Emoji\";\n}\n\n.emoji-mart-no-results {\n  font-size: 14px;\n  text-align: center;\n  padding-top: 70px;\n  color: #858585;\n}\n.emoji-mart-no-results-img {\n  display: block;\n  margin-left: auto;\n  margin-right: auto;\n  width: 50%;\n}\n.emoji-mart-no-results .emoji-mart-category-label {\n  display: none;\n}\n.emoji-mart-no-results .emoji-mart-no-results-label {\n  margin-top: .2em;\n}\n.emoji-mart-no-results .emoji-mart-emoji:hover:before {\n  content: none;\n}\n\n.emoji-mart-preview {\n  position: relative;\n  height: 70px;\n}\n\n.emoji-mart-preview-emoji,\n.emoji-mart-preview-data,\n.emoji-mart-preview-skins {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.emoji-mart-preview-emoji {\n  left: 12px;\n}\n\n.emoji-mart-preview-data {\n  left: 68px; right: 12px;\n  word-break: break-all;\n}\n\n.emoji-mart-preview-skins {\n  right: 30px;\n  text-align: right;\n}\n\n.emoji-mart-preview-skins.custom {\n  right: 10px;\n  text-align: right;\n}\n\n.emoji-mart-preview-name {\n  font-size: 14px;\n}\n\n.emoji-mart-preview-shortname {\n  font-size: 12px;\n  color: #888;\n}\n.emoji-mart-preview-shortname + .emoji-mart-preview-shortname,\n.emoji-mart-preview-shortname + .emoji-mart-preview-emoticon,\n.emoji-mart-preview-emoticon + .emoji-mart-preview-emoticon {\n  margin-left: .5em;\n}\n\n.emoji-mart-preview-emoticon {\n  font-size: 11px;\n  color: #bbb;\n}\n\n.emoji-mart-title span {\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.emoji-mart-title .emoji-mart-emoji {\n  padding: 0;\n}\n\n.emoji-mart-title-label {\n  color: #999A9C;\n  font-size: 26px;\n  font-weight: 300;\n}\n\n.emoji-mart-skin-swatches {\n  font-size: 0;\n  padding: 2px 0;\n  border: 1px solid #d9d9d9;\n  border-radius: 12px;\n  background-color: #fff;\n}\n\n.emoji-mart-skin-swatches.custom {\n  font-size: 0;\n  border: none;\n  background-color: #fff;\n}\n\n.emoji-mart-skin-swatches.opened .emoji-mart-skin-swatch {\n  width: 16px;\n  padding: 0 2px;\n}\n\n.emoji-mart-skin-swatches.opened .emoji-mart-skin-swatch.selected:after {\n  opacity: .75;\n}\n\n.emoji-mart-skin-swatch {\n  display: inline-block;\n  width: 0;\n  vertical-align: middle;\n  transition-property: width, padding;\n  transition-duration: .125s;\n  transition-timing-function: ease-out;\n}\n\n.emoji-mart-skin-swatch:nth-child(1) { transition-delay: 0s }\n.emoji-mart-skin-swatch:nth-child(2) { transition-delay: .03s }\n.emoji-mart-skin-swatch:nth-child(3) { transition-delay: .06s }\n.emoji-mart-skin-swatch:nth-child(4) { transition-delay: .09s }\n.emoji-mart-skin-swatch:nth-child(5) { transition-delay: .12s }\n.emoji-mart-skin-swatch:nth-child(6) { transition-delay: .15s }\n\n.emoji-mart-skin-swatch.selected {\n  position: relative;\n  width: 16px;\n  padding: 0 2px;\n}\n\n.emoji-mart-skin-swatch.selected:after {\n  content: \"\";\n  position: absolute;\n  top: 50%; left: 50%;\n  width: 4px; height: 4px;\n  margin: -2px 0 0 -2px;\n  background-color: #fff;\n  border-radius: 100%;\n  pointer-events: none;\n  opacity: 0;\n  transition: opacity .2s ease-out;\n}\n\n.emoji-mart-skin-swatch.custom {\n  display: inline-block;\n  width: 0;\n  height: 38px;\n  overflow: hidden;\n  vertical-align: middle;\n  transition-property: width, height;\n  transition-duration: .125s;\n  transition-timing-function: ease-out;\n  cursor: default;\n}\n\n.emoji-mart-skin-swatch.custom.selected {\n  position: relative;\n  width: 36px;\n  height: 38px;\n  padding: 0 2px 0 0;\n}\n\n.emoji-mart-skin-swatch.custom.selected:after {\n  content: \"\";\n  width: 0;\n  height: 0;\n}\n\n.emoji-mart-skin-swatches.custom .emoji-mart-skin-swatch.custom:hover {\n  background-color: #f4f4f4;\n  border-radius: 10%;\n}\n\n.emoji-mart-skin-swatches.custom.opened .emoji-mart-skin-swatch.custom {\n  width: 36px;\n  height: 38px;\n  padding: 0 2px 0 0;\n}\n\n.emoji-mart-skin-swatches.custom.opened .emoji-mart-skin-swatch.custom.selected:after {\n  opacity: .75;\n}\n\n.emoji-mart-skin-text.opened {\n  display: inline-block;\n  vertical-align: middle;\n  text-align: left;\n  color: #888;\n  font-size: 11px;\n  padding: 5px 2px;\n  width: 95px;\n  height: 40px;\n  border-radius: 10%;\n  background-color: #fff;\n}\n\n.emoji-mart-skin {\n  display: inline-block;\n  width: 100%;\n  padding-top: 100%;\n  max-width: 12px;\n  border-radius: 100%;\n}\n\n.emoji-mart-skin-tone-1 { background-color: #ffc93a }\n.emoji-mart-skin-tone-2 { background-color: #fadcbc }\n.emoji-mart-skin-tone-3 { background-color: #e0bb95 }\n.emoji-mart-skin-tone-4 { background-color: #bf8f68 }\n.emoji-mart-skin-tone-5 { background-color: #9b643d }\n.emoji-mart-skin-tone-6 { background-color: #594539 }\n\n/* For screenreaders only, via https://stackoverflow.com/a/19758620 */\n.emoji-mart-sr-only {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  border: 0;\n}\n\n/*\n * Dark mode styles\n */\n\n.emoji-mart-dark {\n  color: #fff;\n  border-color: #555453;\n  background-color: #222;\n}\n\n.emoji-mart-dark .emoji-mart-bar {\n  border-color: #555453;\n}\n\n.emoji-mart-dark .emoji-mart-search input {\n  color: #fff;\n  border-color: #555453;\n  background-color: #2f2f2f;\n}\n\n.emoji-mart-dark .emoji-mart-search-icon svg {\n  fill: #fff;\n}\n\n.emoji-mart-dark .emoji-mart-category .emoji-mart-emoji:hover:before {\n  background-color: #444;\n}\n\n.emoji-mart-dark .emoji-mart-category-label span {\n  background-color: #222;\n  color: #fff;\n}\n\n.emoji-mart-dark .emoji-mart-skin-swatches {\n  border-color: #555453;\n  background-color: #222;\n}\n\n.emoji-mart-dark .emoji-mart-anchor:hover,\n.emoji-mart-dark .emoji-mart-anchor:focus,\n.emoji-mart-dark .emoji-mart-anchor-selected {\n  color: #bfbfbf;\n}\n";
+};var DEFAULT_TITLE = "Pick an emoji...";
+var DEFAULT_EMOJI = 'point_up';
+var DEFAULT_SHOULD_DISPLAY_EMOJI_TOOLTIP = true;
+var DEFAULT_INCLUDE = ['people'];
+var DEFAULT_SHOULD_USE_NATIVE_EMOJIS = true;
+var DEFAULT_THEME = "light";
+var DEFAULT_SHOULD_SHOW_SKIN_TONES = false;
+var EMOJI_PICKER_CLASS = "emoji-mart";
+var RICH_TOOLBAR_EMOJI_BUTTON_ID = "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length);var EMOJI_PICKER_TOP_POSITION = "17.1875rem";
+function convertPixelsToRem(pixels) {
+  var fontSize = parseInt(getComputedStyle(document.documentElement).fontSize);
+  if (fontSize === 0) {
+    return 0;
+  }
+  return pixels / fontSize;
+}
+function getEmojiPickerTopPosition() {
+  var emojiButton = document.querySelector('#' + RICH_TOOLBAR_EMOJI_BUTTON_ID);
+  var emojiPicker = document.querySelector('.' + EMOJI_PICKER_CLASS);
+  if (emojiPicker && emojiButton) {
+    var emojiPickerHeight = emojiPicker.getBoundingClientRect().height;
+    var topPositionInPixels = emojiButton.offsetTop - emojiPickerHeight;
+    var topPositionInRem = convertPixelsToRem(topPositionInPixels);
+    EMOJI_PICKER_TOP_POSITION = topPositionInRem + "rem";
+    emojiPicker.style.top = EMOJI_PICKER_TOP_POSITION;
+  }
+  return EMOJI_PICKER_TOP_POSITION;
+}
+function isMobile() {
+  return /Android|webOS|Mobi|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}var Link = function Link(props) {
+  var _props$contentState$g = props.contentState.getEntity(props.entityKey).getData(),
+    url = _props$contentState$g.url;
+  return /*#__PURE__*/React__default.createElement(URLLink, {
+    href: url
+  }, props.children);
+};
+function findLinkEntities(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges(function (character) {
+    var entityKey = character.getEntity();
+    return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
+  }, callback);
+}
+
+/**
+ * The error fall back UI that's not finalized
+ * TODO: Revisit and update UI post launch https://app.asana.com/0/1201057534450490/1201587489851346/f
+ */
+function ErrorFallback$1(_ref) {
+  var error = _ref.error,
+    resetErrorBoundary = _ref.resetErrorBoundary;
+  if (window.connect && window.connect.csmService) {
+    window.connect.csmService.addCountAndErrorMetric(RICH_MESSAGE_ERROR$1, CSM_CATEGORY$1.UI, false);
+  }
+  console.warn("Render Error:", error);
+  return /*#__PURE__*/React__default.createElement("div", {
+    role: "alert"
+  }, /*#__PURE__*/React__default.createElement("p", null, "Something went wrong"), /*#__PURE__*/React__default.createElement("button", {
+    onClick: resetErrorBoundary
+  }, "Reload Editor"));
+}
+
+/**
+ * RichText toolbar and editor, intended to be used for input in a real-time chat application.
+ * Supports markdown message and attachment sending, typing events, and additional configuration options.
+ */
+var RichTextEditor = /*#__PURE__*/function (_React$Component) {
+  _inherits$1(RichTextEditor, _React$Component);
+  var _super = _createSuper(RichTextEditor);
+  // TODO: make toolbar optional so the editor component can be used without rich messaging capabilities.
+  // TODO: implement capturing typing events on content change
+  // TODO: pull the toolbar out to a separate internal component to reduce bloat here
+  // TODO: fix bug where multiple toggles in a row don't properly apply all styles
+  // TODO: fix styling of the selected buttons
+  function RichTextEditor(props) {
+    var _this;
+    _classCallCheck$1(this, RichTextEditor);
+    _this = _super.call(this, props);
+    var decorator = new CompositeDecorator([{
+      strategy: findLinkEntities,
+      component: Link
+    }]);
+    _this.state = {
+      editorState: EditorState.createEmpty(decorator),
+      attachment: null,
+      showURLInput: false,
+      urlValue: '',
+      showEmojiPicker: false
+    };
+    _this.onChange = function (editorState) {
+      if (_this.state.editorState.getCurrentContent() !== editorState.getCurrentContent()) {
+        _this.props.onTyping();
+      }
+      _this.setState(function (prevState) {
+        return _objectSpread2(_objectSpread2({}, prevState), {}, {
+          editorState: editorState
+        });
+      });
+    };
+    _this.setDomEditorRef = function (ref) {
+      return _this.domEditor = ref;
+    };
+    _this.focus = function () {
+      return _this.domEditor.focus();
+    };
+    _this.resetState = _this._resetState.bind(_assertThisInitialized$1(_this));
+    _this._handleReturn = _this._handleReturn.bind(_assertThisInitialized$1(_this));
+    _this.handleBeforeInput = _this._handleBeforeInput.bind(_assertThisInitialized$1(_this));
+    _this.onURLChange = function (e) {
+      return _this.setState({
+        urlValue: e.target.value
+      });
+    };
+    _this.promptForLink = _this._promptForLink.bind(_assertThisInitialized$1(_this));
+    _this.confirmLink = _this._confirmLink.bind(_assertThisInitialized$1(_this));
+    _this.removeLink = _this._removeLink.bind(_assertThisInitialized$1(_this));
+    _this.addTextToMessage = _this._addTextToMessage.bind(_assertThisInitialized$1(_this));
+    _this.onURLKeyInput = function (e) {
+      if (!e.shiftKey && e.key === 'Enter') {
+        e.preventDefault();
+        _this.confirmLink(e);
+      }
+    };
+    if (window.connect && window.connect.csmService) {
+      _this.csmService = window.connect.csmService;
+    }
+    return _this;
+  }
+  _createClass$1(RichTextEditor, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.domEditor && this.domEditor.focus();
+    }
+  }, {
+    key: "_onFormatToggled",
+    value: function _onFormatToggled(formatType, toggleFn) {
+      this.setState(function (prevState) {
+        return _objectSpread2(_objectSpread2({}, prevState), {}, {
+          editorState: toggleFn(prevState.editorState, formatType)
+        });
+      });
+    }
+
+    /**
+     * Handle the period added with double spaces
+     * This is a workaround for known DraftJs bug - https://github.com/facebook/draft-js/issues/2422
+     */
+  }, {
+    key: "_handleBeforeInput",
+    value: function _handleBeforeInput(chars, editorState, eventTimestamp) {
+      if (chars === '. ') {
+        var currentSelection = editorState.getSelection();
+        this.setState({
+          editorState: EditorState.set(editorState, {
+            currentContent: Modifier.replaceText(editorState.getCurrentContent(), currentSelection, ' ')
+          })
+        });
+        return 'handled';
+      }
+      return 'not-handled';
+    }
+
+    /**
+     * Handle the "Return" key pressed. Sends message and attachment, and clears the editor state.
+     */
+  }, {
+    key: "_handleReturn",
+    value: function _handleReturn(event, isSendButtonClicked) {
+      var currentContent = this.state.editorState.getCurrentContent();
+      // Insert soft newline or split block without sending message if shift + return pressed
+      if (event.shiftKey) {
+        var selection = this.state.editorState.getSelection();
+        var currentBlockStyle = currentContent.getBlockForKey(selection.getStartKey()).getType();
+        if (currentBlockStyle === 'unstyled') {
+          this.setState({
+            editorState: RichUtils.insertSoftNewline(this.state.editorState)
+          });
+        } else {
+          var textWithEntity = Modifier.splitBlock(currentContent, selection);
+          this.setState({
+            editorState: EditorState.push(this.state.editorState, textWithEntity, "split-block")
+          });
+        }
+        return "handled";
+      }
+      var rawContentState = convertToRaw(currentContent);
+      var markdownString = draftToMarkdown(rawContentState);
+      if (this.state.attachment) {
+        this.props.sendAttachment(this.state.attachment);
+      }
+      this.props.sendMessage(markdownString);
+      this.resetState();
+      if (this.csmService) {
+        // If message is sent by clicking the send button, isSendButtonClicked will be a boolean value: true;
+        // If message is sent by pressing Enter key, isSendButtonClicked will be an object sent by draft-js;
+        var sendBy = typeof isSendButtonClicked === 'boolean' ? RICH_MESSAGE_EVENT.SEND_MESSAGE_BY_SEND_BUTTON : RICH_MESSAGE_EVENT.SEND_MESSAGE_BY_ENTER_KEY;
+        this.csmService.addCountMetric(sendBy, CSM_CATEGORY$1.UI);
+        this._countRichFormatTypes(rawContentState);
+      }
+      return "handled";
+    }
+  }, {
+    key: "_resetState",
+    value: function _resetState() {
+      var resetEditorState = clearEditorContent(this.state.editorState);
+      resetEditorState = removeSelectedBlocksStyle(resetEditorState);
+      this.setState({
+        editorState: clearEditorContent(resetEditorState),
+        attachment: null,
+        showURLInput: false,
+        urlValue: '',
+        showEmojiPicker: false
+      });
+    }
+  }, {
+    key: "_promptForLink",
+    value: function _promptForLink() {
+      var _this2 = this;
+      if (this.state.showURLInput) {
+        this.setState({
+          showURLInput: false
+        });
+        return;
+      }
+      var editorState = this.state.editorState;
+      var selection = editorState.getSelection();
+      if (!selection.isCollapsed()) {
+        var contentState = editorState.getCurrentContent();
+        var startKey = editorState.getSelection().getStartKey();
+        var startOffset = editorState.getSelection().getStartOffset();
+        var blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+        var linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
+        var url = '';
+        if (linkKey) {
+          var linkInstance = contentState.getEntity(linkKey);
+          url = linkInstance.getData().url;
+        }
+        this.setState({
+          showURLInput: true,
+          urlValue: url
+        }, function () {
+          setTimeout(function () {
+            return _this2.refs.url.focus();
+          }, 0);
+        });
+      }
+    }
+  }, {
+    key: "_confirmLink",
+    value: function _confirmLink(e) {
+      var _this3 = this;
+      e.preventDefault();
+      var editorState = this.state.editorState;
+      var urlValue = this.state.urlValue;
+      var contentState = editorState.getCurrentContent();
+      // Default protocol for hyperlinks
+      if (!/^https?:\/\//i.test(urlValue)) {
+        urlValue = 'http://' + urlValue;
+      }
+      var contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
+        url: urlValue
+      });
+      var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      var newEditorState = EditorState.set(editorState, {
+        currentContent: contentStateWithEntity
+      });
+      this.setState({
+        editorState: RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey),
+        showURLInput: false,
+        urlValue: ''
+      }, function () {
+        setTimeout(function () {
+          return _this3.domEditor.focus();
+        }, 0);
+      });
+    }
+  }, {
+    key: "_removeLink",
+    value: function _removeLink(e) {
+      var _this4 = this;
+      e.preventDefault();
+      var editorState = this.state.editorState;
+      var selection = editorState.getSelection();
+      if (!selection.isCollapsed()) {
+        this.setState({
+          editorState: RichUtils.toggleLink(editorState, selection, null),
+          showURLInput: false
+        }, function () {
+          setTimeout(function () {
+            return _this4.domEditor.focus();
+          }, 0);
+        });
+      }
+    }
+  }, {
+    key: "_addTextToMessage",
+    value: function _addTextToMessage(text) {
+      var editorState = this.state.editorState;
+      var selection = editorState.getSelection();
+      var contentState = editorState.getCurrentContent();
+      var nextEditorState = EditorState.createEmpty();
+      if (selection.isCollapsed()) {
+        var nextContentState = Modifier.insertText(contentState, selection, text);
+        nextEditorState = EditorState.push(editorState, nextContentState, 'insert-characters');
+      } else {
+        var _nextContentState = Modifier.replaceText(contentState, selection, text);
+        nextEditorState = EditorState.push(editorState, _nextContentState, 'insert-characters');
+      }
+      this.onChange(nextEditorState);
+    }
+  }, {
+    key: "_countRichFormatTypes",
+    value: function _countRichFormatTypes(rawContentState) {
+      var _this5 = this;
+      // BOLD, ITALIC, NUMBER_LIST, BULLET_LIST are from blocks;
+      // HYPER_LINK is from entityMap;
+      var blocks = rawContentState.blocks,
+        entityMap = rawContentState.entityMap;
+      var set = new Set();
+      blocks.forEach(function (block) {
+        var type = block.type,
+          inlineStyleRanges = block.inlineStyleRanges;
+        if (type !== 'unstyled') {
+          set.add(type);
+        }
+        inlineStyleRanges.forEach(function (range) {
+          set.add(range.style);
+        });
+      });
+      if (Object.keys(entityMap).length > 0) {
+        for (var entity in entityMap) {
+          set.add(entityMap[entity].type);
+        }
+      }
+      Array.from(set).forEach(function (type) {
+        _this5.csmService.addCountMetric(RICH_MESSAGE_EVENT[type], CSM_CATEGORY$1.UI);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this6 = this;
+      var _this$state = this.state,
+        attachment = _this$state.attachment,
+        editorState = _this$state.editorState;
+      var _this$props = this.props,
+        allowedFileContentTypes = _this$props.allowedFileContentTypes,
+        placeholder = _this$props.placeholder;
+      var editorStateSelection = editorState.getSelection();
+      var currentBlockStyle = editorState.getCurrentContent().getBlockForKey(editorStateSelection.getStartKey()).getType();
+      var currentInlineStyle = editorState.getCurrentInlineStyle();
+      var urlInput;
+      if (this.state.showURLInput) {
+        urlInput = /*#__PURE__*/React__default.createElement(URLInputContainer, null, /*#__PURE__*/React__default.createElement(URLInputLabel, null, "Link"), /*#__PURE__*/React__default.createElement(URLInput, {
+          onChange: this.onURLChange,
+          ref: "url",
+          type: "text",
+          value: this.state.urlValue,
+          onKeyPress: this.onURLKeyInput,
+          onKeyDown: this.onURLKeyInput
+        }), /*#__PURE__*/React__default.createElement(URLConfirmIcon, {
+          onClick: this.confirmLink,
+          tabIndex: 0,
+          onKeyDown: function onKeyDown(e) {
+            if (e.keyCode === KEY_CODE.SPACE || e.keyCode === KEY_CODE.ENTER) {
+              e.preventDefault();
+              e.target.click();
+            }
+          }
+        }, CONFIRM_LINK_ICON), /*#__PURE__*/React__default.createElement(URLRemoveIcon, {
+          onClick: this.removeLink,
+          tabIndex: 0,
+          onKeyDown: function onKeyDown(e) {
+            if (e.keyCode === KEY_CODE.SPACE || e.keyCode === KEY_CODE.ENTER) {
+              e.preventDefault();
+              e.target.click();
+            }
+          }
+        }, REMOVE_LINK_ICON));
+      }
+      return /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(ErrorBoundary, {
+        FallbackComponent: ErrorFallback$1,
+        onReset: this.resetState
+      }, /*#__PURE__*/React__default.createElement("div", {
+        id: "emoji-picker",
+        "data-testid": 'emoji-picker',
+        style: {
+          visibility: this.state.showEmojiPicker ? 'visible' : 'hidden'
+        }
+      }, /*#__PURE__*/React__default.createElement(EmojiPicker, {
+        closeEmojiPicker: function closeEmojiPicker() {
+          return _this6.setState({
+            showEmojiPicker: false
+          });
+        },
+        style: {
+          top: getEmojiPickerTopPosition()
+        },
+        onEmojiSelect: this.addTextToMessage
+      })), /*#__PURE__*/React__default.createElement(RichToolbarContainer, {
+        onClick: this.focus,
+        "data-testid": "rich-tool-bar-container"
+      }, /*#__PURE__*/React__default.createElement(RichToolbarFormattingContainer, null, inlineFormatDisplayOrder.map(function (richFormat, idx) {
+        return /*#__PURE__*/React__default.createElement(RichToolbarButton, {
+          id: "richToolbarButton_".concat(idx),
+          key: idx,
+          index: idx,
+          isActiveButton: currentInlineStyle.has(richFormat),
+          onFormatToggled: _this6._onFormatToggled.bind(_this6, richFormat, RichUtils.toggleInlineStyle),
+          buttonSvg: currentInlineStyle.has(richFormat) ? RICH_FORMAT_ICONS_SELECTED[richFormat] : RICH_FORMAT_ICONS[richFormat],
+          buttonName: richFormat
+        });
+      }), blockTypeDisplayOrder.map(function (blockType, idx) {
+        return /*#__PURE__*/React__default.createElement(RichToolbarButton, {
+          id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + idx),
+          key: idx,
+          index: inlineFormatDisplayOrder.length + idx,
+          isActiveButton: blockType === currentBlockStyle,
+          onFormatToggled: _this6._onFormatToggled.bind(_this6, blockType, RichUtils.toggleBlockType),
+          buttonSvg: blockType === currentBlockStyle ? RICH_FORMAT_ICONS_SELECTED[blockType] : RICH_FORMAT_ICONS[blockType],
+          buttonName: blockType
+        });
+      }), linkFormatDisplayOrder.map(function (linkFormat, idx) {
+        return /*#__PURE__*/React__default.createElement(RichToolbarButton, {
+          id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + idx),
+          key: idx,
+          index: inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + idx,
+          isActiveButton: _this6.state.showURLInput,
+          onButtonClicked: _this6.promptForLink,
+          buttonSvg: _this6.state.showURLInput ? RICH_FORMAT_ICONS_SELECTED[linkFormat] : RICH_FORMAT_ICONS[linkFormat],
+          buttonName: linkFormat
+        });
+      }), !isMobile() && emojisFormatDisplayOrder.map(function (richFormat, idx) {
+        return /*#__PURE__*/React__default.createElement(RichToolbarButton, {
+          id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + idx),
+          key: idx,
+          index: inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + idx,
+          isActiveButton: _this6.state.showEmojiPicker === true,
+          onButtonClicked: function onButtonClicked() {
+            _this6.setState({
+              showEmojiPicker: !_this6.state.showEmojiPicker
+            });
+            getEmojiPickerTopPosition();
+          },
+          buttonSvg: _this6.state.showEmojiPicker ? RICH_FORMAT_ICONS_SELECTED[richFormat] : RICH_FORMAT_ICONS[richFormat],
+          buttonName: richFormat
+        });
+      })), /*#__PURE__*/React__default.createElement(RichToolbarAttachmentsContainer, null, this.props.attachmentsEnabled && /*#__PURE__*/React__default.createElement(AttachmentsIcon, {
+        id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + emojisFormatDisplayOrder.length),
+        tabIndex: -1,
+        onKeyDown: function onKeyDown(e) {
+          if (e.keyCode === KEY_CODE.SPACE || e.keyCode === KEY_CODE.ENTER) {
+            e.preventDefault();
+            document.getElementById('chat-file-select-attachments').click();
+          } else if (e.keyCode === KEY_CODE.LEFT) {
+            e.preventDefault();
+            var currentIndex = inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + emojisFormatDisplayOrder.length;
+            focusLastOrNextElement(currentIndex, -1);
+          }
+        }
+      }, /*#__PURE__*/React__default.createElement("label", {
+        htmlFor: "chat-file-select-attachments"
+      }, ATTACHMENTS_ICON, /*#__PURE__*/React__default.createElement("input", {
+        type: "file",
+        id: "chat-file-select-attachments",
+        "data-testid": "chat-file-select-attachments",
+        accept: allowedFileContentTypes.join(","),
+        onChange: function onChange(e) {
+          var file = e.target.files[0];
+          _this6.setState(function (prevState) {
+            return _objectSpread2(_objectSpread2({}, prevState), {}, {
+              attachment: file
+            });
+          });
+        },
+        tabIndex: -1
+      }))))), attachment != null && /*#__PURE__*/React__default.createElement(AttachmentOuterContainer, null, /*#__PURE__*/React__default.createElement(AttachmentContainer, null, /*#__PURE__*/React__default.createElement(AttachmentInnerContainer, null, /*#__PURE__*/React__default.createElement("span", null, attachment.name), /*#__PURE__*/React__default.createElement(IconButton, {
+        onClick: function onClick() {
+          _this6.setState(function (prevState) {
+            return _objectSpread2(_objectSpread2({}, prevState), {}, {
+              attachment: null
+            });
+          });
+        },
+        "aria-label": "Remove attachment"
+      }, /*#__PURE__*/React__default.createElement(CloseIcon, null, /*#__PURE__*/React__default.createElement("svg", {
+        viewBox: "0 0 13 13",
+        xmlns: "http://www.w3.org/2000/svg",
+        fill: "currentColor"
+      }, /*#__PURE__*/React__default.createElement("path", {
+        d: "M13 1.3L11.7 0 6.5 5.2 1.3 0 0 1.3l5.2 5.2L0 11.7 1.3 13l5.2-5.2 5.2 5.2 1.3-1.3-5.2-5.2z",
+        fillRule: "evenodd"
+      }))))))), urlInput, /*#__PURE__*/React__default.createElement(EditorContainer, null, /*#__PURE__*/React__default.createElement(Editor, {
+        placeholder: currentBlockStyle === 'unstyled' ? placeholder : undefined,
+        editorState: editorState,
+        onChange: this.onChange,
+        handleReturn: this._handleReturn,
+        ref: this.setDomEditorRef,
+        handleBeforeInput: this.handleBeforeInput
+        // webDriverTestID is the data-testid for <Editor /> component
+        ,
+        webDriverTestID: "rich-text-editor"
+      }), /*#__PURE__*/React__default.createElement(SendMessageButtonContainer, null, /*#__PURE__*/React__default.createElement(SendMessageButton, {
+        isActive: !!editorState.getCurrentContent().getPlainText() || attachment,
+        sendMessage: function sendMessage(e) {
+          _this6._handleReturn(e, true);
+        }
+      })))));
+    }
+  }]);
+  return RichTextEditor;
+}(React__default.Component);var css_248z = ".emoji-mart,\n.emoji-mart * {\n  box-sizing: border-box;\n  line-height: 1.15;\n}\n\n.emoji-mart {\n  font-family: -apple-system, BlinkMacSystemFont, \"Helvetica Neue\", sans-serif;\n  font-size: 16px;\n  display: inline-block;\n  color: #222427;\n  border: 1px solid #d9d9d9;\n  border-radius: 5px;\n  background: #fff;\n}\n\n.emoji-mart .emoji-mart-emoji {\n  padding: 6px;\n}\n\n.emoji-mart-bar {\n  border: 0 solid #d9d9d9;\n}\n.emoji-mart-bar:first-child {\n  border-bottom-width: 1px;\n  border-top-left-radius: 5px;\n  border-top-right-radius: 5px;\n}\n.emoji-mart-bar:last-child {\n  border-top-width: 1px;\n  border-bottom-left-radius: 5px;\n  border-bottom-right-radius: 5px;\n}\n\n.emoji-mart-anchors {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding: 0 6px;\n  line-height: 0;\n}\n\n.emoji-mart-anchor {\n  position: relative;\n  display: block;\n  flex: 1 1 auto;\n  color: #858585;\n  text-align: center;\n  padding: 12px 4px;\n  overflow: hidden;\n  transition: color .1s ease-out;\n  margin: 0;\n  box-shadow: none;\n  background: none;\n  border: none;\n}\n.emoji-mart-anchor:focus { outline: 0 }\n.emoji-mart-anchor:hover,\n.emoji-mart-anchor:focus,\n.emoji-mart-anchor-selected {\n  color: #464646;\n}\n\n.emoji-mart-anchor-selected .emoji-mart-anchor-bar {\n  bottom: 0;\n}\n\n.emoji-mart-anchor-bar {\n  position: absolute;\n  bottom: -3px; left: 0;\n  width: 100%; height: 3px;\n  background-color: #464646;\n}\n\n.emoji-mart-anchors i {\n  display: inline-block;\n  width: 100%;\n  max-width: 22px;\n}\n\n.emoji-mart-anchors svg,\n.emoji-mart-anchors img {\n  fill: currentColor;\n  height: 18px;\n  width: 18px;\n}\n\n.emoji-mart-scroll {\n  overflow-y: scroll;\n  overflow-x: hidden;\n  height: 270px;\n  padding: 0 6px 6px 6px;\n  will-change: transform; /* avoids \"repaints on scroll\" in mobile Chrome */\n}\n\n.emoji-mart-search {\n  margin-top: 6px;\n  padding: 0 6px;\n  position: relative;\n}\n\n.emoji-mart-search input {\n  font-size: 16px;\n  display: block;\n  width: 100%;\n  padding: 5px 25px 6px 10px;\n  border-radius: 5px;\n  border: 1px solid #d9d9d9;\n  outline: 0;\n}\n\n.emoji-mart-search input,\n.emoji-mart-search input::-webkit-search-decoration,\n.emoji-mart-search input::-webkit-search-cancel-button,\n.emoji-mart-search input::-webkit-search-results-button,\n.emoji-mart-search input::-webkit-search-results-decoration {\n  /* remove webkit/blink styles for <input type=\"search\">\n   * via https://stackoverflow.com/a/9422689 */\n  -webkit-appearance: none;\n}\n\n.emoji-mart-search-icon {\n  position: absolute;\n  top: 7px;\n  right: 11px;\n  z-index: 2;\n  padding: 2px 5px 1px;\n  border: none;\n  background: none;\n}\n\n.emoji-mart-category .emoji-mart-emoji span {\n  z-index: 1;\n  position: relative;\n  text-align: center;\n  cursor: default;\n}\n\n.emoji-mart-category .emoji-mart-emoji:hover:before {\n  z-index: 0;\n  content: \"\";\n  position: absolute;\n  top: 0; left: 0;\n  width: 100%; height: 100%;\n  background-color: #f4f4f4;\n  border-radius: 100%;\n}\n\n.emoji-mart-category-label {\n  z-index: 2;\n  position: relative;\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n}\n\n.emoji-mart-category-label span {\n  display: block;\n  width: 100%;\n  font-weight: 500;\n  padding: 5px 6px;\n  background-color: #fff;\n  background-color: rgba(255, 255, 255, .95);\n}\n\n.emoji-mart-category-list {\n  margin: 0;\n  padding: 0;\n}\n\n.emoji-mart-category-list li {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  display: inline-block;\n}\n\n.emoji-mart-emoji {\n  position: relative;\n  display: inline-block;\n  font-size: 0;\n  margin: 0;\n  padding: 0;\n  border: none;\n  background: none;\n  box-shadow: none;\n}\n\n.emoji-mart-emoji-native {\n  font-family: \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Segoe UI\", \"Apple Color Emoji\", \"Twemoji Mozilla\", \"Noto Color Emoji\", \"Android Emoji\";\n}\n\n.emoji-mart-no-results {\n  font-size: 14px;\n  text-align: center;\n  padding-top: 70px;\n  color: #858585;\n}\n.emoji-mart-no-results-img {\n  display: block;\n  margin-left: auto;\n  margin-right: auto;\n  width: 50%;\n}\n.emoji-mart-no-results .emoji-mart-category-label {\n  display: none;\n}\n.emoji-mart-no-results .emoji-mart-no-results-label {\n  margin-top: .2em;\n}\n.emoji-mart-no-results .emoji-mart-emoji:hover:before {\n  content: none;\n}\n\n.emoji-mart-preview {\n  position: relative;\n  height: 70px;\n}\n\n.emoji-mart-preview-emoji,\n.emoji-mart-preview-data,\n.emoji-mart-preview-skins {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.emoji-mart-preview-emoji {\n  left: 12px;\n}\n\n.emoji-mart-preview-data {\n  left: 68px; right: 12px;\n  word-break: break-all;\n}\n\n.emoji-mart-preview-skins {\n  right: 30px;\n  text-align: right;\n}\n\n.emoji-mart-preview-skins.custom {\n  right: 10px;\n  text-align: right;\n}\n\n.emoji-mart-preview-name {\n  font-size: 14px;\n}\n\n.emoji-mart-preview-shortname {\n  font-size: 12px;\n  color: #888;\n}\n.emoji-mart-preview-shortname + .emoji-mart-preview-shortname,\n.emoji-mart-preview-shortname + .emoji-mart-preview-emoticon,\n.emoji-mart-preview-emoticon + .emoji-mart-preview-emoticon {\n  margin-left: .5em;\n}\n\n.emoji-mart-preview-emoticon {\n  font-size: 11px;\n  color: #bbb;\n}\n\n.emoji-mart-title span {\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.emoji-mart-title .emoji-mart-emoji {\n  padding: 0;\n}\n\n.emoji-mart-title-label {\n  color: #999A9C;\n  font-size: 26px;\n  font-weight: 300;\n}\n\n.emoji-mart-skin-swatches {\n  font-size: 0;\n  padding: 2px 0;\n  border: 1px solid #d9d9d9;\n  border-radius: 12px;\n  background-color: #fff;\n}\n\n.emoji-mart-skin-swatches.custom {\n  font-size: 0;\n  border: none;\n  background-color: #fff;\n}\n\n.emoji-mart-skin-swatches.opened .emoji-mart-skin-swatch {\n  width: 16px;\n  padding: 0 2px;\n}\n\n.emoji-mart-skin-swatches.opened .emoji-mart-skin-swatch.selected:after {\n  opacity: .75;\n}\n\n.emoji-mart-skin-swatch {\n  display: inline-block;\n  width: 0;\n  vertical-align: middle;\n  transition-property: width, padding;\n  transition-duration: .125s;\n  transition-timing-function: ease-out;\n}\n\n.emoji-mart-skin-swatch:nth-child(1) { transition-delay: 0s }\n.emoji-mart-skin-swatch:nth-child(2) { transition-delay: .03s }\n.emoji-mart-skin-swatch:nth-child(3) { transition-delay: .06s }\n.emoji-mart-skin-swatch:nth-child(4) { transition-delay: .09s }\n.emoji-mart-skin-swatch:nth-child(5) { transition-delay: .12s }\n.emoji-mart-skin-swatch:nth-child(6) { transition-delay: .15s }\n\n.emoji-mart-skin-swatch.selected {\n  position: relative;\n  width: 16px;\n  padding: 0 2px;\n}\n\n.emoji-mart-skin-swatch.selected:after {\n  content: \"\";\n  position: absolute;\n  top: 50%; left: 50%;\n  width: 4px; height: 4px;\n  margin: -2px 0 0 -2px;\n  background-color: #fff;\n  border-radius: 100%;\n  pointer-events: none;\n  opacity: 0;\n  transition: opacity .2s ease-out;\n}\n\n.emoji-mart-skin-swatch.custom {\n  display: inline-block;\n  width: 0;\n  height: 38px;\n  overflow: hidden;\n  vertical-align: middle;\n  transition-property: width, height;\n  transition-duration: .125s;\n  transition-timing-function: ease-out;\n  cursor: default;\n}\n\n.emoji-mart-skin-swatch.custom.selected {\n  position: relative;\n  width: 36px;\n  height: 38px;\n  padding: 0 2px 0 0;\n}\n\n.emoji-mart-skin-swatch.custom.selected:after {\n  content: \"\";\n  width: 0;\n  height: 0;\n}\n\n.emoji-mart-skin-swatches.custom .emoji-mart-skin-swatch.custom:hover {\n  background-color: #f4f4f4;\n  border-radius: 10%;\n}\n\n.emoji-mart-skin-swatches.custom.opened .emoji-mart-skin-swatch.custom {\n  width: 36px;\n  height: 38px;\n  padding: 0 2px 0 0;\n}\n\n.emoji-mart-skin-swatches.custom.opened .emoji-mart-skin-swatch.custom.selected:after {\n  opacity: .75;\n}\n\n.emoji-mart-skin-text.opened {\n  display: inline-block;\n  vertical-align: middle;\n  text-align: left;\n  color: #888;\n  font-size: 11px;\n  padding: 5px 2px;\n  width: 95px;\n  height: 40px;\n  border-radius: 10%;\n  background-color: #fff;\n}\n\n.emoji-mart-skin {\n  display: inline-block;\n  width: 100%;\n  padding-top: 100%;\n  max-width: 12px;\n  border-radius: 100%;\n}\n\n.emoji-mart-skin-tone-1 { background-color: #ffc93a }\n.emoji-mart-skin-tone-2 { background-color: #fadcbc }\n.emoji-mart-skin-tone-3 { background-color: #e0bb95 }\n.emoji-mart-skin-tone-4 { background-color: #bf8f68 }\n.emoji-mart-skin-tone-5 { background-color: #9b643d }\n.emoji-mart-skin-tone-6 { background-color: #594539 }\n\n/* For screenreaders only, via https://stackoverflow.com/a/19758620 */\n.emoji-mart-sr-only {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  border: 0;\n}\n\n/*\n * Dark mode styles\n */\n\n.emoji-mart-dark {\n  color: #fff;\n  border-color: #555453;\n  background-color: #222;\n}\n\n.emoji-mart-dark .emoji-mart-bar {\n  border-color: #555453;\n}\n\n.emoji-mart-dark .emoji-mart-search input {\n  color: #fff;\n  border-color: #555453;\n  background-color: #2f2f2f;\n}\n\n.emoji-mart-dark .emoji-mart-search-icon svg {\n  fill: #fff;\n}\n\n.emoji-mart-dark .emoji-mart-category .emoji-mart-emoji:hover:before {\n  background-color: #444;\n}\n\n.emoji-mart-dark .emoji-mart-category-label span {\n  background-color: #222;\n  color: #fff;\n}\n\n.emoji-mart-dark .emoji-mart-skin-swatches {\n  border-color: #555453;\n  background-color: #222;\n}\n\n.emoji-mart-dark .emoji-mart-anchor:hover,\n.emoji-mart-dark .emoji-mart-anchor:focus,\n.emoji-mart-dark .emoji-mart-anchor-selected {\n  color: #bfbfbf;\n}\n";
 styleInject(css_248z);var compressed = true;
 var categories$1 = [
 	{
@@ -53374,34 +54351,42 @@ var data = {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
+}function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, _typeof(obj);
+}function _toPrimitive(input, hint) {
+  if (_typeof(input) !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (_typeof(res) !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return (hint === "string" ? String : Number)(input);
+}function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+  return _typeof(key) === "symbol" ? key : String(key);
 }function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
+    Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
   }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", {
+    writable: false
+  });
   return Constructor;
-}function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
 }var mapping = {
   name: 'a',
   unified: 'b',
@@ -54066,6 +55051,7 @@ var frequently$1 = {
   add: add,
   get: get
 };function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
   if (key in obj) {
     Object.defineProperty(obj, key, {
       value: value,
@@ -54076,29 +55062,24 @@ var frequently$1 = {
   } else {
     obj[key] = value;
   }
-
   return obj;
 }function _extends() {
-  _extends = Object.assign || function (target) {
+  _extends = Object.assign ? Object.assign.bind() : function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
-
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
         }
       }
     }
-
     return target;
   };
-
   return _extends.apply(this, arguments);
 }function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   }
-
   return self;
 }function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -54106,10 +55087,9 @@ var frequently$1 = {
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
   }
-
   return _assertThisInitialized(self);
 }function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
     return o.__proto__ || Object.getPrototypeOf(o);
   };
   return _getPrototypeOf(o);
@@ -54117,7 +55097,6 @@ var frequently$1 = {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
   }
-
   subClass.prototype = Object.create(superClass && superClass.prototype, {
     constructor: {
       value: subClass,
@@ -54125,34 +55104,37 @@ var frequently$1 = {
       configurable: true
     }
   });
+  Object.defineProperty(subClass, "prototype", {
+    writable: false
+  });
   if (superClass) _setPrototypeOf(subClass, superClass);
 }var categories = {
   activity: function activity() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M12 0C5.373 0 0 5.372 0 12c0 6.627 5.373 12 12 12 6.628 0 12-5.373 12-12 0-6.628-5.372-12-12-12m9.949 11H17.05c.224-2.527 1.232-4.773 1.968-6.113A9.966 9.966 0 0 1 21.949 11M13 11V2.051a9.945 9.945 0 0 1 4.432 1.564c-.858 1.491-2.156 4.22-2.392 7.385H13zm-2 0H8.961c-.238-3.165-1.536-5.894-2.393-7.385A9.95 9.95 0 0 1 11 2.051V11zm0 2v8.949a9.937 9.937 0 0 1-4.432-1.564c.857-1.492 2.155-4.221 2.393-7.385H11zm4.04 0c.236 3.164 1.534 5.893 2.392 7.385A9.92 9.92 0 0 1 13 21.949V13h2.04zM4.982 4.887C5.718 6.227 6.726 8.473 6.951 11h-4.9a9.977 9.977 0 0 1 2.931-6.113M2.051 13h4.9c-.226 2.527-1.233 4.771-1.969 6.113A9.972 9.972 0 0 1 2.051 13m16.967 6.113c-.735-1.342-1.744-3.586-1.968-6.113h4.899a9.961 9.961 0 0 1-2.931 6.113"
     }));
   },
   custom: function custom() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("g", {
+    }, React__default.createElement("g", {
       transform: "translate(2.000000, 1.000000)"
-    }, React__default["default"].createElement("rect", {
+    }, React__default.createElement("rect", {
       id: "Rectangle",
       x: "8",
       y: "0",
       width: "3",
       height: "21",
       rx: "1.5"
-    }), React__default["default"].createElement("rect", {
+    }), React__default.createElement("rect", {
       id: "Rectangle",
       transform: "translate(9.843, 10.549) rotate(60) translate(-9.843, -10.549) ",
       x: "8.343",
@@ -54160,7 +55142,7 @@ var frequently$1 = {
       width: "3",
       height: "21",
       rx: "1.5"
-    }), React__default["default"].createElement("rect", {
+    }), React__default.createElement("rect", {
       id: "Rectangle",
       transform: "translate(9.843, 10.549) rotate(-60) translate(-9.843, -10.549) ",
       x: "8.343",
@@ -54171,182 +55153,182 @@ var frequently$1 = {
     })));
   },
   flags: function flags() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M0 0l6.084 24H8L1.916 0zM21 5h-4l-1-4H4l3 12h3l1 4h13L21 5zM6.563 3h7.875l2 8H8.563l-2-8zm8.832 10l-2.856 1.904L12.063 13h3.332zM19 13l-1.5-6h1.938l2 8H16l3-2z"
     }));
   },
   foods: function foods() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M17 4.978c-1.838 0-2.876.396-3.68.934.513-1.172 1.768-2.934 4.68-2.934a1 1 0 0 0 0-2c-2.921 0-4.629 1.365-5.547 2.512-.064.078-.119.162-.18.244C11.73 1.838 10.798.023 9.207.023 8.579.022 7.85.306 7 .978 5.027 2.54 5.329 3.902 6.492 4.999 3.609 5.222 0 7.352 0 12.969c0 4.582 4.961 11.009 9 11.009 1.975 0 2.371-.486 3-1 .629.514 1.025 1 3 1 4.039 0 9-6.418 9-11 0-5.953-4.055-8-7-8M8.242 2.546c.641-.508.943-.523.965-.523.426.169.975 1.405 1.357 3.055-1.527-.629-2.741-1.352-2.98-1.846.059-.112.241-.356.658-.686M15 21.978c-1.08 0-1.21-.109-1.559-.402l-.176-.146c-.367-.302-.816-.452-1.266-.452s-.898.15-1.266.452l-.176.146c-.347.292-.477.402-1.557.402-2.813 0-7-5.389-7-9.009 0-5.823 4.488-5.991 5-5.991 1.939 0 2.484.471 3.387 1.251l.323.276a1.995 1.995 0 0 0 2.58 0l.323-.276c.902-.78 1.447-1.251 3.387-1.251.512 0 5 .168 5 6 0 3.617-4.187 9-7 9"
     }));
   },
   nature: function nature() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M15.5 8a1.5 1.5 0 1 0 .001 3.001A1.5 1.5 0 0 0 15.5 8M8.5 8a1.5 1.5 0 1 0 .001 3.001A1.5 1.5 0 0 0 8.5 8"
-    }), React__default["default"].createElement("path", {
+    }), React__default.createElement("path", {
       d: "M18.933 0h-.027c-.97 0-2.138.787-3.018 1.497-1.274-.374-2.612-.51-3.887-.51-1.285 0-2.616.133-3.874.517C7.245.79 6.069 0 5.093 0h-.027C3.352 0 .07 2.67.002 7.026c-.039 2.479.276 4.238 1.04 5.013.254.258.882.677 1.295.882.191 3.177.922 5.238 2.536 6.38.897.637 2.187.949 3.2 1.102C8.04 20.6 8 20.795 8 21c0 1.773 2.35 3 4 3 1.648 0 4-1.227 4-3 0-.201-.038-.393-.072-.586 2.573-.385 5.435-1.877 5.925-7.587.396-.22.887-.568 1.104-.788.763-.774 1.079-2.534 1.04-5.013C23.929 2.67 20.646 0 18.933 0M3.223 9.135c-.237.281-.837 1.155-.884 1.238-.15-.41-.368-1.349-.337-3.291.051-3.281 2.478-4.972 3.091-5.031.256.015.731.27 1.265.646-1.11 1.171-2.275 2.915-2.352 5.125-.133.546-.398.858-.783 1.313M12 22c-.901 0-1.954-.693-2-1 0-.654.475-1.236 1-1.602V20a1 1 0 1 0 2 0v-.602c.524.365 1 .947 1 1.602-.046.307-1.099 1-2 1m3-3.48v.02a4.752 4.752 0 0 0-1.262-1.02c1.092-.516 2.239-1.334 2.239-2.217 0-1.842-1.781-2.195-3.977-2.195-2.196 0-3.978.354-3.978 2.195 0 .883 1.148 1.701 2.238 2.217A4.8 4.8 0 0 0 9 18.539v-.025c-1-.076-2.182-.281-2.973-.842-1.301-.92-1.838-3.045-1.853-6.478l.023-.041c.496-.826 1.49-1.45 1.804-3.102 0-2.047 1.357-3.631 2.362-4.522C9.37 3.178 10.555 3 11.948 3c1.447 0 2.685.192 3.733.57 1 .9 2.316 2.465 2.316 4.48.313 1.651 1.307 2.275 1.803 3.102.035.058.068.117.102.178-.059 5.967-1.949 7.01-4.902 7.19m6.628-8.202c-.037-.065-.074-.13-.113-.195a7.587 7.587 0 0 0-.739-.987c-.385-.455-.648-.768-.782-1.313-.076-2.209-1.241-3.954-2.353-5.124.531-.376 1.004-.63 1.261-.647.636.071 3.044 1.764 3.096 5.031.027 1.81-.347 3.218-.37 3.235"
     }));
   },
   objects: function objects() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M12 0a9 9 0 0 0-5 16.482V21s2.035 3 5 3 5-3 5-3v-4.518A9 9 0 0 0 12 0zm0 2c3.86 0 7 3.141 7 7s-3.14 7-7 7-7-3.141-7-7 3.14-7 7-7zM9 17.477c.94.332 1.946.523 3 .523s2.06-.19 3-.523v.834c-.91.436-1.925.689-3 .689a6.924 6.924 0 0 1-3-.69v-.833zm.236 3.07A8.854 8.854 0 0 0 12 21c.965 0 1.888-.167 2.758-.451C14.155 21.173 13.153 22 12 22c-1.102 0-2.117-.789-2.764-1.453z"
-    }), React__default["default"].createElement("path", {
+    }), React__default.createElement("path", {
       d: "M14.745 12.449h-.004c-.852-.024-1.188-.858-1.577-1.824-.421-1.061-.703-1.561-1.182-1.566h-.009c-.481 0-.783.497-1.235 1.537-.436.982-.801 1.811-1.636 1.791l-.276-.043c-.565-.171-.853-.691-1.284-1.794-.125-.313-.202-.632-.27-.913-.051-.213-.127-.53-.195-.634C7.067 9.004 7.039 9 6.99 9A1 1 0 0 1 7 7h.01c1.662.017 2.015 1.373 2.198 2.134.486-.981 1.304-2.058 2.797-2.075 1.531.018 2.28 1.153 2.731 2.141l.002-.008C14.944 8.424 15.327 7 16.979 7h.032A1 1 0 1 1 17 9h-.011c-.149.076-.256.474-.319.709a6.484 6.484 0 0 1-.311.951c-.429.973-.79 1.789-1.614 1.789"
     }));
   },
   people: function people() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10"
-    }), React__default["default"].createElement("path", {
+    }), React__default.createElement("path", {
       d: "M8 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 8 7M16 7a2 2 0 1 0-.001 3.999A2 2 0 0 0 16 7M15.232 15c-.693 1.195-1.87 2-3.349 2-1.477 0-2.655-.805-3.347-2H15m3-2H6a6 6 0 1 0 12 0"
     }));
   },
   places: function places() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M6.5 12C5.122 12 4 13.121 4 14.5S5.122 17 6.5 17 9 15.879 9 14.5 7.878 12 6.5 12m0 3c-.275 0-.5-.225-.5-.5s.225-.5.5-.5.5.225.5.5-.225.5-.5.5M17.5 12c-1.378 0-2.5 1.121-2.5 2.5s1.122 2.5 2.5 2.5 2.5-1.121 2.5-2.5-1.122-2.5-2.5-2.5m0 3c-.275 0-.5-.225-.5-.5s.225-.5.5-.5.5.225.5.5-.225.5-.5.5"
-    }), React__default["default"].createElement("path", {
+    }), React__default.createElement("path", {
       d: "M22.482 9.494l-1.039-.346L21.4 9h.6c.552 0 1-.439 1-.992 0-.006-.003-.008-.003-.008H23c0-1-.889-2-1.984-2h-.642l-.731-1.717C19.262 3.012 18.091 2 16.764 2H7.236C5.909 2 4.738 3.012 4.357 4.283L3.626 6h-.642C1.889 6 1 7 1 8h.003S1 8.002 1 8.008C1 8.561 1.448 9 2 9h.6l-.043.148-1.039.346a2.001 2.001 0 0 0-1.359 2.097l.751 7.508a1 1 0 0 0 .994.901H3v1c0 1.103.896 2 2 2h2c1.104 0 2-.897 2-2v-1h6v1c0 1.103.896 2 2 2h2c1.104 0 2-.897 2-2v-1h1.096a.999.999 0 0 0 .994-.901l.751-7.508a2.001 2.001 0 0 0-1.359-2.097M6.273 4.857C6.402 4.43 6.788 4 7.236 4h9.527c.448 0 .834.43.963.857L19.313 9H4.688l1.585-4.143zM7 21H5v-1h2v1zm12 0h-2v-1h2v1zm2.189-3H2.811l-.662-6.607L3 11h18l.852.393L21.189 18z"
     }));
   },
   recent: function recent() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M13 4h-2l-.001 7H9v2h2v2h2v-2h4v-2h-4z"
-    }), React__default["default"].createElement("path", {
+    }), React__default.createElement("path", {
       d: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10"
     }));
   },
   symbols: function symbols() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 24 24",
       width: "24",
       height: "24"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M0 0h11v2H0zM4 11h3V6h4V4H0v2h4zM15.5 17c1.381 0 2.5-1.116 2.5-2.493s-1.119-2.493-2.5-2.493S13 13.13 13 14.507 14.119 17 15.5 17m0-2.986c.276 0 .5.222.5.493 0 .272-.224.493-.5.493s-.5-.221-.5-.493.224-.493.5-.493M21.5 19.014c-1.381 0-2.5 1.116-2.5 2.493S20.119 24 21.5 24s2.5-1.116 2.5-2.493-1.119-2.493-2.5-2.493m0 2.986a.497.497 0 0 1-.5-.493c0-.271.224-.493.5-.493s.5.222.5.493a.497.497 0 0 1-.5.493M22 13l-9 9 1.513 1.5 8.99-9.009zM17 11c2.209 0 4-1.119 4-2.5V2s.985-.161 1.498.949C23.01 4.055 23 6 23 6s1-1.119 1-3.135C24-.02 21 0 21 0h-2v6.347A5.853 5.853 0 0 0 17 6c-2.209 0-4 1.119-4 2.5s1.791 2.5 4 2.5M10.297 20.482l-1.475-1.585a47.54 47.54 0 0 1-1.442 1.129c-.307-.288-.989-1.016-2.045-2.183.902-.836 1.479-1.466 1.729-1.892s.376-.871.376-1.336c0-.592-.273-1.178-.818-1.759-.546-.581-1.329-.871-2.349-.871-1.008 0-1.79.293-2.344.879-.556.587-.832 1.181-.832 1.784 0 .813.419 1.748 1.256 2.805-.847.614-1.444 1.208-1.794 1.784a3.465 3.465 0 0 0-.523 1.833c0 .857.308 1.56.924 2.107.616.549 1.423.823 2.42.823 1.173 0 2.444-.379 3.813-1.137L8.235 24h2.819l-2.09-2.383 1.333-1.135zm-6.736-6.389a1.02 1.02 0 0 1 .73-.286c.31 0 .559.085.747.254a.849.849 0 0 1 .283.659c0 .518-.419 1.112-1.257 1.784-.536-.651-.805-1.231-.805-1.742a.901.901 0 0 1 .302-.669M3.74 22c-.427 0-.778-.116-1.057-.349-.279-.232-.418-.487-.418-.766 0-.594.509-1.288 1.527-2.083.968 1.134 1.717 1.946 2.248 2.438-.921.507-1.686.76-2.3.76"
     }));
   }
 };
 var search = {
   search: function search() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       width: "13",
       height: "13",
       viewBox: "0 0 20 20",
       opacity: "0.5"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"
     }));
   },
   "delete": function _delete() {
-    return React__default["default"].createElement("svg", {
+    return React__default.createElement("svg", {
       xmlns: "http://www.w3.org/2000/svg",
       width: "13",
       height: "13",
       viewBox: "0 0 20 20",
       opacity: "0.5"
-    }, React__default["default"].createElement("path", {
+    }, React__default.createElement("path", {
       d: "M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
     }));
   }
 };var icons=/*#__PURE__*/Object.freeze({__proto__:null,categories:categories,search:search});var EmojiPropTypes = {
-  data: PropTypes__default["default"].object.isRequired,
-  onOver: PropTypes__default["default"].func,
-  onLeave: PropTypes__default["default"].func,
-  onClick: PropTypes__default["default"].func,
-  fallback: PropTypes__default["default"].func,
-  backgroundImageFn: PropTypes__default["default"].func,
-  "native": PropTypes__default["default"].bool,
-  forceSize: PropTypes__default["default"].bool,
-  tooltip: PropTypes__default["default"].bool,
-  useButton: PropTypes__default["default"].bool,
-  skin: PropTypes__default["default"].oneOf([1, 2, 3, 4, 5, 6]),
-  sheetSize: PropTypes__default["default"].oneOf([16, 20, 32, 64]),
-  sheetColumns: PropTypes__default["default"].number,
-  sheetRows: PropTypes__default["default"].number,
-  set: PropTypes__default["default"].oneOf(['apple', 'google', 'twitter', 'facebook']),
-  size: PropTypes__default["default"].number.isRequired,
-  emoji: PropTypes__default["default"].oneOfType([PropTypes__default["default"].string, PropTypes__default["default"].object]).isRequired
+  data: PropTypes.object.isRequired,
+  onOver: PropTypes.func,
+  onLeave: PropTypes.func,
+  onClick: PropTypes.func,
+  fallback: PropTypes.func,
+  backgroundImageFn: PropTypes.func,
+  "native": PropTypes.bool,
+  forceSize: PropTypes.bool,
+  tooltip: PropTypes.bool,
+  useButton: PropTypes.bool,
+  skin: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
+  sheetSize: PropTypes.oneOf([16, 20, 32, 64]),
+  sheetColumns: PropTypes.number,
+  sheetRows: PropTypes.number,
+  set: PropTypes.oneOf(['apple', 'google', 'twitter', 'facebook']),
+  size: PropTypes.number.isRequired,
+  emoji: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired
 };
 var PickerPropTypes = {
-  onClick: PropTypes__default["default"].func,
-  onSelect: PropTypes__default["default"].func,
-  onSkinChange: PropTypes__default["default"].func,
-  perLine: PropTypes__default["default"].number,
-  emojiSize: PropTypes__default["default"].number,
-  i18n: PropTypes__default["default"].object,
-  style: PropTypes__default["default"].object,
-  title: PropTypes__default["default"].string,
-  emoji: PropTypes__default["default"].string,
-  color: PropTypes__default["default"].string,
+  onClick: PropTypes.func,
+  onSelect: PropTypes.func,
+  onSkinChange: PropTypes.func,
+  perLine: PropTypes.number,
+  emojiSize: PropTypes.number,
+  i18n: PropTypes.object,
+  style: PropTypes.object,
+  title: PropTypes.string,
+  emoji: PropTypes.string,
+  color: PropTypes.string,
   set: EmojiPropTypes.set,
   skin: EmojiPropTypes.skin,
-  "native": PropTypes__default["default"].bool,
+  "native": PropTypes.bool,
   backgroundImageFn: EmojiPropTypes.backgroundImageFn,
   sheetSize: EmojiPropTypes.sheetSize,
-  emojisToShowFilter: PropTypes__default["default"].func,
-  showPreview: PropTypes__default["default"].bool,
-  showSkinTones: PropTypes__default["default"].bool,
+  emojisToShowFilter: PropTypes.func,
+  showPreview: PropTypes.bool,
+  showSkinTones: PropTypes.bool,
   emojiTooltip: EmojiPropTypes.tooltip,
   useButton: EmojiPropTypes.useButton,
-  theme: PropTypes__default["default"].oneOf(['auto', 'light', 'dark']),
-  include: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string),
-  exclude: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string),
-  recent: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string),
-  autoFocus: PropTypes__default["default"].bool,
-  enableFrequentEmojiSort: PropTypes__default["default"].bool,
-  custom: PropTypes__default["default"].arrayOf(PropTypes__default["default"].shape({
-    name: PropTypes__default["default"].string.isRequired,
-    short_names: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string).isRequired,
-    emoticons: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string),
-    keywords: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string),
-    imageUrl: PropTypes__default["default"].string,
-    spriteUrl: PropTypes__default["default"].string,
-    sheet_x: PropTypes__default["default"].number,
-    sheet_y: PropTypes__default["default"].number,
-    size: PropTypes__default["default"].number,
-    sheetColumns: PropTypes__default["default"].number,
-    sheetRows: PropTypes__default["default"].number
+  theme: PropTypes.oneOf(['auto', 'light', 'dark']),
+  include: PropTypes.arrayOf(PropTypes.string),
+  exclude: PropTypes.arrayOf(PropTypes.string),
+  recent: PropTypes.arrayOf(PropTypes.string),
+  autoFocus: PropTypes.bool,
+  enableFrequentEmojiSort: PropTypes.bool,
+  custom: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    short_names: PropTypes.arrayOf(PropTypes.string).isRequired,
+    emoticons: PropTypes.arrayOf(PropTypes.string),
+    keywords: PropTypes.arrayOf(PropTypes.string),
+    imageUrl: PropTypes.string,
+    spriteUrl: PropTypes.string,
+    sheet_x: PropTypes.number,
+    sheet_y: PropTypes.number,
+    size: PropTypes.number,
+    sheetColumns: PropTypes.number,
+    sheetRows: PropTypes.number
   })),
-  skinEmoji: PropTypes__default["default"].string,
-  notFound: PropTypes__default["default"].func,
-  notFoundEmoji: PropTypes__default["default"].string,
-  icons: PropTypes__default["default"].object
+  skinEmoji: PropTypes.string,
+  notFound: PropTypes.func,
+  notFoundEmoji: PropTypes.string,
+  icons: PropTypes.object
 };var Anchors =
 /*#__PURE__*/
 function (_React$PureComponent) {
@@ -54388,7 +55370,7 @@ function (_React$PureComponent) {
           i18n = _this$props2.i18n,
           icons = _this$props2.icons,
           selected = this.state.selected;
-      return React__default["default"].createElement("nav", {
+      return React__default.createElement("nav", {
         className: "emoji-mart-anchors",
         "aria-label": i18n.categorieslabel
       }, categories.map(function (category, i) {
@@ -54402,7 +55384,7 @@ function (_React$PureComponent) {
         }
 
         var iconId = id.startsWith('custom-') ? 'custom' : id;
-        return React__default["default"].createElement("button", {
+        return React__default.createElement("button", {
           key: id,
           "aria-label": i18n.categories[iconId],
           title: i18n.categories[iconId],
@@ -54413,9 +55395,9 @@ function (_React$PureComponent) {
           style: {
             color: isSelected ? color : null
           }
-        }, React__default["default"].createElement("div", {
+        }, React__default.createElement("div", {
           className: "emoji-mart-anchor-icon"
-        }, icons.categories[iconId]()), React__default["default"].createElement("span", {
+        }, icons.categories[iconId]()), React__default.createElement("span", {
           className: "emoji-mart-anchor-bar",
           style: {
             backgroundColor: color
@@ -54426,13 +55408,13 @@ function (_React$PureComponent) {
   }]);
 
   return Anchors;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 Anchors.propTypes
 /* remove-proptypes */
 = {
-  categories: PropTypes__default["default"].array,
-  onAnchorClick: PropTypes__default["default"].func,
-  icons: PropTypes__default["default"].object
+  categories: PropTypes.array,
+  onAnchorClick: PropTypes.func,
+  icons: PropTypes.object
 };
 Anchors.defaultProps = {
   categories: [],
@@ -54681,7 +55663,7 @@ var NimbleEmoji = function NimbleEmoji(props) {
     style = _convertStyleToCSS(style);
     return "<".concat(Tag.name, " style='").concat(style, "' aria-label='").concat(label, "' ").concat(title ? "title='".concat(title, "'") : '', " class='").concat(className, "'>").concat(children || '', "</").concat(Tag.name, ">");
   } else {
-    return React__default["default"].createElement(Tag.name, _extends({
+    return React__default.createElement(Tag.name, _extends({
       onClick: function onClick(e) {
         return _handleClick(e, props);
       },
@@ -54694,7 +55676,7 @@ var NimbleEmoji = function NimbleEmoji(props) {
       "aria-label": label,
       title: title,
       className: className
-    }, Tag.props), React__default["default"].createElement("span", {
+    }, Tag.props), React__default.createElement("span", {
       style: style
     }, children));
   }
@@ -54703,7 +55685,7 @@ var NimbleEmoji = function NimbleEmoji(props) {
 NimbleEmoji.propTypes
 /* remove-proptypes */
 = _objectSpread$6({}, EmojiPropTypes, {
-  data: PropTypes__default["default"].object.isRequired
+  data: PropTypes.object.isRequired
 });
 NimbleEmoji.defaultProps = EmojiDefaultProps;function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -54729,7 +55711,7 @@ function (_React$PureComponent) {
           i18n = _this$props.i18n,
           notFound = _this$props.notFound,
           notFoundEmoji = _this$props.notFoundEmoji;
-      var component = notFound && notFound() || React__default["default"].createElement("div", {
+      var component = notFound && notFound() || React__default.createElement("div", {
         className: "emoji-mart-no-results"
       }, NimbleEmoji(_objectSpread$5({
         data: data
@@ -54739,7 +55721,7 @@ function (_React$PureComponent) {
         onOver: null,
         onLeave: null,
         onClick: null
-      })), React__default["default"].createElement("div", {
+      })), React__default.createElement("div", {
         className: "emoji-mart-no-results-label"
       }, i18n.notfound));
       return component;
@@ -54747,12 +55729,12 @@ function (_React$PureComponent) {
   }]);
 
   return NotFound;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 NotFound.propTypes
 /* remove-proptypes */
 = {
-  notFound: PropTypes__default["default"].func.isRequired,
-  emojiProps: PropTypes__default["default"].object.isRequired
+  notFound: PropTypes.func.isRequired,
+  emojiProps: PropTypes.object.isRequired
 };function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -54960,31 +55942,31 @@ function (_React$Component) {
       }
 
       var label = i18n.categories[id] || name;
-      return React__default["default"].createElement("section", {
+      return React__default.createElement("section", {
         ref: this.setContainerRef,
         className: "emoji-mart-category",
         "aria-label": label,
         style: containerStyles
-      }, React__default["default"].createElement("div", {
+      }, React__default.createElement("div", {
         style: labelStyles,
         "data-name": name,
         className: "emoji-mart-category-label"
-      }, React__default["default"].createElement("span", {
+      }, React__default.createElement("span", {
         style: labelSpanStyles,
         ref: this.setLabelRef,
         "aria-hidden": true
         /* already labeled by the section aria-label */
 
-      }, label)), React__default["default"].createElement("ul", {
+      }, label)), React__default.createElement("ul", {
         className: "emoji-mart-category-list"
       }, emojis && emojis.map(function (emoji) {
-        return React__default["default"].createElement("li", {
+        return React__default.createElement("li", {
           key: emoji.short_names && emoji.short_names.join('_') || emoji
         }, NimbleEmoji(_objectSpread$4({
           emoji: emoji,
           data: _this3.data
         }, emojiProps)));
-      })), emojis && !emojis.length && React__default["default"].createElement(NotFound, {
+      })), emojis && !emojis.length && React__default.createElement(NotFound, {
         i18n: i18n,
         notFound: notFound,
         notFoundEmoji: notFoundEmoji,
@@ -54995,19 +55977,19 @@ function (_React$Component) {
   }]);
 
   return Category;
-}(React__default["default"].Component);
+}(React__default.Component);
 Category.propTypes
 /* remove-proptypes */
 = {
-  emojis: PropTypes__default["default"].array,
-  hasStickyPosition: PropTypes__default["default"].bool,
-  name: PropTypes__default["default"].string.isRequired,
-  "native": PropTypes__default["default"].bool.isRequired,
-  perLine: PropTypes__default["default"].number.isRequired,
-  emojiProps: PropTypes__default["default"].object.isRequired,
-  recent: PropTypes__default["default"].arrayOf(PropTypes__default["default"].string),
-  notFound: PropTypes__default["default"].func,
-  notFoundEmoji: PropTypes__default["default"].string.isRequired
+  emojis: PropTypes.array,
+  hasStickyPosition: PropTypes.bool,
+  name: PropTypes.string.isRequired,
+  "native": PropTypes.bool.isRequired,
+  perLine: PropTypes.number.isRequired,
+  emojiProps: PropTypes.object.isRequired,
+  recent: PropTypes.arrayOf(PropTypes.string),
+  notFound: PropTypes.func,
+  notFoundEmoji: PropTypes.string.isRequired
 };
 Category.defaultProps = {
   emojis: [],
@@ -55057,12 +56039,12 @@ function (_React$PureComponent) {
   }]);
 
   return Skins;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 Skins.propTypes
 /* remove-proptypes */
 = {
-  onChange: PropTypes__default["default"].func,
-  skin: PropTypes__default["default"].number.isRequired
+  onChange: PropTypes.func,
+  skin: PropTypes.number.isRequired
 };
 Skins.defaultProps = {
   onChange: function onChange() {}
@@ -55095,10 +56077,10 @@ function (_Skins) {
 
       for (var skinTone = 1; skinTone <= 6; skinTone++) {
         var selected = skinTone === skin;
-        skinToneNodes.push(React__default["default"].createElement("span", {
+        skinToneNodes.push(React__default.createElement("span", {
           key: "skin-tone-".concat(skinTone),
           className: "emoji-mart-skin-swatch custom".concat(selected ? ' selected' : '')
-        }, React__default["default"].createElement("span", {
+        }, React__default.createElement("span", {
           onClick: this.handleClick,
           "data-skin": skinTone,
           className: "emoji-mart-skin-tone-".concat(skinTone)
@@ -55114,9 +56096,9 @@ function (_Skins) {
         }))));
       }
 
-      return React__default["default"].createElement("div", {
+      return React__default.createElement("div", {
         className: "emoji-mart-skin-swatches custom".concat(opened ? ' opened' : '')
-      }, React__default["default"].createElement("div", {
+      }, React__default.createElement("div", {
         className: "emoji-mart-skin-text".concat(opened ? ' opened' : '')
       }, i18n.skintext), skinToneNodes);
     }
@@ -55127,12 +56109,12 @@ function (_Skins) {
 SkinsEmoji.propTypes
 /* remove-proptypes */
 = {
-  onChange: PropTypes__default["default"].func,
-  skin: PropTypes__default["default"].number.isRequired,
-  emojiProps: PropTypes__default["default"].object.isRequired,
-  skinTone: PropTypes__default["default"].number,
-  skinEmoji: PropTypes__default["default"].string.isRequired,
-  i18n: PropTypes__default["default"].object
+  onChange: PropTypes.func,
+  skin: PropTypes.number.isRequired,
+  emojiProps: PropTypes.object.isRequired,
+  skinTone: PropTypes.number,
+  skinEmoji: PropTypes.string.isRequired,
+  i18n: PropTypes.object
 };
 SkinsEmoji.defaultProps = {
   onChange: function onChange() {},
@@ -55174,14 +56156,14 @@ function (_Skins) {
       for (var skinTone = 1; skinTone <= 6; skinTone++) {
         var selected = skinTone === skin;
         var visible = opened || selected;
-        skinToneNodes.push(React__default["default"].createElement("span", _extends({
+        skinToneNodes.push(React__default.createElement("span", _extends({
           key: "skin-tone-".concat(skinTone),
           className: "emoji-mart-skin-swatch".concat(selected ? ' selected' : ''),
           "aria-label": i18n.skintones[skinTone],
           "aria-hidden": !visible
         }, opened ? {
           role: 'menuitem'
-        } : {}), React__default["default"].createElement("span", _extends({
+        } : {}), React__default.createElement("span", _extends({
           onClick: this.handleClick,
           onKeyDown: this.handleKeyDown,
           role: "button"
@@ -55199,10 +56181,10 @@ function (_Skins) {
         }))));
       }
 
-      return React__default["default"].createElement("section", {
+      return React__default.createElement("section", {
         className: "emoji-mart-skin-swatches".concat(opened ? ' opened' : ''),
         "aria-label": i18n.skintext
-      }, React__default["default"].createElement("div", opened ? {
+      }, React__default.createElement("div", opened ? {
         role: 'menubar'
       } : {}, skinToneNodes));
     }
@@ -55213,9 +56195,9 @@ function (_Skins) {
 SkinsDot.propTypes
 /* remove-proptypes */
 = {
-  onChange: PropTypes__default["default"].func,
-  skin: PropTypes__default["default"].number.isRequired,
-  i18n: PropTypes__default["default"].object
+  onChange: PropTypes.func,
+  skin: PropTypes.number.isRequired,
+  i18n: PropTypes.object
 };
 SkinsDot.defaultProps = {
   onChange: function onChange() {}
@@ -55268,59 +56250,59 @@ function (_React$PureComponent) {
           knownEmoticons.push(emoticon.toLowerCase());
           listedEmoticons.push(emoticon);
         });
-        return React__default["default"].createElement("div", {
+        return React__default.createElement("div", {
           className: "emoji-mart-preview"
-        }, React__default["default"].createElement("div", {
+        }, React__default.createElement("div", {
           className: "emoji-mart-preview-emoji",
           "aria-hidden": "true"
         }, NimbleEmoji(_objectSpread$3({
           key: emoji.id,
           emoji: emoji,
           data: this.data
-        }, emojiProps))), React__default["default"].createElement("div", {
+        }, emojiProps))), React__default.createElement("div", {
           className: "emoji-mart-preview-data",
           "aria-hidden": "true"
-        }, React__default["default"].createElement("div", {
+        }, React__default.createElement("div", {
           className: "emoji-mart-preview-name"
-        }, emoji.name), React__default["default"].createElement("div", {
+        }, emoji.name), React__default.createElement("div", {
           className: "emoji-mart-preview-shortnames"
         }, emojiData.short_names.map(function (short_name) {
-          return React__default["default"].createElement("span", {
+          return React__default.createElement("span", {
             key: short_name,
             className: "emoji-mart-preview-shortname"
           }, ":", short_name, ":");
-        })), React__default["default"].createElement("div", {
+        })), React__default.createElement("div", {
           className: "emoji-mart-preview-emoticons"
         }, listedEmoticons.map(function (emoticon) {
-          return React__default["default"].createElement("span", {
+          return React__default.createElement("span", {
             key: emoticon,
             className: "emoji-mart-preview-emoticon"
           }, emoticon);
         }))));
       } else {
-        return React__default["default"].createElement("div", {
+        return React__default.createElement("div", {
           className: "emoji-mart-preview"
-        }, React__default["default"].createElement("div", {
+        }, React__default.createElement("div", {
           className: "emoji-mart-preview-emoji",
           "aria-hidden": "true"
         }, idleEmoji && idleEmoji.length && NimbleEmoji(_objectSpread$3({
           emoji: idleEmoji,
           data: this.data
-        }, emojiProps))), React__default["default"].createElement("div", {
+        }, emojiProps))), React__default.createElement("div", {
           className: "emoji-mart-preview-data",
           "aria-hidden": "true"
-        }, React__default["default"].createElement("span", {
+        }, React__default.createElement("span", {
           className: "emoji-mart-title-label"
-        }, title)), showSkinTones && React__default["default"].createElement("div", {
+        }, title)), showSkinTones && React__default.createElement("div", {
           className: "emoji-mart-preview-skins".concat(skinsProps.skinEmoji ? ' custom' : '')
-        }, skinsProps.skinEmoji ? React__default["default"].createElement(SkinsEmoji, {
+        }, skinsProps.skinEmoji ? React__default.createElement(SkinsEmoji, {
           skin: skinsProps.skin,
           emojiProps: emojiProps,
           data: this.data,
           skinEmoji: skinsProps.skinEmoji,
           i18n: i18n,
           onChange: skinsProps.onChange
-        }) : React__default["default"].createElement(SkinsDot, {
+        }) : React__default.createElement(SkinsDot, {
           skin: skinsProps.skin,
           i18n: i18n,
           onChange: skinsProps.onChange
@@ -55330,15 +56312,15 @@ function (_React$PureComponent) {
   }]);
 
   return Preview;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 Preview.propTypes
 /* remove-proptypes */
 = {
-  showSkinTones: PropTypes__default["default"].bool,
-  title: PropTypes__default["default"].string.isRequired,
-  emoji: PropTypes__default["default"].string.isRequired,
-  emojiProps: PropTypes__default["default"].object.isRequired,
-  skinsProps: PropTypes__default["default"].object.isRequired
+  showSkinTones: PropTypes.bool,
+  title: PropTypes.string.isRequired,
+  emoji: PropTypes.string.isRequired,
+  emojiProps: PropTypes.object.isRequired,
+  skinsProps: PropTypes.object.isRequired
 };
 Preview.defaultProps = {
   showSkinTones: true,
@@ -55436,20 +56418,20 @@ function (_React$PureComponent) {
           isSearching = _this$state.isSearching,
           id = _this$state.id;
       var inputId = "emoji-mart-search-".concat(id);
-      return React__default["default"].createElement("section", {
+      return React__default.createElement("section", {
         className: "emoji-mart-search",
         "aria-label": i18n.search
-      }, React__default["default"].createElement("input", {
+      }, React__default.createElement("input", {
         id: inputId,
         ref: this.setRef,
         type: "search",
         onChange: this.handleChange,
         placeholder: i18n.search,
         autoFocus: autoFocus
-      }), React__default["default"].createElement("label", {
+      }), React__default.createElement("label", {
         className: "emoji-mart-sr-only",
         htmlFor: inputId
-      }, i18n.search), React__default["default"].createElement("button", {
+      }, i18n.search), React__default.createElement("button", {
         className: "emoji-mart-search-icon",
         onClick: this.clear,
         onKeyUp: this.handleKeyUp,
@@ -55460,14 +56442,14 @@ function (_React$PureComponent) {
   }]);
 
   return Search;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 Search.propTypes
 /* remove-proptypes */
 = {
-  onSearch: PropTypes__default["default"].func,
-  maxResults: PropTypes__default["default"].number,
-  emojisToShowFilter: PropTypes__default["default"].func,
-  autoFocus: PropTypes__default["default"].bool
+  onSearch: PropTypes.func,
+  maxResults: PropTypes.number,
+  emojisToShowFilter: PropTypes.func,
+  autoFocus: PropTypes.bool
 };
 Search.defaultProps = {
   onSearch: function onSearch() {},
@@ -56031,16 +57013,16 @@ function (_React$PureComponent) {
       var width = perLine * (emojiSize + 12) + 12 + 2 + measureScrollbar();
       var theme = this.getPreferredTheme();
       var skin = this.props.skin || this.state.skin || store.get('skin') || this.props.defaultSkin;
-      return React__default["default"].createElement("section", {
+      return React__default.createElement("section", {
         style: _objectSpread$2({
           width: width
         }, style),
         className: "emoji-mart emoji-mart-".concat(theme),
         "aria-label": title,
         onKeyDown: this.handleKeyDown
-      }, React__default["default"].createElement("div", {
+      }, React__default.createElement("div", {
         className: "emoji-mart-bar"
-      }, React__default["default"].createElement(Anchors, {
+      }, React__default.createElement(Anchors, {
         ref: this.setAnchorsRef,
         data: this.data,
         i18n: this.i18n,
@@ -56048,7 +57030,7 @@ function (_React$PureComponent) {
         categories: this.categories,
         onAnchorClick: this.handleAnchorClick,
         icons: this.icons
-      })), React__default["default"].createElement(Search, {
+      })), React__default.createElement(Search, {
         ref: this.setSearchRef,
         onSearch: this.handleSearch,
         data: this.data,
@@ -56058,12 +57040,12 @@ function (_React$PureComponent) {
         exclude: exclude,
         custom: this.CUSTOM,
         autoFocus: autoFocus
-      }), React__default["default"].createElement("div", {
+      }), React__default.createElement("div", {
         ref: this.setScrollRef,
         className: "emoji-mart-scroll",
         onScroll: this.handleScroll
       }, this.getCategories().map(function (category, i) {
-        return React__default["default"].createElement(Category, {
+        return React__default.createElement(Category, {
           ref: _this4.setCategoryRef.bind(_this4, "category-".concat(i)),
           key: category.name,
           id: category.id,
@@ -56095,9 +57077,9 @@ function (_React$PureComponent) {
           notFound: notFound,
           notFoundEmoji: notFoundEmoji
         });
-      })), (showPreview || showSkinTones) && React__default["default"].createElement("div", {
+      })), (showPreview || showSkinTones) && React__default.createElement("div", {
         className: "emoji-mart-bar"
-      }, React__default["default"].createElement(Preview, {
+      }, React__default.createElement(Preview, {
         ref: this.setPreviewRef,
         data: this.data,
         title: title,
@@ -56125,11 +57107,11 @@ function (_React$PureComponent) {
   }]);
 
   return NimblePicker;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 NimblePicker.propTypes
 /* remove-proptypes */
 = _objectSpread$2({}, PickerPropTypes, {
-  data: PropTypes__default["default"].object.isRequired
+  data: PropTypes.object.isRequired
 });
 NimblePicker.defaultProps = _objectSpread$2({}, PickerDefaultProps);function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -56149,12 +57131,12 @@ function (_React$PureComponent) {
   _createClass(Picker, [{
     key: "render",
     value: function render() {
-      return React__default["default"].createElement(NimblePicker, _extends({}, this.props, this.state));
+      return React__default.createElement(NimblePicker, _extends({}, this.props, this.state));
     }
   }]);
 
   return Picker;
-}(React__default["default"].PureComponent);
+}(React__default.PureComponent);
 Picker.propTypes
 /* remove-proptypes */
 = PickerPropTypes;
@@ -56165,35 +57147,24 @@ Picker.defaultProps = _objectSpread$1({}, PickerDefaultProps, {
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 _objectSpread({}, EmojiDefaultProps, {
   data: data
-});var DEFAULT_TITLE = "Pick an emoji...";
-var DEFAULT_EMOJI = 'point_up';
-var DEFAULT_SHOULD_DISPLAY_EMOJI_TOOLTIP = true;
-var DEFAULT_INCLUDE = ['people'];
-var DEFAULT_SHOULD_USE_NATIVE_EMOJIS = true;
-var DEFAULT_THEME = "light";
-var DEFAULT_SHOULD_SHOW_SKIN_TONES = false;
-var EMOJI_PICKER_CLASS = "emoji-mart";
-var RICH_TOOLBAR_EMOJI_BUTTON_ID = "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length);/**
+});/**
  * Emoji Picker component for the RichTextEditor
  *
  * @param {Object} props
  */
-
 function EmojiPicker(props) {
-  var ref = React.useRef(null);
-  React.useEffect(function () {
+  var ref = useRef(null);
+  useEffect(function () {
     var handleEscKey = function handleEscKey(event) {
       if (event.keyCode === KEY_CODE.ESCAPE) {
         props.closeEmojiPicker();
       }
     };
-
     var handleClickOutside = function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target) && !event.target.closest('#' + RICH_TOOLBAR_EMOJI_BUTTON_ID)) {
         props.closeEmojiPicker();
       }
     };
-
     document.addEventListener('keydown', handleEscKey);
     document.addEventListener("mousedown", handleClickOutside);
     return function () {
@@ -56201,9 +57172,11 @@ function EmojiPicker(props) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  return /*#__PURE__*/React__default["default"].createElement(EmojiPickerWrapper, {
+  return /*#__PURE__*/React__default.createElement(ErrorBoundary, {
+    FallbackComponent: ErrorFallback
+  }, /*#__PURE__*/React__default.createElement(EmojiPickerWrapper, {
     ref: ref
-  }, /*#__PURE__*/React__default["default"].createElement(Picker, {
+  }, /*#__PURE__*/React__default.createElement(Picker, {
     onSelect: props.onSelect || function (emojiObject) {
       return props.onEmojiSelect(emojiObject.native);
     },
@@ -56214,562 +57187,18 @@ function EmojiPicker(props) {
     showSkinTones: props.showSkinTones || DEFAULT_SHOULD_SHOW_SKIN_TONES,
     title: props.title || DEFAULT_TITLE,
     theme: props.theme || DEFAULT_THEME
-  }));
-}var EMOJI_PICKER_TOP_POSITION = "17.1875rem";
-
-function convertPixelsToRem(pixels) {
-  var fontSize = parseInt(getComputedStyle(document.documentElement).fontSize);
-
-  if (fontSize === 0) {
-    return 0;
-  }
-
-  return pixels / fontSize;
+  })));
 }
-
-function getEmojiPickerTopPosition() {
-  var emojiButton = document.querySelector('#' + RICH_TOOLBAR_EMOJI_BUTTON_ID);
-  var emojiPicker = document.querySelector('.' + EMOJI_PICKER_CLASS);
-
-  if (emojiPicker && emojiButton) {
-    var emojiPickerHeight = emojiPicker.getBoundingClientRect().height;
-    var topPositionInPixels = emojiButton.offsetTop - emojiPickerHeight;
-    var topPositionInRem = convertPixelsToRem(topPositionInPixels);
-    EMOJI_PICKER_TOP_POSITION = topPositionInRem + "rem";
-    emojiPicker.style.top = EMOJI_PICKER_TOP_POSITION;
-  }
-
-  return EMOJI_PICKER_TOP_POSITION;
-}
-function isMobile() {
-  return /Android|webOS|Mobi|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}var Link = function Link(props) {
-  var _props$contentState$g = props.contentState.getEntity(props.entityKey).getData(),
-      url = _props$contentState$g.url;
-
-  return /*#__PURE__*/React__default["default"].createElement(URLLink, {
-    href: url
-  }, props.children);
-};
-
-function findLinkEntities(contentBlock, callback, contentState) {
-  contentBlock.findEntityRanges(function (character) {
-    var entityKey = character.getEntity();
-    return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
-  }, callback);
-}
-/**
- * The error fall back UI that's not finalized
- * TODO: Revisit and update UI post launch https://app.asana.com/0/1201057534450490/1201587489851346/f
- */
-
-
 function ErrorFallback(_ref) {
-  _ref.error;
-      var resetErrorBoundary = _ref.resetErrorBoundary;
-
+  var error = _ref.error,
+    resetErrorBoundary = _ref.resetErrorBoundary;
   if (window.connect && window.connect.csmService) {
     window.connect.csmService.addCountAndErrorMetric(RICH_MESSAGE_ERROR, CSM_CATEGORY.UI, false);
   }
-
-  return /*#__PURE__*/React__default["default"].createElement("div", {
+  console.warn("Render Error:", error);
+  return /*#__PURE__*/React__default.createElement("div", {
     role: "alert"
-  }, /*#__PURE__*/React__default["default"].createElement("p", null, "Something went wrong"), /*#__PURE__*/React__default["default"].createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("p", null, "Something went wrong"), /*#__PURE__*/React__default.createElement("button", {
     onClick: resetErrorBoundary
   }, "Reload Editor"));
-}
-/**
- * RichText toolbar and editor, intended to be used for input in a real-time chat application.
- * Supports markdown message and attachment sending, typing events, and additional configuration options.
- */
-
-
-var RichTextEditor = /*#__PURE__*/function (_React$Component) {
-  _inherits$1(RichTextEditor, _React$Component);
-
-  var _super = _createSuper(RichTextEditor);
-
-  // TODO: make toolbar optional so the editor component can be used without rich messaging capabilities.
-  // TODO: implement capturing typing events on content change
-  // TODO: pull the toolbar out to a separate internal component to reduce bloat here
-  // TODO: fix bug where multiple toggles in a row don't properly apply all styles
-  // TODO: fix styling of the selected buttons
-  function RichTextEditor(props) {
-    var _this;
-
-    _classCallCheck$1(this, RichTextEditor);
-
-    _this = _super.call(this, props);
-    var decorator = new draftJs.CompositeDecorator([{
-      strategy: findLinkEntities,
-      component: Link
-    }]);
-    _this.state = {
-      editorState: draftJs.EditorState.createEmpty(decorator),
-      attachment: null,
-      showURLInput: false,
-      urlValue: '',
-      showEmojiPicker: false
-    };
-
-    _this.onChange = function (editorState) {
-      if (_this.state.editorState.getCurrentContent() !== editorState.getCurrentContent()) {
-        _this.props.onTyping();
-      }
-
-      _this.setState(function (prevState) {
-        return _objectSpread2(_objectSpread2({}, prevState), {}, {
-          editorState: editorState
-        });
-      });
-    };
-
-    _this.setDomEditorRef = function (ref) {
-      return _this.domEditor = ref;
-    };
-
-    _this.focus = function () {
-      return _this.domEditor.focus();
-    };
-
-    _this.resetState = _this._resetState.bind(_assertThisInitialized$1(_this));
-    _this._handleReturn = _this._handleReturn.bind(_assertThisInitialized$1(_this));
-    _this.handleBeforeInput = _this._handleBeforeInput.bind(_assertThisInitialized$1(_this));
-
-    _this.onURLChange = function (e) {
-      return _this.setState({
-        urlValue: e.target.value
-      });
-    };
-
-    _this.promptForLink = _this._promptForLink.bind(_assertThisInitialized$1(_this));
-    _this.confirmLink = _this._confirmLink.bind(_assertThisInitialized$1(_this));
-    _this.removeLink = _this._removeLink.bind(_assertThisInitialized$1(_this));
-    _this.addTextToMessage = _this._addTextToMessage.bind(_assertThisInitialized$1(_this));
-
-    _this.onURLKeyInput = function (e) {
-      if (!e.shiftKey && e.key === 'Enter') {
-        e.preventDefault();
-
-        _this.confirmLink(e);
-      }
-    };
-
-    if (window.connect && window.connect.csmService) {
-      _this.csmService = window.connect.csmService;
-    }
-
-    return _this;
-  }
-
-  _createClass$1(RichTextEditor, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.domEditor && this.domEditor.focus();
-    }
-  }, {
-    key: "_onFormatToggled",
-    value: function _onFormatToggled(formatType, toggleFn) {
-      this.setState(function (prevState) {
-        return _objectSpread2(_objectSpread2({}, prevState), {}, {
-          editorState: toggleFn(prevState.editorState, formatType)
-        });
-      });
-    }
-    /**
-     * Handle the period added with double spaces
-     * This is a workaround for known DraftJs bug - https://github.com/facebook/draft-js/issues/2422
-     */
-
-  }, {
-    key: "_handleBeforeInput",
-    value: function _handleBeforeInput(chars, editorState, eventTimestamp) {
-      if (chars === '. ') {
-        var currentSelection = editorState.getSelection();
-        this.setState({
-          editorState: draftJs.EditorState.set(editorState, {
-            currentContent: draftJs.Modifier.replaceText(editorState.getCurrentContent(), currentSelection, ' ')
-          })
-        });
-        return 'handled';
-      }
-
-      return 'not-handled';
-    }
-    /**
-     * Handle the "Return" key pressed. Sends message and attachment, and clears the editor state.
-     */
-
-  }, {
-    key: "_handleReturn",
-    value: function _handleReturn(event, isSendButtonClicked) {
-      var currentContent = this.state.editorState.getCurrentContent(); // Insert soft newline or split block without sending message if shift + return pressed
-
-      if (event.shiftKey) {
-        var selection = this.state.editorState.getSelection();
-        var currentBlockStyle = currentContent.getBlockForKey(selection.getStartKey()).getType();
-
-        if (currentBlockStyle === 'unstyled') {
-          this.setState({
-            editorState: draftJs.RichUtils.insertSoftNewline(this.state.editorState)
-          });
-        } else {
-          var textWithEntity = draftJs.Modifier.splitBlock(currentContent, selection);
-          this.setState({
-            editorState: draftJs.EditorState.push(this.state.editorState, textWithEntity, "split-block")
-          });
-        }
-
-        return "handled";
-      }
-
-      var rawContentState = draftJs.convertToRaw(currentContent);
-      var markdownString = draftToMarkdown(rawContentState);
-
-      if (this.state.attachment) {
-        this.props.sendAttachment(this.state.attachment);
-      }
-
-      this.props.sendMessage(markdownString);
-      this.resetState();
-
-      if (this.csmService) {
-        // If message is sent by clicking the send button, isSendButtonClicked will be a boolean value: true;
-        // If message is sent by pressing Enter key, isSendButtonClicked will be an object sent by draft-js;
-        var sendBy = typeof isSendButtonClicked === 'boolean' ? RICH_MESSAGE_EVENT.SEND_MESSAGE_BY_SEND_BUTTON : RICH_MESSAGE_EVENT.SEND_MESSAGE_BY_ENTER_KEY;
-        this.csmService.addCountMetric(sendBy, CSM_CATEGORY.UI);
-
-        this._countRichFormatTypes(rawContentState);
-      }
-
-      return "handled";
-    }
-  }, {
-    key: "_resetState",
-    value: function _resetState() {
-      var resetEditorState = clearEditorContent(this.state.editorState);
-      resetEditorState = removeSelectedBlocksStyle(resetEditorState);
-      this.setState({
-        editorState: clearEditorContent(resetEditorState),
-        attachment: null,
-        showURLInput: false,
-        urlValue: '',
-        showEmojiPicker: false
-      });
-    }
-  }, {
-    key: "_promptForLink",
-    value: function _promptForLink() {
-      var _this2 = this;
-
-      if (this.state.showURLInput) {
-        this.setState({
-          showURLInput: false
-        });
-        return;
-      }
-
-      var editorState = this.state.editorState;
-      var selection = editorState.getSelection();
-
-      if (!selection.isCollapsed()) {
-        var contentState = editorState.getCurrentContent();
-        var startKey = editorState.getSelection().getStartKey();
-        var startOffset = editorState.getSelection().getStartOffset();
-        var blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
-        var linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
-        var url = '';
-
-        if (linkKey) {
-          var linkInstance = contentState.getEntity(linkKey);
-          url = linkInstance.getData().url;
-        }
-
-        this.setState({
-          showURLInput: true,
-          urlValue: url
-        }, function () {
-          setTimeout(function () {
-            return _this2.refs.url.focus();
-          }, 0);
-        });
-      }
-    }
-  }, {
-    key: "_confirmLink",
-    value: function _confirmLink(e) {
-      var _this3 = this;
-
-      e.preventDefault();
-      var editorState = this.state.editorState;
-      var urlValue = this.state.urlValue;
-      var contentState = editorState.getCurrentContent(); // Default protocol for hyperlinks
-
-      if (!/^https?:\/\//i.test(urlValue)) {
-        urlValue = 'http://' + urlValue;
-      }
-
-      var contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
-        url: urlValue
-      });
-      var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-      var newEditorState = draftJs.EditorState.set(editorState, {
-        currentContent: contentStateWithEntity
-      });
-      this.setState({
-        editorState: draftJs.RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey),
-        showURLInput: false,
-        urlValue: ''
-      }, function () {
-        setTimeout(function () {
-          return _this3.domEditor.focus();
-        }, 0);
-      });
-    }
-  }, {
-    key: "_removeLink",
-    value: function _removeLink(e) {
-      var _this4 = this;
-
-      e.preventDefault();
-      var editorState = this.state.editorState;
-      var selection = editorState.getSelection();
-
-      if (!selection.isCollapsed()) {
-        this.setState({
-          editorState: draftJs.RichUtils.toggleLink(editorState, selection, null),
-          showURLInput: false
-        }, function () {
-          setTimeout(function () {
-            return _this4.domEditor.focus();
-          }, 0);
-        });
-      }
-    }
-  }, {
-    key: "_addTextToMessage",
-    value: function _addTextToMessage(text) {
-      var editorState = this.state.editorState;
-      var selection = editorState.getSelection();
-      var contentState = editorState.getCurrentContent();
-      var nextEditorState = draftJs.EditorState.createEmpty();
-
-      if (selection.isCollapsed()) {
-        var nextContentState = draftJs.Modifier.insertText(contentState, selection, text);
-        nextEditorState = draftJs.EditorState.push(editorState, nextContentState, 'insert-characters');
-      } else {
-        var _nextContentState = draftJs.Modifier.replaceText(contentState, selection, text);
-
-        nextEditorState = draftJs.EditorState.push(editorState, _nextContentState, 'insert-characters');
-      }
-
-      this.onChange(nextEditorState);
-    }
-  }, {
-    key: "_countRichFormatTypes",
-    value: function _countRichFormatTypes(rawContentState) {
-      var _this5 = this;
-
-      // BOLD, ITALIC, NUMBER_LIST, BULLET_LIST are from blocks;
-      // HYPER_LINK is from entityMap;
-      var blocks = rawContentState.blocks,
-          entityMap = rawContentState.entityMap;
-      var set = new Set();
-      blocks.forEach(function (block) {
-        var type = block.type,
-            inlineStyleRanges = block.inlineStyleRanges;
-
-        if (type !== 'unstyled') {
-          set.add(type);
-        }
-
-        inlineStyleRanges.forEach(function (range) {
-          set.add(range.style);
-        });
-      });
-
-      if (Object.keys(entityMap).length > 0) {
-        for (var entity in entityMap) {
-          set.add(entityMap[entity].type);
-        }
-      }
-
-      Array.from(set).forEach(function (type) {
-        _this5.csmService.addCountMetric(RICH_MESSAGE_EVENT[type], CSM_CATEGORY.UI);
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this6 = this;
-
-      var _this$state = this.state,
-          attachment = _this$state.attachment,
-          editorState = _this$state.editorState;
-      var _this$props = this.props,
-          allowedFileContentTypes = _this$props.allowedFileContentTypes,
-          placeholder = _this$props.placeholder;
-      var editorStateSelection = editorState.getSelection();
-      var currentBlockStyle = editorState.getCurrentContent().getBlockForKey(editorStateSelection.getStartKey()).getType();
-      var currentInlineStyle = editorState.getCurrentInlineStyle();
-      var urlInput;
-
-      if (this.state.showURLInput) {
-        urlInput = /*#__PURE__*/React__default["default"].createElement(URLInputContainer, null, /*#__PURE__*/React__default["default"].createElement(URLInputLabel, null, "Link"), /*#__PURE__*/React__default["default"].createElement(URLInput, {
-          onChange: this.onURLChange,
-          ref: "url",
-          type: "text",
-          value: this.state.urlValue,
-          onKeyPress: this.onURLKeyInput,
-          onKeyDown: this.onURLKeyInput
-        }), /*#__PURE__*/React__default["default"].createElement(URLConfirmIcon, {
-          onClick: this.confirmLink,
-          tabIndex: 0,
-          onKeyDown: function onKeyDown(e) {
-            if (e.keyCode === KEY_CODE.SPACE || e.keyCode === KEY_CODE.ENTER) {
-              e.preventDefault();
-              e.target.click();
-            }
-          }
-        }, CONFIRM_LINK_ICON), /*#__PURE__*/React__default["default"].createElement(URLRemoveIcon, {
-          onClick: this.removeLink,
-          tabIndex: 0,
-          onKeyDown: function onKeyDown(e) {
-            if (e.keyCode === KEY_CODE.SPACE || e.keyCode === KEY_CODE.ENTER) {
-              e.preventDefault();
-              e.target.click();
-            }
-          }
-        }, REMOVE_LINK_ICON));
-      }
-
-      return /*#__PURE__*/React__default["default"].createElement("div", null, /*#__PURE__*/React__default["default"].createElement(ErrorBoundary, {
-        FallbackComponent: ErrorFallback,
-        onReset: this.resetState
-      }, /*#__PURE__*/React__default["default"].createElement("div", {
-        id: "emoji-picker",
-        "data-testid": 'emoji-picker',
-        style: {
-          visibility: this.state.showEmojiPicker ? 'visible' : 'hidden'
-        }
-      }, /*#__PURE__*/React__default["default"].createElement(EmojiPicker, {
-        closeEmojiPicker: function closeEmojiPicker() {
-          return _this6.setState({
-            showEmojiPicker: false
-          });
-        },
-        style: {
-          top: getEmojiPickerTopPosition()
-        },
-        onEmojiSelect: this.addTextToMessage
-      })), /*#__PURE__*/React__default["default"].createElement(RichToolbarContainer, {
-        onClick: this.focus,
-        "data-testid": "rich-tool-bar-container"
-      }, /*#__PURE__*/React__default["default"].createElement(RichToolbarFormattingContainer, null, inlineFormatDisplayOrder.map(function (richFormat, idx) {
-        return /*#__PURE__*/React__default["default"].createElement(RichToolbarButton, {
-          id: "richToolbarButton_".concat(idx),
-          key: idx,
-          index: idx,
-          isActiveButton: currentInlineStyle.has(richFormat),
-          onFormatToggled: _this6._onFormatToggled.bind(_this6, richFormat, draftJs.RichUtils.toggleInlineStyle),
-          buttonSvg: currentInlineStyle.has(richFormat) ? RICH_FORMAT_ICONS_SELECTED[richFormat] : RICH_FORMAT_ICONS[richFormat]
-        });
-      }), blockTypeDisplayOrder.map(function (blockType, idx) {
-        return /*#__PURE__*/React__default["default"].createElement(RichToolbarButton, {
-          id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + idx),
-          key: idx,
-          index: inlineFormatDisplayOrder.length + idx,
-          isActiveButton: blockType === currentBlockStyle,
-          onFormatToggled: _this6._onFormatToggled.bind(_this6, blockType, draftJs.RichUtils.toggleBlockType),
-          buttonSvg: blockType === currentBlockStyle ? RICH_FORMAT_ICONS_SELECTED[blockType] : RICH_FORMAT_ICONS[blockType]
-        });
-      }), linkFormatDisplayOrder.map(function (linkFormat, idx) {
-        return /*#__PURE__*/React__default["default"].createElement(RichToolbarButton, {
-          id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + idx),
-          key: idx,
-          index: inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + idx,
-          isActiveButton: _this6.state.showURLInput,
-          onButtonClicked: _this6.promptForLink,
-          buttonSvg: _this6.state.showURLInput ? RICH_FORMAT_ICONS_SELECTED[linkFormat] : RICH_FORMAT_ICONS[linkFormat]
-        });
-      }), !isMobile() && emojisFormatDisplayOrder.map(function (richFormat, idx) {
-        return /*#__PURE__*/React__default["default"].createElement(RichToolbarButton, {
-          id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + idx),
-          key: idx,
-          index: inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + idx,
-          isActiveButton: _this6.state.showEmojiPicker === true,
-          onButtonClicked: function onButtonClicked() {
-            _this6.setState({
-              showEmojiPicker: !_this6.state.showEmojiPicker
-            });
-
-            getEmojiPickerTopPosition();
-          },
-          buttonSvg: _this6.state.showEmojiPicker ? RICH_FORMAT_ICONS_SELECTED[richFormat] : RICH_FORMAT_ICONS[richFormat]
-        });
-      })), /*#__PURE__*/React__default["default"].createElement(RichToolbarAttachmentsContainer, null, this.props.attachmentsEnabled && /*#__PURE__*/React__default["default"].createElement(AttachmentsIcon, {
-        id: "richToolbarButton_".concat(inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + emojisFormatDisplayOrder.length),
-        tabIndex: -1,
-        onKeyDown: function onKeyDown(e) {
-          if (e.keyCode === KEY_CODE.SPACE || e.keyCode === KEY_CODE.ENTER) {
-            e.preventDefault();
-            document.getElementById('chat-file-select-attachments').click();
-          } else if (e.keyCode === KEY_CODE.LEFT) {
-            e.preventDefault();
-            var currentIndex = inlineFormatDisplayOrder.length + blockTypeDisplayOrder.length + linkFormatDisplayOrder.length + emojisFormatDisplayOrder.length;
-            focusLastOrNextElement(currentIndex, -1);
-          }
-        }
-      }, /*#__PURE__*/React__default["default"].createElement("label", {
-        htmlFor: "chat-file-select-attachments"
-      }, ATTACHMENTS_ICON, /*#__PURE__*/React__default["default"].createElement("input", {
-        type: "file",
-        id: "chat-file-select-attachments",
-        "data-testid": "chat-file-select-attachments",
-        accept: allowedFileContentTypes.join(","),
-        onChange: function onChange(e) {
-          var file = e.target.files[0];
-
-          _this6.setState(function (prevState) {
-            return _objectSpread2(_objectSpread2({}, prevState), {}, {
-              attachment: file
-            });
-          });
-        },
-        tabIndex: -1
-      }))))), attachment != null && /*#__PURE__*/React__default["default"].createElement(AttachmentOuterContainer, null, /*#__PURE__*/React__default["default"].createElement(AttachmentContainer, null, /*#__PURE__*/React__default["default"].createElement(AttachmentInnerContainer, null, /*#__PURE__*/React__default["default"].createElement("span", null, attachment.name), /*#__PURE__*/React__default["default"].createElement(IconButton, {
-        onClick: function onClick() {
-          _this6.setState(function (prevState) {
-            return _objectSpread2(_objectSpread2({}, prevState), {}, {
-              attachment: null
-            });
-          });
-        },
-        "aria-label": "Remove attachment"
-      }, /*#__PURE__*/React__default["default"].createElement(CloseIcon, null, /*#__PURE__*/React__default["default"].createElement("svg", {
-        viewBox: "0 0 13 13",
-        xmlns: "http://www.w3.org/2000/svg",
-        fill: "currentColor"
-      }, /*#__PURE__*/React__default["default"].createElement("path", {
-        d: "M13 1.3L11.7 0 6.5 5.2 1.3 0 0 1.3l5.2 5.2L0 11.7 1.3 13l5.2-5.2 5.2 5.2 1.3-1.3-5.2-5.2z",
-        fillRule: "evenodd"
-      }))))))), urlInput, /*#__PURE__*/React__default["default"].createElement(EditorContainer, null, /*#__PURE__*/React__default["default"].createElement(draftJs.Editor, {
-        placeholder: currentBlockStyle === 'unstyled' ? placeholder : undefined,
-        editorState: editorState,
-        onChange: this.onChange,
-        handleReturn: this._handleReturn,
-        ref: this.setDomEditorRef,
-        handleBeforeInput: this.handleBeforeInput // webDriverTestID is the data-testid for <Editor /> component
-        ,
-        webDriverTestID: "rich-text-editor"
-      }), /*#__PURE__*/React__default["default"].createElement(SendMessageButtonContainer, null, /*#__PURE__*/React__default["default"].createElement(SendMessageButton, {
-        isActive: !!editorState.getCurrentContent().getPlainText() || attachment,
-        sendMessage: function sendMessage(e) {
-          _this6._handleReturn(e, true);
-        }
-      })))));
-    }
-  }]);
-
-  return RichTextEditor;
-}(React__default["default"].Component);exports.RichMessageRenderer=RichMessageRenderer;exports.RichTextEditor=RichTextEditor;//# sourceMappingURL=index.js.map
+}export{EmojiPicker,RichMessageRenderer,RichTextEditor};

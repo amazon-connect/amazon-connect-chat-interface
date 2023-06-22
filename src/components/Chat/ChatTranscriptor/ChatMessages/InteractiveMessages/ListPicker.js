@@ -9,24 +9,37 @@ import {
   ReactiveImage,
   TextSection,
   ResponsesSection,
+  HeaderText,
   Title,
   Subtitle,
+  PickerOptionTitle,
+  PickerElementLinkOption
 } from "../InteractiveMessage";
-import Linkify from "react-linkify";
-import { createInteractiveMessagePayload } from "../../../../../utils/helper";
+import { createInteractiveMessagePayload, truncateElementFromLimit, truncateStrFromCharLimit } from "../../../../../utils/helper";
+import { InteractiveMessageSelectionType, InteractiveMessageType } from "../../../datamodel/Model";
+import { RichMessageRenderer } from "../../../RichMessageComponents";
 
+//#region Styled Components
 // have to calculate max height to maintain 16:9 aspect ratio
 const ImageContainer = styled.div`
   max-height: calc(95vw * (9 / 16));
   overflow: hidden;
   display: ${(props) => (props.showImage ? "flex" : "none")};
+
+  ${props => props.isCarouselElem ? `
+    img {
+      float: left;
+      height: 10rem;
+      object-fit: cover;
+    }
+  ` : ""}
 `;
 
+// Align-right when using subtitle and/or image - otherwise center the text
 // Action buttons(SHOW_MORE/PREVIOUS_OPTIONS) always align to center
 const ListElementButton = styled(Button)`
   display: flex;
-  justify-content: ${(props) =>
-    props.hasImage || !props.isActionButton ? "flex-start" : "center"};
+  justify-content: ${(props) => (props.isFloatLeft ? "flex-start" : "center")};
   width: 100%;
   max-width: none;
   border: ${({ theme }) => theme.globals.baseBorder};
@@ -36,7 +49,8 @@ const ListElementButton = styled(Button)`
     background: ${({ theme }) => theme.color.primary};
   }
 
-  &:last-of-type {
+  /* Last child could be <a/>, only round last child */
+  &:last-child {
     border-bottom-left-radius: ${({ theme }) => theme.spacing.mini};
     border-bottom-right-radius: ${({ theme }) => theme.spacing.mini};
     margin-bottom: 0;
@@ -52,6 +66,7 @@ const ElementImageContainer = styled.div`
   margin-right: ${({ theme }) => theme.spacing.small};
   display: ${(props) => (props.showImage ? "inline-flex" : "none")};
 `;
+//#endregion Styled Components
 
 function ListPickerElement({
   element,
@@ -60,16 +75,26 @@ function ListPickerElement({
   onImageLoad,
   index,
 }) {
-  const { title, subtitle, imageData, imageDescription, actionDetail } =
-    element;
+  const { title: inputTitle, subtitle: inputSubtitle, imageData, imageDescription, type, url } = element;
+  const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.LIST_PICKER, "elementTitleCharLimit");
+  const subtitle = truncateStrFromCharLimit(inputSubtitle, InteractiveMessageType.LIST_PICKER, "elementSubtitleCharLimit");
+
+  if (type === InteractiveMessageSelectionType.HYPERLINK && url) {
+    return (
+      <PickerElementLinkOption
+        {...element}
+        testId={"listElement" + index}
+        title={title}
+      />
+    )
+  }
 
   return (
     <ListElementButton
       value={title}
-      hasImage={showImage && imageData}
+      isFloatLeft={(showImage && imageData) || subtitle}
       onClick={onClick}
-      isActionButton={!!actionDetail}
-      data-testid={"listElementButton" + index}
+      data-testid={"listElement" + index}
     >
       {imageData && (
         <ElementImageContainer showImage={showImage}>
@@ -80,10 +105,14 @@ function ListPickerElement({
           />
         </ElementImageContainer>
       )}
-      <div>
-        <Title>{title}</Title>
-        {subtitle && <Subtitle>{subtitle}</Subtitle>}
-      </div>
+      {subtitle ? (
+        <TextSection>
+            <RichMessageRenderer content={title} styledWrapper={Title} />
+            <RichMessageRenderer content={subtitle} styledWrapper={Subtitle} />
+        </TextSection>
+      ) : (
+        <PickerOptionTitle>{title}</PickerOptionTitle>
+      )}
     </ListElementButton>
   );
 }
@@ -91,14 +120,22 @@ function ListPickerElement({
 ListPicker.propTypes = {
   content: PT.object.isRequired,
   addMessage: PT.func.isRequired,
+  isCarouselElem: PT.bool,
+  templateIdentifier: PT.string
 };
 
-export default function ListPicker({ content, addMessage, templateType }) {
+export default function ListPicker({
+  content,
+  addMessage,
+  templateType,
+  isCarouselElem,
+  templateIdentifier
+}) {
   // assumptions: version 1, image data is URL. Guarenteed title exists, at least 1 element.
   const {
-    title,
-    subtitle,
-    elements,
+    title: inputTitle,
+    subtitle: inputSubtitle,
+    elements: inputElements,
     imageData,
     imageDescription,
     preIndex,
@@ -106,6 +143,12 @@ export default function ListPicker({ content, addMessage, templateType }) {
     listId,
     referenceId,
   } = content;
+
+  // Frontend field validations
+  const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.LIST_PICKER, "titleCharLimit");
+  const subtitle = truncateStrFromCharLimit(inputSubtitle, InteractiveMessageType.LIST_PICKER, "subtitleCharLimit");
+  const elements = truncateElementFromLimit(inputElements, InteractiveMessageType.LIST_PICKER, "elementsRenderedMax");
+
   const [imageLoaded, setImageLoaded] = useState(false);
   const [elementImagesLoadedCount, setElementImagesLoadedCount] = useState(0);
 
@@ -125,7 +168,10 @@ export default function ListPicker({ content, addMessage, templateType }) {
       nextIndex,
       listId,
       templateType,
-      referenceId
+      referenceId,
+      isCarouselElem,
+      title,
+      templateIdentifier
     );
     addMessage(payload);
   }
@@ -140,7 +186,7 @@ export default function ListPicker({ content, addMessage, templateType }) {
   return (
     <>
       {imageData && (
-        <ImageContainer showImage={imageLoaded}>
+        <ImageContainer showImage={imageLoaded} isCarouselElem={isCarouselElem}>
           <ReactiveImage
             imageSrc={imageData}
             imageDescription={imageDescription}
@@ -148,17 +194,8 @@ export default function ListPicker({ content, addMessage, templateType }) {
           />
         </ImageContainer>
       )}
-      <TextSection>
-        <Title>
-          <Linkify properties={{ target: "_blank" }}>{title}</Linkify>
-        </Title>
-        {subtitle && (
-          <Subtitle>
-            <Linkify properties={{ target: "_blank" }}>{subtitle}</Linkify>
-          </Subtitle>
-        )}
-      </TextSection>
-      <ResponsesSection>
+      <HeaderText title={title} subtitle={subtitle} />
+      <ResponsesSection isCarouselElem={isCarouselElem}>
         <div>
           {elements.map((listPickerElement, index) => (
             <ListPickerElement

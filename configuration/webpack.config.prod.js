@@ -315,6 +315,7 @@ module.exports = {
                     },
                   },
                 ],
+                ['@babel/plugin-proposal-class-properties'],
               ],
               cacheDirectory: true,
               // Save disk space when time isn't as important
@@ -347,6 +348,7 @@ module.exports = {
               // debugger to show the original code. Instead, the code
               // being evaluated would be much more helpful.
               sourceMaps: false,
+              plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-proposal-optional-chaining'],
             },
           },
           // "postcss" loader applies autoprefixer to our CSS.

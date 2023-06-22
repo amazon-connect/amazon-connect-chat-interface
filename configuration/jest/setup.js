@@ -6,6 +6,7 @@ import { defaultTheme } from '../../src/theme';
 import Enzyme, { shallow, render, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import regeneratorRuntime from "regenerator-runtime";
+import '@testing-library/jest-dom'
 
 Enzyme.configure({ adapter: new Adapter() });
 

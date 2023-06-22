@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ListPicker /> Style should match the snapshot 1`] = `
+exports[`<ListPicker /> style should match the snapshot 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": .c3 {
@@ -162,7 +162,7 @@ Object {
   background: #06adcb;
 }
 
-.c8:last-of-type {
+.c8:last-child {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   margin-bottom: 0;
@@ -196,27 +196,15 @@ Object {
       >
         <p
           class="c3 c4"
+          style="margin: 0px;"
         >
-          <span
-            class="Linkify"
-          >
-            ListPickerTitle 
-            <a
-              href="https://www.amazon.com/"
-              target="_blank"
-            >
-              https://www.amazon.com/
-            </a>
-          </span>
+          ListPickerTitle
         </p>
         <p
           class="c3 c5"
+          style="margin: 0px;"
         >
-          <span
-            class="Linkify"
-          >
-            ListPickerSubTitle
-          </span>
+          ListPickerSubtitle
         </p>
       </div>
       <div
@@ -226,7 +214,7 @@ Object {
           <button
             class="c7 c8"
             data-selected="false"
-            data-testid="listElementButton0"
+            data-testid="listElement0"
             type="default"
             value="ListPickerElementTitle"
           >
@@ -239,14 +227,18 @@ Object {
                 src="ListPickerElementImageData"
               />
             </div>
-            <div>
+            <div
+              class="c2"
+            >
               <p
                 class="c3 c4"
+                style="margin: 0px;"
               >
                 ListPickerElementTitle
               </p>
               <p
                 class="c3 c5"
+                style="margin: 0px;"
               >
                 ListPickerElementSubtitle
               </p>
@@ -255,7 +247,7 @@ Object {
           <button
             class="c7 c8"
             data-selected="false"
-            data-testid="listElementButton1"
+            data-testid="listElement1"
             type="default"
             value="AnotherListPickerElementTitle"
           >
@@ -268,14 +260,18 @@ Object {
                 src="AnotherListPickerElementImageData"
               />
             </div>
-            <div>
+            <div
+              class="c2"
+            >
               <p
                 class="c3 c4"
+                style="margin: 0px;"
               >
                 AnotherListPickerElementTitle
               </p>
               <p
                 class="c3 c5"
+                style="margin: 0px;"
               >
                 AnotherListPickerElementSubtitle
               </p>
@@ -287,99 +283,95 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-gPEVay cLlmav"
+      class="sc-jbKcbu jNUAuY"
     >
       <img
         alt="ListPickerImageDescription"
-        class="sc-cMljjf dqMdBl"
+        class="sc-ksYbfQ dfzqNG"
         src="ListPickerImageData"
       />
     </div>
     <div
-      class="sc-jAaTju ldErGV"
+      class="sc-hmzhuo fLEfL"
     >
       <p
-        class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
+        class="sc-bZQynM fraGhu sc-kgAjT hWSRJP"
+        style="margin: 0px;"
       >
-        <span
-          class="Linkify"
-        >
-          ListPickerTitle 
-          <a
-            href="https://www.amazon.com/"
-            target="_blank"
-          >
-            https://www.amazon.com/
-          </a>
-        </span>
+        ListPickerTitle
       </p>
       <p
-        class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
+        class="sc-bZQynM fraGhu sc-cJSrbW bjtoOs"
+        style="margin: 0px;"
       >
-        <span
-          class="Linkify"
-        >
-          ListPickerSubTitle
-        </span>
+        ListPickerSubtitle
       </p>
     </div>
     <div
-      class="sc-jDwBTQ cICqDD"
+      class="sc-frDJqD cZGRLS"
     >
       <div>
         <button
-          class="sc-gzVnrw fgSGc sc-iRbamj icJGSx"
+          class="sc-gzVnrw fgSGc sc-dNLxif ezVYkD"
           data-selected="false"
-          data-testid="listElementButton0"
+          data-testid="listElement0"
           type="default"
           value="ListPickerElementTitle"
         >
           <div
-            class="sc-jlyJG livHos"
+            class="sc-jqCOkK exNHjp"
           >
             <img
               alt="ListPickerElementImageDescription"
-              class="sc-cMljjf dqMdBl"
+              class="sc-ksYbfQ dfzqNG"
               src="ListPickerElementImageData"
             />
           </div>
-          <div>
+          <div
+            class="sc-hmzhuo fLEfL"
+          >
             <p
-              class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
+              class="sc-bZQynM fraGhu sc-kgAjT hWSRJP"
+              style="margin: 0px;"
             >
               ListPickerElementTitle
             </p>
             <p
-              class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
+              class="sc-bZQynM fraGhu sc-cJSrbW bjtoOs"
+              style="margin: 0px;"
             >
               ListPickerElementSubtitle
             </p>
           </div>
         </button>
         <button
-          class="sc-gzVnrw fgSGc sc-iRbamj icJGSx"
+          class="sc-gzVnrw fgSGc sc-dNLxif ezVYkD"
           data-selected="false"
-          data-testid="listElementButton1"
+          data-testid="listElement1"
           type="default"
           value="AnotherListPickerElementTitle"
         >
           <div
-            class="sc-jlyJG livHos"
+            class="sc-jqCOkK exNHjp"
           >
             <img
               alt="AnotherListPickerElementImageDescription"
-              class="sc-cMljjf dqMdBl"
+              class="sc-ksYbfQ dfzqNG"
               src="AnotherListPickerElementImageData"
             />
           </div>
-          <div>
+          <div
+            class="sc-hmzhuo fLEfL"
+          >
             <p
-              class="sc-bZQynM fraGhu sc-jWBwVP NljNK"
+              class="sc-bZQynM fraGhu sc-kgAjT hWSRJP"
+              style="margin: 0px;"
             >
               AnotherListPickerElementTitle
             </p>
             <p
-              class="sc-bZQynM fraGhu sc-brqgnP dLoklq"
+              class="sc-bZQynM fraGhu sc-cJSrbW bjtoOs"
+              style="margin: 0px;"
             >
               AnotherListPickerElementSubtitle
             </p>

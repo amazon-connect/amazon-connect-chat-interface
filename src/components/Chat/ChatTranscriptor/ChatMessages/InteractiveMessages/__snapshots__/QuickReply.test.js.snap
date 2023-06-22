@@ -1,23 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Panel /> Style should match the snapshot 1`] = `
+exports[`<QuickReply /> Style should match the snapshot 1`] = `
 Object {
   "asFragment": [Function],
-  "baseElement": .c3 {
-  font-size: 1em;
-  line-height: 1.465;
-  font-weight: normal;
-  font-family: Arial,Helvetica,"sans-serif",Helvetica,sans-serif;
-  padding: 0;
-  color: inherit;
-  margin: 0;
-}
-
-.c3:last-child {
-  margin: 0;
-}
-
-.c7 {
+  "baseElement": .c2 {
   font-size: 1em;
   line-height: 1.465;
   font-weight: normal;
@@ -57,240 +43,239 @@ Object {
   box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.1);
 }
 
-.c7:hover {
+.c2:hover {
   background: linear-gradient(#fff,#f9f9f9);
 }
 
-.c7:focus {
+.c2:focus {
   box-shadow: 0 0 2px 0 #E77600;
   outline: none;
 }
 
-.c7:active {
+.c2:active {
   border-color: #fff #fff #fff;
 }
 
-.c7:disabled {
+.c2:disabled {
   cursor: not-allowed;
   opacity: 0.7;
   outline: none;
   pointer-events: none;
 }
 
-.c7:disabled:hover {
+.c2:disabled:hover {
   background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
 }
 
-.c7 > img,
-.c7 .loader {
+.c2 > img,
+.c2 .loader {
   margin-right: undefined;
   position: relative;
   top: 1px;
 }
 
-.c7:hover {
+.c2:hover {
   background: linear-gradient(#fff,#f9f9f9);
 }
 
-.c7:focus {
+.c2:focus {
   box-shadow: 0 0 2px 0 #E77600;
   outline: none;
 }
 
-.c7:active {
+.c2:active {
   border-color: #fff #fff #fff;
 }
 
-.c7:disabled {
+.c2:disabled {
   cursor: not-allowed;
   opacity: 0.7;
   outline: none;
   pointer-events: none;
 }
 
-.c7:disabled:hover {
+.c2:disabled:hover {
   background: linear-gradient(#FFFFFF,#FFFFFF 80%,#FFFFFF);
 }
 
-.c4 {
-  font-weight: bold !important;
+.c0 {
+  border: 1px solid #DDDDDD;
+  border-radius: 6px;
+  background: #EDEDED;
+  padding: 14px;
+  position: relative;
 }
 
-.c5 {
-  color: #555555;
+.c0:after {
+  display: block;
+  content: " ";
+  position: absolute;
+  left: -6px;
+  bottom: 4px;
+  border-radius: 2px;
+  border-left: 10px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 9px solid #EDEDED;
+}
+
+.c0 button {
+  cursor: pointer;
+  border: 1px solid #DDDDDD;
+}
+
+.c0 button:hover:enabled {
+  color: #fff;
+  background: #06adcb;
 }
 
 .c1 {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.c2 {
-  padding: 14px;
-  text-align: left;
-}
-
-.c6 {
-  position: relative;
-  white-space: pre-line;
-  border-radius: 6px;
-}
-
-.c9 {
-  font-weight: bold;
-}
-
-.c9 a {
-  -webkit-text-decoration: none;
-  text-decoration: none;
-}
-
-.c0 {
-  max-height: calc(95vw * (9 / 16));
-  overflow: hidden;
-  display: none;
-}
-
-.c8 {
+  padding: 14px 0;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  width: 100%;
-  max-width: none;
-  border: 1px solid #DDDDDD;
-  white-space: pre-line;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  gap: 6px;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
 }
 
-.c8:hover {
-  background: #06adcb;
+.c3 {
+  padding: 4px 14px;
+  text-align: left;
+  cursor: pointer;
+  border: 2px solid #077398;
+  border-radius: 2px;
+  white-space: pre-wrap;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 22px;
+  font-weight: 600;
+  font-style: normal;
+  color: #077398;
+  background: #FFFFFF;
+  text-shadow: none;
+  box-shadow: none;
 }
 
-.c8:last-child {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  margin-bottom: 0;
+.c3:hover,
+.c3:focus {
+  background: #077398;
+  color: #FFFFFF;
+  border: 2px solid #077398 !important;
 }
 
 <body>
     <div>
       <div
         class="c0"
-      >
-        <img
-          alt="PanelImageDescription"
-          class="c1"
-          src="PanelImageData"
-        />
-      </div>
-      <div
-        class="c2"
+        data-testid="interactive-quickreply-message-title"
       >
         <p
-          class="c3 c4"
           style="margin: 0px;"
         >
-          PanelTitle
-        </p>
-        <p
-          class="c3 c5"
-          style="margin: 0px;"
-        >
-          PanelSubtitle
+          How was your experience?
         </p>
       </div>
       <div
-        class="c6"
+        class="c1"
+        data-testid="interactive-quickreply-response-section"
       >
-        <div>
-          <button
-            class="c7 c8"
-            data-selected="false"
-            type="default"
-            value="PanelElementTitle"
-          >
-            <p
-              class="c3 c9"
-            >
-              PanelElementTitle
-            </p>
-          </button>
-          <button
-            class="c7 c8"
-            data-selected="false"
-            type="default"
-            value="AnotherPanelElementTitle"
-          >
-            <p
-              class="c3 c9"
-            >
-              AnotherPanelElementTitle
-            </p>
-          </button>
-        </div>
+        <button
+          class="c2 c3"
+          data-selected="false"
+          type="default"
+        >
+          Great!
+        </button>
+        <button
+          class="c2 c3"
+          data-selected="false"
+          type="default"
+        >
+          Good
+        </button>
+        <button
+          class="c2 c3"
+          data-selected="false"
+          type="default"
+        >
+          Ok
+        </button>
+        <button
+          class="c2 c3"
+          data-selected="false"
+          type="default"
+        >
+          Poor
+        </button>
+        <button
+          class="c2 c3"
+          data-selected="false"
+          type="default"
+        >
+          Terrible!
+        </button>
       </div>
     </div>
   </body>,
   "container": <div>
     <div
-      class="sc-dNLxif bpIhGK"
-    >
-      <img
-        alt="PanelImageDescription"
-        class="sc-hmzhuo ktACEa"
-        src="PanelImageData"
-      />
-    </div>
-    <div
-      class="sc-frDJqD kVtdcK"
+      class="sc-kgAjT jelqub"
+      data-testid="interactive-quickreply-message-title"
     >
       <p
-        class="sc-bZQynM fraGhu sc-cJSrbW fDctaU"
         style="margin: 0px;"
       >
-        PanelTitle
-      </p>
-      <p
-        class="sc-bZQynM fraGhu sc-ksYbfQ gPMVVn"
-        style="margin: 0px;"
-      >
-        PanelSubtitle
+        How was your experience?
       </p>
     </div>
     <div
-      class="sc-kvZOFW dyyoOq"
+      class="sc-dNLxif ijXeIm"
+      data-testid="interactive-quickreply-response-section"
     >
-      <div>
-        <button
-          class="sc-gzVnrw fgSGc sc-jqCOkK gjiNJE"
-          data-selected="false"
-          type="default"
-          value="PanelElementTitle"
-        >
-          <p
-            class="sc-bZQynM fraGhu sc-jbKcbu LiUFM"
-          >
-            PanelElementTitle
-          </p>
-        </button>
-        <button
-          class="sc-gzVnrw fgSGc sc-jqCOkK gjiNJE"
-          data-selected="false"
-          type="default"
-          value="AnotherPanelElementTitle"
-        >
-          <p
-            class="sc-bZQynM fraGhu sc-jbKcbu LiUFM"
-          >
-            AnotherPanelElementTitle
-          </p>
-        </button>
-      </div>
+      <button
+        class="sc-hMqMXs jEknEr sc-jqCOkK dEJQyU"
+        data-selected="false"
+        type="default"
+      >
+        Great!
+      </button>
+      <button
+        class="sc-hMqMXs jEknEr sc-jqCOkK dEJQyU"
+        data-selected="false"
+        type="default"
+      >
+        Good
+      </button>
+      <button
+        class="sc-hMqMXs jEknEr sc-jqCOkK dEJQyU"
+        data-selected="false"
+        type="default"
+      >
+        Ok
+      </button>
+      <button
+        class="sc-hMqMXs jEknEr sc-jqCOkK dEJQyU"
+        data-selected="false"
+        type="default"
+      >
+        Poor
+      </button>
+      <button
+        class="sc-hMqMXs jEknEr sc-jqCOkK dEJQyU"
+        data-selected="false"
+        type="default"
+      >
+        Terrible!
+      </button>
     </div>
   </div>,
   "debug": [Function],

@@ -3,27 +3,31 @@
 
 import React, { useState } from "react";
 import { Button } from "connect-core";
-import { Text } from "connect-core";
 import {
   ReactiveImage,
-  TextSection,
   ResponsesSection,
-  Title,
-  Subtitle,
+  HeaderText,
+  PickerOptionTitle,
+  PickerElementLinkOption
 } from "../InteractiveMessage";
 import styled from "styled-components";
 import PT from "prop-types";
-import Linkify from "react-linkify";
-import { createInteractiveMessagePayload } from "../../../../../utils/helper";
+import { InteractiveMessageSelectionType, InteractiveMessageType } from "../../../datamodel/Model";
+import { createInteractiveMessagePayload, truncateElementFromLimit, truncateStrFromCharLimit } from "../../../../../utils/helper";
 
-const ElementTitle = styled(Text)`
-  font-weight: bold;
-`;
-
+//#region Styled Components
 const ImageContainer = styled.div`
   max-height: calc(95vw * (9 / 16));
   overflow: hidden;
   display: ${(props) => (props.showImage ? "flex" : "none")};
+
+  ${props => props.isCarouselElem ? `
+    img {
+      float: left;
+      height: 10rem;
+      object-fit: cover;
+    }
+  ` : ""}
 `;
 
 const PanelButton = styled(Button)`
@@ -38,24 +42,49 @@ const PanelButton = styled(Button)`
     background: ${({ theme }) => theme.color.primary};
   }
 
-  &:last-of-type {
+  /* Last child could be <a/>, only round last child */
+  &:last-child {
     border-bottom-left-radius: ${({ theme }) => theme.spacing.mini};
     border-bottom-right-radius: ${({ theme }) => theme.spacing.mini};
     margin-bottom: 0;
   }
 `;
+//#endregion Styled Components
+
+function PanelPickerElement({ element, handleButtonClick }) {
+  const { title: inputTitle, type, url } = element;
+  const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.PANEL, "elementTitleCharLimit");
+
+  if (type === InteractiveMessageSelectionType.HYPERLINK && url) {
+    return <PickerElementLinkOption {...element} />
+  }
+
+  return (
+    <PanelButton value={title} onClick={handleButtonClick}>
+      <PickerOptionTitle>{title}</PickerOptionTitle>
+    </PanelButton>
+  );
+}
 
 Panel.propTypes = {
   content: PT.object.isRequired,
   addMessage: PT.func.isRequired,
+  isCarouselElem: PT.bool,
+  templateIdentifier: PT.string
 };
 
-export default function Panel({ content, addMessage, templateType }) {
+export default function Panel({
+  content,
+  addMessage,
+  templateType,
+  isCarouselElem,
+  templateIdentifier
+}) {
   // assumptions: version 1, image data is URL. Guarenteed title exists, at least 1 element.
   const {
-    title,
-    subtitle,
-    elements,
+    title: inputTitle,
+    subtitle: inputSubtitle,
+    elements: inputElements,
     imageData,
     imageDescription,
     preIndex,
@@ -63,6 +92,12 @@ export default function Panel({ content, addMessage, templateType }) {
     listId,
     referenceId,
   } = content;
+
+  // Frontend field validations
+  const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.PANEL, "titleCharLimit");
+  const subtitle = truncateStrFromCharLimit(inputSubtitle, InteractiveMessageType.PANEL, "subtitleCharLimit");
+  const elements = truncateElementFromLimit(inputElements, InteractiveMessageType.PANEL, "elementsRenderedMax");
+
   const [imageLoaded, setImageLoaded] = useState(false);
 
   function onImageLoad() {
@@ -77,7 +112,10 @@ export default function Panel({ content, addMessage, templateType }) {
       nextIndex,
       listId,
       templateType,
-      referenceId
+      referenceId,
+      isCarouselElem,
+      title,
+      templateIdentifier
     );
     addMessage(payload);
   }
@@ -85,7 +123,7 @@ export default function Panel({ content, addMessage, templateType }) {
   return (
     <>
       {imageData && (
-        <ImageContainer showImage={imageLoaded}>
+        <ImageContainer showImage={imageLoaded} isCarouselElem={isCarouselElem}>
           <ReactiveImage
             imageSrc={imageData}
             imageDescription={imageDescription}
@@ -93,28 +131,17 @@ export default function Panel({ content, addMessage, templateType }) {
           />
         </ImageContainer>
       )}
-      <TextSection>
-        <Title>
-          <Linkify properties={{ target: "_blank" }}>{title}</Linkify>
-        </Title>
-        {subtitle && (
-          <Subtitle>
-            <Linkify properties={{ target: "_blank" }}>{subtitle}</Linkify>
-          </Subtitle>
-        )}
-      </TextSection>
-      <ResponsesSection>
+      <HeaderText title={title} subtitle={subtitle} />
+      <ResponsesSection isCarouselElem={isCarouselElem}>
         <div>
           {elements.map((element, index) => (
-            <PanelButton
-              value={element.title}
+            <PanelPickerElement
               key={"element-" + index}
-              onClick={() => {
+              handleButtonClick={() => {
                 onItemClick(index);
               }}
-            >
-              <ElementTitle>{element.title}</ElementTitle>
-            </PanelButton>
+              element={element}
+            />
           ))}
         </div>
       </ResponsesSection>
