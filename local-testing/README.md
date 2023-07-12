@@ -1,6 +1,10 @@
-## Example Test Page
+## Local Development Test Page
 
 This folder has an example html page that you can use to test your code. You will need the amazon-connect-chat-interface.js compiled code from this project and the example solution to start chat using API Gateway and Lambda backend components as defined in [this GitHub repo](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI).
+
+**NOTE:** This approach requires a proxy to invoke the Amazon Connect Public [StartChatContact](https://docs.aws.amazon.com/connect/latest/APIReference/API_StartChatContact.html) API. Refer to the [startChatContactAPI CloudFormation Template](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI) to deploy an API Gateway proxy solution.
+
+![CFN Architecture](./StartChatContactCFNTemplateArchitecture.png)
 
 ## Steps
 1. Follow the steps in [this repo](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI) to deploy the backend pieces to start a chat.
