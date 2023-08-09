@@ -18,7 +18,7 @@ to manage your chat session.
 
 ## Usage
 
-> ❗ IMPORTANT: follow steps listed in [CustomChatAndWidgetSelfHostedSetup.md](/./github/docs/CustomChatAndWidgetSelfHostedSetup.md) for a full setup walkthrough
+> ❗ IMPORTANT: follow steps listed in [CustomChatAndWidgetSelfHostedSetup.md](/.github/docs/CustomChatAndWidgetSelfHostedSetup.md) for a full setup walkthrough
 
 Fully customize the chat interface UI for your website, add a form to collect user info, and customize how the widget is rendered. Host and manage the bundle file yourself, importing it with a `<script src="amazon-connect-chat-interface.js"></script>` tag. Also refer to the [Custom Chat Widget Example](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/customChatWidget) code.
 
