@@ -9,7 +9,7 @@
     "url": "git+https://github.com/amazon-connect/amazon-connect-chat-interface.git"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=15.0.0"
   },
   "browserslist": [
     ">0.2%",
@@ -189,9 +189,10 @@
     "webpack-dev-server": "^4.1.1",
     "webpack-manifest-plugin": "2.0.4"
   },
-  "resolutions": {
+  "overrides": {
     "glob-parent": "^5.1.2",
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "css-loader": {
+      "webpack": "^4.46.0"
+    }
   }
 }
