@@ -160,7 +160,7 @@
     "identity-obj-proxy": "3.0.0",
     "jest": "^27.1.1",
     "jest-location-mock": "^1.0.9",
-    "jest-pnp-resolver": "1.0.1",
+    "jest-pnp-resolver": "1.2.3",
     "jest-resolve": "^23.6.0",
     "jest-styled-components": "^6.3.1",
     "lodash": "^4.17.21",
