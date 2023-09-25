@@ -6,6 +6,7 @@ import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
 import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE, AttachmentErrorType, PARTICIPANT_TYPES } from "./datamodel/Model";
 import { getTimeFromTimeStamp } from "../../utils/helper";
+import Eventbus from './eventbus';
 import isJson from "is-json";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
@@ -650,6 +651,7 @@ class ChatSession {
   _handleEndedEvent() {
     this._updateContactStatus(CONTACT_STATUS.ENDED);
     this._triggerEvent("chat-disconnected");
+    Eventbus.trigger('agentEndChat', {});
   }
 
   // TYPING PARTICIPANTS
