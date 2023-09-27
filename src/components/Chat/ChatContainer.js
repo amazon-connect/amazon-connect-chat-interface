@@ -9,6 +9,7 @@ import ChatSession from "./ChatSession";
 import { initiateChat } from "./ChatInitiator";
 import EventBus from "./eventbus";
 import "./ChatInterface";
+import './ChatEvents';
 import { defaultTheme } from "connect-theme";
 import { FlexRowContainer } from "connect-theme/Helpers";
 import { CHAT_FEATURE_TYPES } from "./constants";

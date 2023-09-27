@@ -58,7 +58,7 @@ const ChatComposerWrapper = styled.div`
 const HeaderWrapper = styled.div`
   background: #3F5773;
   text-align: center;
-  padding: 20px;
+  padding: 16px;
   color: #fff;
   border-radius: 3px;
   flex-shrink: 0;
@@ -96,7 +96,7 @@ function Header({ headerConfig }){
 }
 
 const textInputRef = React.createRef();
-const HEADER_HEIGHT = 51;
+const HEADER_HEIGHT = 115;
 
 export default class Chat extends Component {
   constructor(props) {
@@ -170,6 +170,7 @@ export default class Chat extends Component {
 
   closeChat() {
     this.props.chatSession.closeChat();
+    this.props.onEnded();
   }
 /*
   Note: For Mobile layout: divided into 3 sections
