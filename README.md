@@ -20,6 +20,32 @@ to manage your chat session.
 
 ## Usage
 
+### Approach 1: Host Widget Snippet Integrated Custom UI (S3 Bucket/CDN)
+
+> ❗ IMPORTANT: follow steps listed in [HostedSnippetCustomBundleFileSetup.md](/./github/docs/HostedSnippetCustomBundleFileSetup.md) for a full setup walkthrough
+
+Integrate a fully customized the chat interface UI in the pre-built Hosted Widget, with all configurations available in the Connect Admin Console. The hosted widget can handle all of the logic to render the widget on your website and start chat sessions.
+
+Host your own `amazon-connect-chat-interface.js` bundle file and provide the link in the widget snippet configuration. 
+
+```diff
+<!-- EXAMPLE SNIPPET -->
+
+<script type="text/javascript">
+  (function(w, d, x, id){s=d.createElement('script');s.src='https://d2s9x5slbvr0vu.cloudfront.net/amazon-connect-chat-interface-client.js';s.async=1;s.id=id;d.getElementsByTagName('head')[0].appendChild(s);w[x]=w[x]||function(){(w[x].ac=w[x].ac||[]).push(arguments)}})(window, document, 'amazon_connect', '360f3075-92ac-4648-adfe-84ee860c3bfd');
+  
+  amazon_connect('styles', { openChat: { color: '#ffffff', backgroundColor: '#07b62a'}, closeChat: { color: '#ffffff', backgroundColor: '#07b62a'} });
+  amazon_connect('snippetId', 'QVFJREFIsadfsadfasdf');
+  amazon_connect('supportedMessagingContentTypes', [ 'text/plain', 'text/markdown' ]);
++ amazon_connect('customerChatInterfaceUrl', 'https://...'); // TODO: put in your link to amazon-connect-chat-interface.js
++ // Local file is also supported: './amazon-connect-chat-interface.js'
+</script>
+```
+
+![Host Widget Snippet Integrated Custom UI](/.github/screenshots/custom-bundle-file-snippet-example.png)
+
+### Approach 2: Customized Widget and Chat Interface UI (Self-Hosted)
+
 > ❗ IMPORTANT: follow steps listed in [CustomChatAndWidgetSelfHostedSetup.md](/.github/docs/CustomChatAndWidgetSelfHostedSetup.md) for a full setup walkthrough
 
 Fully customize the chat interface UI for your website, add a form to collect user info, and customize how the widget is rendered. Host and manage the bundle file yourself, importing it with a `<script src="amazon-connect-chat-interface.js"></script>` tag. Also refer to the [Custom Chat Widget Example](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/customChatWidget) code.
