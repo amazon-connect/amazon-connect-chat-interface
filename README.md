@@ -22,7 +22,7 @@ to manage your chat session.
 
 ### Approach 1: Host Widget Snippet Integrated Custom UI (S3 Bucket/CDN)
 
-> ❗ IMPORTANT: follow steps listed in [HostedSnippetCustomBundleFileSetup.md](/./github/docs/HostedSnippetCustomBundleFileSetup.md) for a full setup walkthrough
+> ❗ IMPORTANT: follow steps listed in [HostedSnippetCustomBundleFileSetup.md](/.github/docs/HostedSnippetCustomBundleFileSetup.md) for a full setup walkthrough
 
 Integrate a fully customized the chat interface UI in the pre-built Hosted Widget, with all configurations available in the Connect Admin Console. The hosted widget can handle all of the logic to render the widget on your website and start chat sessions.
 
