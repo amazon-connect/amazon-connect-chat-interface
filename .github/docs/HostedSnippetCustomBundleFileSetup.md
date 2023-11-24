@@ -25,7 +25,7 @@ If your intention is to only customize [amazon-connect-chat-interface.js](https:
 2. On the Chat Widget Panel, you can see your Chat widget script.
 ![Alt text](/.github/screenshots/built-in-script-setup-steps-lmaw.jpg)
 
-3. You can customize and upload your `amazon-connect-interface.js` file to your own S3 bucket or any storage server. Follow [customize interface.js steps](https://github.com/amazon-connect/amazon-connect-chat-interface/blob/spenlep/improve-readme-documentation/DOCUMENTATION.md#features) to customize `amazon-connect-interface.js`.
+3. You can customize and upload your `amazon-connect-interface.js` file to your own S3 bucket or any storage server. Follow [customize interface.js steps](https://github.com/amazon-connect/amazon-connect-chat-interface/blob/master/DOCUMENTATION.md#features) to customize `amazon-connect-interface.js`.
 
     - 3-1. Build your own amazon-connect-chat-interface.js and upload it in your S3 bucket.
     ![Alt text](/.github/screenshots/built-in-script-setup-steps-s3.jpg)
