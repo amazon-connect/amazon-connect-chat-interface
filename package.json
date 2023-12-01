@@ -126,7 +126,7 @@
     "@babel/preset-env": "^7.2.0",
     "@emotion/babel-plugin": "^11.11.0",
     "@testing-library/dom": "7.29.4",
-    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "13.0.7",
     "@types/react": "^16.14.35",
