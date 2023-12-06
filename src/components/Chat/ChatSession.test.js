@@ -275,6 +275,9 @@ describe("ChatSession", () => {
               onMessage: jest.fn().mockResolvedValue("aaa"),
               onTyping: jest.fn().mockResolvedValue("aaa"),
               onReadReceipt: jest.fn().mockResolvedValue("aaa"),
+              onParticipantReturned: jest.fn().mockResolvedValue("aaa"),
+              onAutoDisconnection: jest.fn().mockResolvedValue("aaa"),
+              onParticipantIdle: jest.fn().mockResolvedValue("aaa"),
               onDeliveredReceipt: jest.fn().mockResolvedValue("aaa"),
               onEnded: jest.fn().mockResolvedValue("aaa"),
               onConnectionEstablished: jest.fn().mockResolvedValue("aaa"),
@@ -306,11 +309,14 @@ describe("ChatSession", () => {
     afterAll(() => {
       delete window.connect;
     });
-    test("should register Read and Delivered events", () => {
+    test("should register Read, Delivered and idle events", () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
       expect(session.client.session.onReadReceipt).toBeCalled();
       expect(session.client.session.onDeliveredReceipt).toBeCalled();
+      expect(session.client.session.onParticipantIdle).toBeCalled();
+      expect(session.client.session.onParticipantReturned).toBeCalled();
+      expect(session.client.session.onAutoDisconnection).toBeCalled();
     });
     test("should not update transcript if messageId not found", async () => {
       const session = new ChatSession(chatDetails, region, stage);
