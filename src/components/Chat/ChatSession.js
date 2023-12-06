@@ -44,6 +44,18 @@ class ChatJSClient {
     return this.session.onReadReceipt(handler);
   }
 
+  onParticipantReturned(handler) {
+    return this.session.onParticipantReturned(handler);
+  }
+
+  onAutoDisconnection(handler) {
+    return this.session.onAutoDisconnection(handler);
+  }
+
+  onParticipantIdle(handler) {
+    return this.session.onParticipantIdle(handler);
+  }
+
   onDeliveredReceipt(handler) {
     return this.session.onDeliveredReceipt(handler);
   }
@@ -383,16 +395,32 @@ class ChatSession {
     this.client.onReadReceipt((data) => {
       this._handleMessageReceipt("read", data);
     });
-    this.client.onDeliveredReceipt((data) => {
+    this.client.onAutoDisconnection(data => {
+      this._handleIdleEvent(data);
+    });
+    this.client.onParticipantReturned(data => {
+      this._handleIdleEvent(data);
+    });
+    this.client.onParticipantIdle(data => {
+      this._handleIdleEvent(data);
+    });
+    this.client.onDeliveredReceipt(data => {
       this._handleMessageReceipt("delivered", data);
     });
-
-    this.client.onEnded((data) => {
+    this.client.onEnded(data => {
       this._handleEndedEvent(data);
     });
-    this.client.onConnectionEstablished(() => {
-      this._loadLatestTranscript();
+    this.client.onConnectionEstablished(async () => {
+      await this._loadLatestTranscript();
     });
+  }
+
+  _handleIdleEvent(data) {
+    var eventDetails = data.data;
+    var item = modelUtils.createItemFromIncoming(eventDetails);
+    if (item) {
+      this._shouldAddToTranscript(item) && this._addItemsToTranscript([item]);
+    }
   }
 
   // TRANSCRIPT

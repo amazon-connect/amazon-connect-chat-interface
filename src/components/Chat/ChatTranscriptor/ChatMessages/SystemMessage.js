@@ -13,19 +13,54 @@ export class SystemMessage extends React.PureComponent {
   static defaultProps = {};
 
   getMessageText = () => {
-    console.log("SystemMessage getMessageText");
-    console.log(this.props);
-    let name  = "";
+    let name = this.props.messageDetails.displayName;
     switch (this.props.messageDetails.content.type) {
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_JOINED:
-        name = this.props.messageDetails.displayName;
-        return name + " has joined the chat";
-      case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_LEFT:
-        name = this.props.messageDetails.displayName;
-        return name + " has left the chat";
-      case ContentType.EVENT_CONTENT_TYPE.CHAT_ENDED:
-        return "Chat has ended!";
+        return <FormattedMessage
+          id="transcriptor.joinedChat"
+          defaultMessage="{name} has joined the chat"
+          values={{
+            name
+          }}
+        />;
+      case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_IDLE:
+        return <FormattedMessage
+          id="transcriptor.idleChat"
+          defaultMessage="{name} has become idle"
+          values={{
+            name
+          }}
+        />;
+      case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_DISCONNECT:
+        return <FormattedMessage
+          id="transcriptor.disconnectChat"
+          defaultMessage="{name} has been idle too long, disconnecting"
+          values={{
+            name
+          }}
+        />;
+      case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_RETURNED:
+        return <FormattedMessage
+          id="transcriptor.returnedChat"
+          defaultMessage="{name} has returned"
+          values={{
+            name
+          }}
+        />;
 
+      case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_LEFT:
+        return <FormattedMessage
+          id="transcriptor.leftChat"
+          defaultMessage="{name} has left the chat"
+          values={{
+            name
+          }}
+        />;
+      case ContentType.EVENT_CONTENT_TYPE.CHAT_ENDED:
+        return <FormattedMessage
+          id="transcriptor.endChat"
+          defaultMessage="Chat has ended!"
+        />;
       default:
         return "";
     }
