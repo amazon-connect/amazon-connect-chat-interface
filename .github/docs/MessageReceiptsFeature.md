@@ -6,7 +6,7 @@ Render and send read/delivered message receipts. Enabled by default in ChatInter
 
 Message receipts use [sendEvent API](https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_SendEvent.html) for sending Read/Delivered events
 
-![View receipts](/.github/screenshots/view-receipts.png)
+![View receipts](/.github/screenshots/hosted-widget-read-receipt.png)
 
 ## Reference
 
