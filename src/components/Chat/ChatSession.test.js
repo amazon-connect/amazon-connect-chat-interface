@@ -275,6 +275,9 @@ describe("ChatSession", () => {
               onMessage: jest.fn().mockResolvedValue("aaa"),
               onTyping: jest.fn().mockResolvedValue("aaa"),
               onReadReceipt: jest.fn().mockResolvedValue("aaa"),
+              onParticipantReturned: jest.fn().mockResolvedValue("aaa"),
+              onAutoDisconnection: jest.fn().mockResolvedValue("aaa"),
+              onParticipantIdle: jest.fn().mockResolvedValue("aaa"),
               onDeliveredReceipt: jest.fn().mockResolvedValue("aaa"),
               onEnded: jest.fn().mockResolvedValue("aaa"),
               onConnectionEstablished: jest.fn().mockResolvedValue("aaa"),
@@ -306,10 +309,46 @@ describe("ChatSession", () => {
     afterAll(() => {
       delete window.connect;
     });
-    test("should register Read and Delivered events", () => {
+
+    test("should call idle event handler to update the transcript", async () => {
+      const session = new ChatSession(chatDetails, region, stage);
+      const addItemsToTranscriptSpy = jest.spyOn(session, '_addItemsToTranscript');
+      session.openChatSession(true);
+      const eventCallback =
+        session.client.session.onParticipantIdle.mock.calls[0][0];
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
+      await connectionEstablishedCallback();
+      const idleMessage = {
+        data: {
+          Type: "MESSAGEMETADATA",
+          MessageMetadata: {
+            MessageId: "italics",
+            Receipts: [
+              {
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+                RecipientParticipantId: "123",
+              },
+            ],
+          },
+          InitialContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
+          ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
+        },
+        chatDetails: {
+          participantId: "participantId"
+        }
+      };
+      eventCallback(idleMessage);
+      expect(addItemsToTranscriptSpy).toHaveBeenCalledTimes(2);
+    });
+    test("should register Read and Delivered and idle events", () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
       expect(session.client.session.onReadReceipt).toBeCalled();
+      expect(session.client.session.onParticipantIdle).toBeCalled();
+      expect(session.client.session.onParticipantReturned).toBeCalled();
+      expect(session.client.session.onAutoDisconnection).toBeCalled();
       expect(session.client.session.onDeliveredReceipt).toBeCalled();
     });
     test("should not update transcript if messageId not found", async () => {
