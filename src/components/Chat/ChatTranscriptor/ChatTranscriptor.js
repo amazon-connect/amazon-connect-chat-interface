@@ -85,6 +85,34 @@ export default class ChatTranscriptor extends PureComponent {
     let content = null;
     let additionalProps = {};
 
+    // Example code to override the displayName that is rendered in chat
+    // Default will be the actual AgentName and CustomerName
+    // You could mask the names, and render different text if needed
+    if (overideDisplayNames) {
+      // REF: https://github.com/amazon-connect/amazon-connect-chat-interface/blob/master/src/components/Chat/datamodel/Model.js#L8
+      switch (itemDetails.participantRole) {
+        case 'SYSTEM':
+            const DEFAULT_BOT_DISPLAY_NAME = 'BOT';
+            if (itemDetails.displayName = DEFAULT_BOT_DISPLAY_NAME) {
+              itemDetails.displayName = 'WillAlwaysRenderThisBotNameNow'; // custom BOT name
+            } else {
+              itemDetails.displayName = 'WillAlwaysRenderThisSystemNameNow'; // custom SYSTEM_MESSAGE
+            }
+          break;
+        case 'AGENT':
+            itemDetails.displayName = 'WillAlwaysRenderThisAgentsNameNow';
+          break;
+        case 'CUSTOMER':
+            itemDetails.displayName = 'WillAlwaysRenderThisCustomerNameNow';
+          break;
+        case 'SUPERVISOR':
+            itemDetails.displayName = 'WillAlwaysRenderThisSupervisorNameNow';
+          break;
+        default:
+          break;
+      }
+    }
+
     if (config.render) {
       content = config.render({
         key: key,
