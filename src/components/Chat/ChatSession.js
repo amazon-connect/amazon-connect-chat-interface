@@ -36,6 +36,18 @@ class ChatJSClient {
     return this.session.disconnectParticipant();
   }
 
+  onParticipantReturned(handler) {
+    return this.session.onParticipantReturned(handler);
+  }
+
+  onAutoDisconnection(handler) {
+    return this.session.onAutoDisconnection(handler);
+  }
+
+  onParticipantIdle(handler) {
+    return this.session.onParticipantIdle(handler);
+  }
+
   onTyping(handler) {
     return this.session.onTyping(handler);
   }
@@ -379,7 +391,15 @@ class ChatSession {
     this.client.onTyping((data) => {
       this._handleTypingEvent(data);
     });
-
+    this.client.onAutoDisconnection(data => {
+      this._handleIdleEvent(data);
+    });
+    this.client.onParticipantReturned(data => {
+      this._handleIdleEvent(data);
+    });
+    this.client.onParticipantIdle(data => {
+      this._handleIdleEvent(data);
+    });
     this.client.onReadReceipt((data) => {
       this._handleMessageReceipt("read", data);
     });
@@ -395,6 +415,14 @@ class ChatSession {
     });
   }
 
+  _handleIdleEvent(data) {
+    var eventDetails = data.data;
+    var item = modelUtils.createItemFromIncoming(eventDetails);
+    if (item) {
+      this._shouldAddToTranscript(item) && this._addItemsToTranscript([item]);
+    }
+  }
+  
   // TRANSCRIPT
   _loadLatestTranscript() {
     console.log("loadPreviousTranscript in single");
