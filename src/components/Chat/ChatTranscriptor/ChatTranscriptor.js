@@ -155,6 +155,14 @@ export default class ChatTranscriptor extends PureComponent {
         (type === PARTICIPANT_MESSAGE || type === ATTACHMENT_MESSAGE) &&
         transportDetails.direction === Direction.Outgoing
       )).pop();
+      const lastReceivedMessage = this.props.transcript
+          .filter(
+              ({ type, transportDetails }) =>
+                  (type === PARTICIPANT_MESSAGE ||
+                      type === ATTACHMENT_MESSAGE) &&
+                  transportDetails.direction === Direction.Incoming
+          )
+          .pop();
 
     const lastMessageIndex = this.props.transcript.length - 1;
 
@@ -164,6 +172,7 @@ export default class ChatTranscriptor extends PureComponent {
         type={this.props.contactStatus}
         loadPreviousTranscript={this.loadTranscript}
         lastSentMessageId={lastSentMessage ? lastSentMessage.id : null}
+        lastReceivedMessageId={lastReceivedMessage ? lastReceivedMessage.id : null}
       >
         {(this.props.contactStatus === CONTACT_STATUS.CONNECTED ||
           this.props.contactStatus === CONTACT_STATUS.ACW ||

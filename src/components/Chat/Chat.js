@@ -184,42 +184,55 @@ export default class Chat extends Component {
     console.log('MESSAGES', this.state.transcript);
 
     return (
-      <ChatWrapper data-testid="amazon-connect-chat-wrapper">
-        {(this.state.contactStatus === CONTACT_STATUS.CONNECTED ||
-          this.state.contactStatus === CONTACT_STATUS.CONNECTING || this.state.contactStatus === CONTACT_STATUS.ENDED) && 
-          <ParentHeaderWrapper ref={this.parentHeaderRef}><Header headerConfig={headerConfig}/></ParentHeaderWrapper>
-        }
-        <ChatComposerWrapper  parentHeaderWrapperHeight={this.state.parentHeaderWrapperHeight}>
-          <ChatTranscriptor
-            loadPreviousTranscript={() => chatSession.loadPreviousTranscript()}
-            addMessage={(data) => chatSession.addOutgoingMessage(data)}
-            downloadAttachment={(attachmentId) => chatSession.downloadAttachment(attachmentId)}
-            transcript={this.state.transcript}
-            typingParticipants={this.state.typingParticipants}
-            contactStatus={this.state.contactStatus}
-            contactId={chatSession.contactId}
-            transcriptConfig={transcriptConfig}
-            textInputRef={textInputRef}
-            sendReadReceipt={(...inputParams) => chatSession.sendReadReceipt(...inputParams)}
-          />
-          <ChatComposer
-            contactStatus={this.state.contactStatus}
-            contactId={chatSession.contactId}
-            addMessage={(contactId, data) => chatSession.addOutgoingMessage(data)}
-            addAttachment={(contactId, attachment) => chatSession.addOutgoingAttachment(attachment)}
-            onTyping={() => chatSession.sendTypingEvent()}
-            composerConfig={composerConfig}
-            textInputRef={textInputRef}
-          />
-        </ChatComposerWrapper>
-        {<ChatActionBar
-          onEndChat={() => this.endChat()}
-          onClose ={() => this.closeChat()}
-          contactStatus={this.state.contactStatus}
-          footerConfig={footerConfig}
-        />
-        }
-      </ChatWrapper>
+        <>
+            <ChatActionBar
+                onEndChat={() => this.endChat()}
+                onClose={() => this.closeChat()}
+                contactStatus={this.state.contactStatus}
+                footerConfig={footerConfig}
+            />
+            <ChatWrapper data-testid="amazon-connect-chat-wrapper">
+                <ChatComposerWrapper
+                    parentHeaderWrapperHeight={
+                        this.state.parentHeaderWrapperHeight
+                    }
+                >
+                    <ChatTranscriptor
+                        loadPreviousTranscript={() =>
+                            chatSession.loadPreviousTranscript()
+                        }
+                        addMessage={(data) =>
+                            chatSession.addOutgoingMessage(data)
+                        }
+                        downloadAttachment={(attachmentId) =>
+                            chatSession.downloadAttachment(attachmentId)
+                        }
+                        transcript={this.state.transcript}
+                        typingParticipants={this.state.typingParticipants}
+                        contactStatus={this.state.contactStatus}
+                        contactId={chatSession.contactId}
+                        transcriptConfig={transcriptConfig}
+                        textInputRef={textInputRef}
+                        sendReadReceipt={(...inputParams) =>
+                            chatSession.sendReadReceipt(...inputParams)
+                        }
+                    />
+                    <ChatComposer
+                        contactStatus={this.state.contactStatus}
+                        contactId={chatSession.contactId}
+                        addMessage={(contactId, data) =>
+                            chatSession.addOutgoingMessage(data)
+                        }
+                        addAttachment={(contactId, attachment) =>
+                            chatSession.addOutgoingAttachment(attachment)
+                        }
+                        onTyping={() => chatSession.sendTypingEvent()}
+                        composerConfig={composerConfig}
+                        textInputRef={textInputRef}
+                    />
+                </ChatComposerWrapper>
+            </ChatWrapper>
+        </>
     );
   }
 }

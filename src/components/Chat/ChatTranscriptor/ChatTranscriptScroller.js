@@ -42,12 +42,14 @@ export default function ChatTranscriptScroller({
   lastSentMessageId,
   loadPreviousTranscript,
   className,
-  children
+  children,
+  lastReceivedMessageId
 }) {
   const ref = useRef(null);
 
   const prevChildren = usePrevious(children);
   const prevLastSentMessageId = usePrevious(lastSentMessageId);
+  const prevLastReceivedMessageId = usePrevious(lastReceivedMessageId);
 
   const [loading, setLoading] = useState(false);
 
@@ -76,6 +78,7 @@ export default function ChatTranscriptScroller({
   const shouldScrollToBottom = () =>
     // Scroll down if we are either locked to bottom or have sent a new message
     lockedToBottom || lastSentMessageId !== prevLastSentMessageId;
+  const isNewMessageReceived = lastReceivedMessageId !== prevLastReceivedMessageId;
 
   const shouldRestorePreLoadingScrollTop = () =>
     children !== prevChildren && loading && loadingScrollPos;
@@ -90,6 +93,8 @@ export default function ChatTranscriptScroller({
     } else if (shouldRestorePreLoadingScrollTop()) {
       ref.current.scrollTop = preLoadingScrollTop();
       setLoadingScrollPos(null);
+    } else if(isNewMessageReceived) {
+      onJumpToNewMessage();
     }
   });
 
@@ -119,6 +124,9 @@ export default function ChatTranscriptScroller({
       });
     }
   }
+  const onJumpToNewMessage = () => {
+    ref.current.scrollTo({left:0, top: ref.current.scrollHeight, behavior: "smooth"});
+  };
 
   return (
     <ScrollContainer ref={ref} onScroll={handleScroll} className={className}>
