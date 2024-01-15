@@ -153,6 +153,25 @@ To test changes on a local machine, refer to the steps listed in the [local-test
 
 To build the production version of this package, simply run `npm install && npm run build`. These will generate a minified built file, with console logs stripped and other Webpack optimizations.
 
+## Development additional info
+
+### Local development
+(Since this widget is mostly used in amazon-connect-chat project, most of these steps are related to that project)
+
+Steps to run this widget in local:
+1) Make sure that backendEndpoints.js is properly configured in local-testing/backendEndpoints.js (as outlined in README in that folder),
+2) Run npm run dev-watch, this will build amazon connect chat interface js file in local-testing folder (non minimized),
+3) Open index.html from local-testing folder in your browser.
+
+If you need non minimzed build for amazon connect chat widget, you can run npm run dev-build which will create non minimzed js file in build/dist/static/js. 
+For minimzed build you have to run npm run build
+
+In order to use built widget in our amazon-connect-chat project, after build copy amazon-connect-chat-interface.js file to public of amazon-connect-chat project.
+
+### Production development (amazon-connect-chat project workflow)
+1) Once your widget in this project is ready, run npm run build and copy built amazon-connect-chat-interface.js file to public of amazon-connect-chat project,
+2) Finish build in amazon-connect-chat project
+
 ## Specifications
 
  - Supported Browsers: refer to [Admin Guide Documentation](https://docs.aws.amazon.com/connect/latest/adminguide/connect-supported-browsers.html)
