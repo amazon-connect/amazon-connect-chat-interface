@@ -191,7 +191,7 @@ Object {
                   </svg>
                 </div>
                 <input
-                  accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,.docx,.xlsx,.pptx"
+                  accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,image/jpeg,application/rtf,application/x-rtf,image/heic,video/quicktime,video/mp4,text/richtext,text/rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jfif,.rtf,.heic,.mov,.mp4"
                   aria-label="Attach a file"
                   data-testid="customer-chat-file-select"
                   id="customer-chat-file-select-12344"
@@ -276,7 +276,7 @@ Object {
                 </svg>
               </div>
               <input
-                accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,.docx,.xlsx,.pptx"
+                accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,image/jpeg,application/rtf,application/x-rtf,image/heic,video/quicktime,video/mp4,text/richtext,text/rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jfif,.rtf,.heic,.mov,.mp4"
                 aria-label="Attach a file"
                 data-testid="customer-chat-file-select"
                 id="customer-chat-file-select-12344"
@@ -567,7 +567,7 @@ Object {
                   </svg>
                 </div>
                 <input
-                  accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,.docx,.xlsx,.pptx"
+                  accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,image/jpeg,application/rtf,application/x-rtf,image/heic,video/quicktime,video/mp4,text/richtext,text/rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jfif,.rtf,.heic,.mov,.mp4"
                   aria-label="Attach a file"
                   data-testid="customer-chat-file-select"
                   id="customer-chat-file-select-12344"
@@ -652,7 +652,7 @@ Object {
                 </svg>
               </div>
               <input
-                accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,.docx,.xlsx,.pptx"
+                accept="text/plain,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,audio/wav,audio/x-wav,audio/vnd.wave,image/jpeg,application/rtf,application/x-rtf,image/heic,video/quicktime,video/mp4,text/richtext,text/rtf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jfif,.rtf,.heic,.mov,.mp4"
                 aria-label="Attach a file"
                 data-testid="customer-chat-file-select"
                 id="customer-chat-file-select-12344"
