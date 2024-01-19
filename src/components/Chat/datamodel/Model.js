@@ -43,7 +43,14 @@ export const ContentType = {
     AUDIO_VND_WAVE: "audio/vnd.wave", //IE
     INTERACTIVE_MESSAGE: "application/vnd.amazonaws.connect.message.interactive",
     INTERACTIVE_RESPONSE: "application/vnd.amazonaws.connect.message.interactive.response",
-  },
+    VIDEO_QUICKTIME: "video/quicktime", // QuickTime file format (.mov)
+    RICH_TEXT: "text/richtext", // Rich text (.rtf)
+    TEXT_RTF: "text/rtf", // Rich text (.rtf)
+    RICH_TEST_FILE_RTF: "application/rtf", // Rich text (.rtf)
+    RICH_TEST_FILE_X_RTF: "application/x-rtf", // Rich text (.rtf)
+    VIDEO_MP4: "video/mp4", // MP4 Video (.mp4)
+    IMAGE_HEIC: "image/heic", // High Efficiency Image File (.heic)
+  }
 };
 
 ContentType.ATTACHMENT_CONTENT_TYPE = {
@@ -61,10 +68,34 @@ ContentType.ATTACHMENT_CONTENT_TYPE = {
   WAV: ContentType.MESSAGE_CONTENT_TYPE.AUDIO_WAV,
   X_WAV: ContentType.MESSAGE_CONTENT_TYPE.AUDIO_X_WAV,
   VND_WAVE: ContentType.MESSAGE_CONTENT_TYPE.AUDIO_VND_WAVE,
+  JFIF: ContentType.MESSAGE_CONTENT_TYPE.IMAGE_JPG,
+  RTF: ContentType.MESSAGE_CONTENT_TYPE.RICH_TEST_FILE_RTF,
+  X_RTF: ContentType.MESSAGE_CONTENT_TYPE.RICH_TEST_FILE_X_RTF,
+  HEIC: ContentType.MESSAGE_CONTENT_TYPE.IMAGE_HEIC,
+  MOV: ContentType.MESSAGE_CONTENT_TYPE.VIDEO_QUICKTIME,
+  MP4: ContentType.MESSAGE_CONTENT_TYPE.VIDEO_MP4,
+  RICH_TEXT: ContentType.MESSAGE_CONTENT_TYPE.RICH_TEXT,
+  TEXT_RTF: ContentType.MESSAGE_CONTENT_TYPE.TEXT_RTF,
 };
 
 //OpenXML content types do not show up in custom files list unless file extension is explicitly provided
-export const ATTACHMENT_ACCEPT_CONTENT_TYPES = [...Object.values(ContentType.ATTACHMENT_CONTENT_TYPE), ".docx", ".xlsx", ".pptx"];
+export const ATTACHMENT_ACCEPT_CONTENT_TYPES = [
+  ...Object.values(ContentType.ATTACHMENT_CONTENT_TYPE),
+  //For some browser + content type combinations, file extension must be explicitly provided for 'accept' attribute
+  ".doc",
+  ".docx",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
+  ".txt",
+  ".csv",
+  ".jfif",
+  ".rtf",
+  ".heic",
+  ".mov",
+  ".mp4"
+];
 
 export const InteractiveMessageType = {
   LIST_PICKER: "ListPicker",
