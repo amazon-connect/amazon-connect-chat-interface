@@ -96,23 +96,6 @@ describe("<ListPicker />", () => {
     createMsgPayloadSpy.mockRestore();
   });
 
-  it("Should only render max number of elements", () => {
-    const { elementsRenderedMax } = LIST_PICKER_CONSTRAINTS;
-
-    const listPickerOverElementLimit = {
-      ...mockListPickerContent,
-      elements: Array.apply(null, Array(elementsRenderedMax + 3)).map((e, index) => ({ title: `ListPickerElement${index}` })),
-    };
-    renderElement({ ...mockProps, content: listPickerOverElementLimit });
-
-    const elementOptions = screen.getAllByRole("button");
-    expect(elementOptions).toHaveLength(elementsRenderedMax);
-    expect(() => screen.getByText(`ListPickerElement${elementsRenderedMax}`)).toThrow(
-      "Unable to find an element"
-    );
-    expect(() => screen.getByText(`ListPickerElement${elementsRenderedMax - 1}`)).not.toThrow();
-  });
-
   it.each([
       ["title", LIST_PICKER_CONSTRAINTS.titleCharLimit],
       ["subtitle", LIST_PICKER_CONSTRAINTS.subtitleCharLimit]

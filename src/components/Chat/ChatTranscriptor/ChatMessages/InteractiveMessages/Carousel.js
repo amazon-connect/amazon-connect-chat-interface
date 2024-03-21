@@ -7,7 +7,7 @@ import PT from "prop-types";
 import { RichMessageRenderer } from "../../../RichMessageComponents";
 import { InteractiveMessage, MessageBody } from "../InteractiveMessage";
 import { Button } from "connect-core";
-import { truncateStrFromCharLimit, truncateElementFromLimit } from "../../../../../utils/helper";
+import { truncateStrFromCharLimit } from "../../../../../utils/helper";
 import isJSON from "is-json";
 import { InteractiveMessageType } from "../../../datamodel/Model";
 
@@ -142,7 +142,6 @@ export default function Carousel({ content, addMessage }) {
 
   // Frontend field validations
   const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.CAROUSEL, "titleCharLimit");
-  const elements = truncateElementFromLimit(inputElems, InteractiveMessageType.CAROUSEL, "elementsRenderedMax");
 
   return (
     <>
@@ -160,7 +159,7 @@ export default function Carousel({ content, addMessage }) {
       </ScrollButton>
 
       <ResponsesSection ref={scrollerRef} data-testid='interactive-carousel-response-section'>
-        <NestedInteractiveMessages elements={elements} addMessage={addMessage} />
+        <NestedInteractiveMessages elements={inputElems} addMessage={addMessage} />
       </ResponsesSection>
 
       <ScrollButton

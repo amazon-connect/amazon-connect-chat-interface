@@ -76,13 +76,11 @@ export const INTERACTIVE_MESSAGE_CONSTRAINTS = {
   [InteractiveMessageType.PANEL]: {
     titleCharLimit: 400,
     subtitleCharLimit: 400,
-    elementsRenderedMax: 10,
     elementTitleCharLimit: 400
   },
   [InteractiveMessageType.LIST_PICKER]: {
     titleCharLimit: 400,
     subtitleCharLimit: 400,
-    elementsRenderedMax: 6,
     elementTitleCharLimit: 400,
     elementSubtitleCharLimit: 400,
   },
@@ -92,11 +90,9 @@ export const INTERACTIVE_MESSAGE_CONSTRAINTS = {
   },
   [InteractiveMessageType.CAROUSEL]: {
     titleCharLimit: 400,
-    elementsRenderedMax: 5,
   },
   [InteractiveMessageType.QUICK_REPLY]: {
     titleCharLimit: 400,
-    elementsRenderedMax: 5,
     replyOptionCharLimit: 200,
   }
 }
@@ -131,24 +127,4 @@ export const truncateStrFromCharLimit = (str, InteractiveMessageType, fieldLimit
     console.warn(`[${InteractiveMessageType} template] ${fieldLimitKey} of ${MAX_LENGTH} was exceeded`)
     return sanitizedStr.substring(0, MAX_LENGTH) + "...";
   }
-}
-
-/**
- * Truncates an array of elements based on the specified minimum and maximum limits.
- *
- * @param {Array} elements - The array of elements to truncate.
- * @param {string} InteractiveMessageType - interactive message templateType.
- * @param {string} elementsRenderedMaxKey - key to retrieve max constraint from INTERACTIVE_MESSAGE_CONSTRAINTS.
- * @returns {Array} The truncated array of elements.
- */
-export const truncateElementFromLimit = (elements, InteractiveMessageType, elementsRenderedMaxKey) => {
-  const templateContraints = INTERACTIVE_MESSAGE_CONSTRAINTS[InteractiveMessageType] || {};
-  const MAX_LIMIT = templateContraints[elementsRenderedMaxKey] || elements.length ;
-
-  if (elements.length > MAX_LIMIT) {
-    console.warn(`[${InteractiveMessageType} template] ${elementsRenderedMaxKey} of ${MAX_LIMIT} was exceeded`)
-    return elements.slice(0, MAX_LIMIT);
-  }
-
-  return elements;
 }

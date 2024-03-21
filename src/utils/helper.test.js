@@ -69,7 +69,6 @@ describe("Interactive Message Constraints", () => {
     it("should include constraints matching public documentation", () => {
       expect(PANEL_CONSTRAINTS).toHaveProperty("titleCharLimit", 400);
       expect(PANEL_CONSTRAINTS).toHaveProperty("subtitleCharLimit", 400);
-      expect(PANEL_CONSTRAINTS).toHaveProperty("elementsRenderedMax", 10);
       expect(PANEL_CONSTRAINTS).toHaveProperty("elementTitleCharLimit", 400);
     });
   });
@@ -80,7 +79,6 @@ describe("Interactive Message Constraints", () => {
     it("should include constraints matching public documentation", () => {
       expect(LIST_PICKER_CONSTRAINTS).toHaveProperty("titleCharLimit", 400);
       expect(LIST_PICKER_CONSTRAINTS).toHaveProperty("subtitleCharLimit", 400);
-      expect(LIST_PICKER_CONSTRAINTS).toHaveProperty("elementsRenderedMax", 6);
       expect(LIST_PICKER_CONSTRAINTS).toHaveProperty("elementTitleCharLimit", 400);
       expect(LIST_PICKER_CONSTRAINTS).toHaveProperty("elementSubtitleCharLimit", 400);
     });
@@ -100,7 +98,6 @@ describe("Interactive Message Constraints", () => {
 
     it("should include constraints matching public documentation", () => {
       expect(CAROUSEL_CONSTRAINTS).toHaveProperty("titleCharLimit", 400);
-      expect(CAROUSEL_CONSTRAINTS).toHaveProperty("elementsRenderedMax", 5);
     });
   });
 
@@ -109,7 +106,6 @@ describe("Interactive Message Constraints", () => {
 
     it("should include constraints matching public documentation", () => {
       expect(QUICK_REPLY_CONSTRAINTS).toHaveProperty("titleCharLimit", 400);
-      expect(QUICK_REPLY_CONSTRAINTS).toHaveProperty("elementsRenderedMax", 5);
       expect(QUICK_REPLY_CONSTRAINTS).toHaveProperty("replyOptionCharLimit", 200);
     });
   });
@@ -185,47 +181,5 @@ describe("truncateStrFromCharLimit util", () => {
     ["<div style=\"background-image: url(\'javascript:alert(\'XSS attack!\');\')\"></div>", "<div style=\"background-image: url('javascript:alert('XSS attack!');')\"></div>"],
   ])("should detect and remove any malicious XSS attack snippets", (rawStr, expectedCleanStr) => {
     expect(truncateStrFromCharLimit(rawStr, InteractiveMessageType.PANEL, "titleCharLimit")).toEqual(expectedCleanStr);
-  });
-});
-
-describe("truncateElementFromLimit util", () => {
-  it("should return the original array when the length is within the limits", () => {
-    const elements = [1, 2, 3];
-    const result = truncateElementFromLimit(
-      elements,
-      "Carousel",
-      "elementsRenderedMax"
-    );
-    expect(result).toEqual(elements);
-  });
-
-  it("should truncate the array when the length is below the minimum limit", () => {
-    const elements = [1];
-    const result = truncateElementFromLimit(
-      elements,
-      "Carousel",
-      "elementsRenderedMax"
-    );
-    expect(result).toEqual(elements.slice(0, 2));
-  });
-
-  it("should truncate the array when the length exceeds the maximum limit", () => {
-    const elements = [1, 2, 3, 4, 5, 6];
-    const result = truncateElementFromLimit(
-      elements,
-      "Carousel",
-      "elementsRenderedMax"
-    );
-    expect(result).toEqual(elements.slice(0, 5));
-  });
-
-  it("should handle missing limits gracefully", () => {
-    const elements = [1, 2];
-    const result = truncateElementFromLimit(
-      elements,
-      "InvalidMessageType",
-      "elementsRenderedMax"
-    );
-    expect(result).toEqual(elements);
   });
 });

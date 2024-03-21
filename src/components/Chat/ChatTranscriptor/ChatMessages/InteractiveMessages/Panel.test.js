@@ -72,23 +72,6 @@ describe("<Panel />", () => {
     createMsgPayloadSpy.mockRestore();
   });
 
-  it("Should only render max number of elements", () => {
-    const { elementsRenderedMax } = PANEL_CONSTRAINTS;
-
-    const panelOverElementLimit = {
-      ...mockPanelContent,
-      elements: Array.apply(null, Array(elementsRenderedMax + 3)).map((e, index) => ({ title: `PanelElement${index}` })),
-    };
-    renderElement({ ...mockProps, content: panelOverElementLimit });
-
-    const elementOptions = screen.getAllByRole("button");
-    expect(elementOptions).toHaveLength(elementsRenderedMax);
-    expect(() => screen.getByText(`PanelElement${elementsRenderedMax}`)).toThrow(
-      "Unable to find an element"
-    );
-    expect(() => screen.getByText(`PanelElement${elementsRenderedMax - 1}`)).not.toThrow();
-  });
-
   it.each([
       ["title", PANEL_CONSTRAINTS.titleCharLimit],
       ["subtitle", PANEL_CONSTRAINTS.subtitleCharLimit]

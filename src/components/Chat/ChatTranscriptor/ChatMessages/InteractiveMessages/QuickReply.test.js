@@ -97,25 +97,6 @@ describe("<QuickReply />", () => {
     });
   });
 
-  it("Should only render up to 5 elements", () => {
-    const { elementsRenderedMax } = QUICK_REPLY_CONSTRAINTS;
-
-    const quickReplyOverFiveLimit = {
-      ...mockQuickReplyContent,
-      elements: [
-        ...mockQuickReplyContent.elements,
-        { title: "Ignored Option #6!" },
-      ],
-    };
-    renderElement({ ...mockProps, content: quickReplyOverFiveLimit });
-
-    const quickReplyOptions = screen.getAllByRole("button");
-    expect(quickReplyOptions).toHaveLength(elementsRenderedMax);
-    expect(() => screen.getByText("Ignored Option #6!")).toThrow(
-      "Unable to find an element"
-    );
-  });
-
   it("Should truncate a title over the character limit", () => {
     const { titleCharLimit } = QUICK_REPLY_CONSTRAINTS;
 
