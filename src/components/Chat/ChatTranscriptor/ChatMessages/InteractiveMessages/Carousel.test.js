@@ -177,22 +177,6 @@ describe("<Carousel />", () => {
     });
   });
 
-  it("Should only render up to 5 nested pickers", () => {
-    const carouselOverFiveLimit = {
-      ...mockCarouselContent,
-      elements: [
-        ...mockCarouselContent.elements,
-        mockNestedPanelPickerFlights,
-        mockNestedPanelPickerHotels,
-        mockNestedListPickerDining,
-        mockNestedPanelPickerFlights,
-      ],
-    };
-    renderElement({ ...mockProps, content: carouselOverFiveLimit });
-
-    expect(screen.getAllByText("Select an option:")).toHaveLength(5);
-  });
-
   it("Should render reply option buttons and be accessible", () => {
     renderElement(mockProps);
 

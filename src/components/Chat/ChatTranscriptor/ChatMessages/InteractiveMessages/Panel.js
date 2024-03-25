@@ -13,7 +13,7 @@ import {
 import styled from "styled-components";
 import PT from "prop-types";
 import { InteractiveMessageSelectionType, InteractiveMessageType } from "../../../datamodel/Model";
-import { createInteractiveMessagePayload, truncateElementFromLimit, truncateStrFromCharLimit } from "../../../../../utils/helper";
+import { createInteractiveMessagePayload, truncateStrFromCharLimit } from "../../../../../utils/helper";
 
 //#region Styled Components
 const ImageContainer = styled.div`
@@ -96,7 +96,6 @@ export default function Panel({
   // Frontend field validations
   const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.PANEL, "titleCharLimit");
   const subtitle = truncateStrFromCharLimit(inputSubtitle, InteractiveMessageType.PANEL, "subtitleCharLimit");
-  const elements = truncateElementFromLimit(inputElements, InteractiveMessageType.PANEL, "elementsRenderedMax");
 
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -105,7 +104,7 @@ export default function Panel({
   }
 
   function onItemClick(index) {
-    const selectedElement = elements[index];
+    const selectedElement = inputElements[index];
     const payload = createInteractiveMessagePayload(
       selectedElement,
       preIndex,
@@ -134,7 +133,7 @@ export default function Panel({
       <HeaderText title={title} subtitle={subtitle} />
       <ResponsesSection isCarouselElem={isCarouselElem}>
         <div>
-          {elements.map((element, index) => (
+          {inputElements.map((element, index) => (
             <PanelPickerElement
               key={"element-" + index}
               handleButtonClick={() => {

@@ -15,7 +15,7 @@ import {
   PickerOptionTitle,
   PickerElementLinkOption
 } from "../InteractiveMessage";
-import { createInteractiveMessagePayload, truncateElementFromLimit, truncateStrFromCharLimit } from "../../../../../utils/helper";
+import { createInteractiveMessagePayload, truncateStrFromCharLimit } from "../../../../../utils/helper";
 import { InteractiveMessageSelectionType, InteractiveMessageType } from "../../../datamodel/Model";
 import { RichMessageRenderer } from "../../../RichMessageComponents";
 
@@ -147,7 +147,6 @@ export default function ListPicker({
   // Frontend field validations
   const title = truncateStrFromCharLimit(inputTitle, InteractiveMessageType.LIST_PICKER, "titleCharLimit");
   const subtitle = truncateStrFromCharLimit(inputSubtitle, InteractiveMessageType.LIST_PICKER, "subtitleCharLimit");
-  const elements = truncateElementFromLimit(inputElements, InteractiveMessageType.LIST_PICKER, "elementsRenderedMax");
 
   const [imageLoaded, setImageLoaded] = useState(false);
   const [elementImagesLoadedCount, setElementImagesLoadedCount] = useState(0);
@@ -161,7 +160,7 @@ export default function ListPicker({
   }
 
   function onItemClick(index) {
-    const selectedElement = elements[index];
+    const selectedElement = inputElements[index];
     const payload = createInteractiveMessagePayload(
       selectedElement,
       preIndex,
@@ -177,10 +176,10 @@ export default function ListPicker({
   }
 
   const showElementImages = () => {
-    const actionBtnCount = elements.filter((ele) => {
+    const actionBtnCount = inputElements.filter((ele) => {
       return ele.actionDetail;
     }).length;
-    return elementImagesLoadedCount === elements.length - actionBtnCount;
+    return elementImagesLoadedCount === inputElements.length - actionBtnCount;
   };
 
   return (
@@ -197,7 +196,7 @@ export default function ListPicker({
       <HeaderText title={title} subtitle={subtitle} />
       <ResponsesSection isCarouselElem={isCarouselElem}>
         <div>
-          {elements.map((listPickerElement, index) => (
+          {inputElements.map((listPickerElement, index) => (
             <ListPickerElement
               key={"element-" + index}
               element={listPickerElement}

@@ -76,7 +76,7 @@ export default function QuickReply({ content, addMessage }) {
         <RichMessageRenderer content={title} />
       </MessageBody>
       <ResponsesSection data-testid="interactive-quickreply-response-section">
-        {elements.slice(0, 5).map((element, index) => (
+        {elements.map((element, index) => (
           <ReplyElement
             element={element}
             handleSelection={addMessage}
