@@ -8,7 +8,7 @@ import { render, fireEvent, screen, prettyDOM } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ContentType } from "../datamodel/Model";
 import { KEYBOARD_KEY_CONSTANTS } from "connect-constants";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 
 const mockAttachmentsFile = {
   name: "testUpload.pdf",
