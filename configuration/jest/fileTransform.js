@@ -10,7 +10,7 @@ module.exports = {
     const assetFilename = JSON.stringify(path.basename(filename));
 
     if (filename.match(/\.svg$/)) {
-      return `module.exports = {
+      return { code: `module.exports = {
         __esModule: true,
         default: ${assetFilename},
         ReactComponent: (props) => ({
@@ -22,9 +22,11 @@ module.exports = {
             children: ${assetFilename}
           })
         }),
-      };`;
+      };`};
     }
 
-    return `module.exports = ${assetFilename};`;
+    return {
+      code: `module.exports = ${assetFilename};`
+    };
   },
 };

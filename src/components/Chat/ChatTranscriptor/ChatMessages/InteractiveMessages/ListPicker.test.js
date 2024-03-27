@@ -7,7 +7,7 @@ import { ThemeProvider } from "../../../../../theme";
 import ListPicker from "./ListPicker";
 import { InteractiveMessageType } from "../../../datamodel/Model";
 import { INTERACTIVE_MESSAGE } from "../../../constants";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 import * as helpers from '../../../../../utils/helper';
 
 const LIST_PICKER_CONSTRAINTS = helpers.INTERACTIVE_MESSAGE_CONSTRAINTS[InteractiveMessageType.LIST_PICKER];
