@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import * as React from "react";
+import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 import PT from "prop-types";
 import { Button } from "connect-core";
@@ -99,7 +100,12 @@ export default class ChatActionBar extends React.Component {
                     type="default"
                     onClick={onEndChat}
                   >
-                    <span>End chat</span>
+                    <span>
+                      <FormattedMessage
+                          id="Chat.EndChat"
+                          defaultMessage="End chat"
+                      />
+                    </span>
                   </ActionButton>
                 </React.Fragment>
               )}
@@ -111,7 +117,12 @@ export default class ChatActionBar extends React.Component {
                   type="default"
                   onClick={onClose}
                 >
-                  <span>Close</span>
+                  <span>
+                    <FormattedMessage
+                        id="Chat.Close"
+                        defaultMessage="Close"
+                    />
+                  </span>
                 </ActionButton>
               </React.Fragment>
 

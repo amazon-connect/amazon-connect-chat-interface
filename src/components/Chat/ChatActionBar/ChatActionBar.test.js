@@ -2,14 +2,22 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { IntlProvider } from 'react-intl';
 import ChatActionBar from './ChatActionBar';
 import { ThemeProvider } from '../../../theme';
 
 describe('<ChatActionBar />', () => {
   test("Style should match the snapshot", () => {
     const addMessageFn = jest.fn();
-    const tree = createTree(<ThemeProvider><ChatActionBar contactStatus="connected"/></ThemeProvider>);
+    const tree = createTree(<ThemeProvider>
+      <IntlProvider
+          locale="en"
+          onError={jest.fn}
+          key="en"
+          messages={{}}>
+        <ChatActionBar contactStatus="connected"/>
+      </IntlProvider>
+    </ThemeProvider>);
     expect(tree).toMatchSnapshot();
   });
   let wrapper, instance;

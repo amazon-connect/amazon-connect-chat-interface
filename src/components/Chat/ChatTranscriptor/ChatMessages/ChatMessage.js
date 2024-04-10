@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { PureComponent } from "react";
+import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 import PT from "prop-types";
 import Linkify from "react-linkify";
@@ -174,6 +175,7 @@ export class ParticipantMessage extends PureComponent {
     const isOutgoingMsg = this.props.messageDetails.transportDetails.direction === Direction.Outgoing;
     const displayName = this.props.messageDetails.displayName || (isOutgoingMsg ? "Customer" : "Agent");
     const transportDetails = this.props.messageDetails.transportDetails;
+    const statusStringPrefix = "connect-chat-transport-status-";
 
     let transportStatusElement = <React.Fragment />;
     switch (transportDetails.status) {
@@ -181,7 +183,12 @@ export class ParticipantMessage extends PureComponent {
         transportStatusElement = (
           <React.Fragment>
             <StatusText>
-              <span>Sending</span>
+              <span>
+                <FormattedMessage
+                    id={statusStringPrefix + "sending"}
+                    defaultMessage="Sending"
+                />
+              </span>
             </StatusText>
           </React.Fragment>
         );
@@ -193,7 +200,12 @@ export class ParticipantMessage extends PureComponent {
         transportStatusElement = (
           <ErrorText>
             <Icon />
-            <span>Failed to send!</span>
+            <span>
+              <FormattedMessage
+                  id={statusStringPrefix + "sendFailed"}
+                  defaultMessage="Failed to send! "
+              />
+            </span>
           </ErrorText>
         );
         break;
@@ -202,7 +214,12 @@ export class ParticipantMessage extends PureComponent {
     }
     return (
       <React.Fragment>
-        <Header.Sender>{displayName}</Header.Sender>
+        <Header.Sender>
+          <FormattedMessage
+              id={displayName || "DISPLAY_NAME_MISSING"}
+              defaultMessage={displayName}
+          />
+        </Header.Sender>
         <Header.Status>{transportStatusElement}</Header.Status>
       </React.Fragment>
     );
@@ -222,8 +239,16 @@ export class ParticipantMessage extends PureComponent {
     return (
       <React.Fragment>
         <Footer.MessageReceipt>
-          {lastReadReceipt && "Read"}
-          {lastDeliveredReceipt && "Delivered"}
+          {lastReadReceipt && <FormattedMessage
+              id="connect-chat-read-receipt"
+              defaultMessage="Read"
+              aria-live="polite"
+          />}
+          {lastDeliveredReceipt && <FormattedMessage
+              id="connect-chat-delivered-receipt"
+              defaultMessage="Delivered"
+              aria-live="polite"
+          />}
         </Footer.MessageReceipt>
       </React.Fragment>
     );

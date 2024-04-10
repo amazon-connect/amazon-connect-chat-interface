@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import PT from "prop-types";
 import { ContentType } from "../../datamodel/Model";
 
@@ -19,18 +20,51 @@ export class SystemMessage extends React.PureComponent {
     switch (this.props.messageDetails.content.type) {
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_JOINED:
         name = this.props.messageDetails.displayName;
-        return name + " has joined the chat";
+        return <FormattedMessage
+          id="transcriptor.joinedChat"
+          defaultMessage="{name} has joined the chat"
+          values={{
+            name
+          }}
+      />;
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_LEFT:
         name = this.props.messageDetails.displayName;
-        return name + " has left the chat";
+        return <FormattedMessage
+            id="transcriptor.leftChat"
+            defaultMessage="{name} has left the chat"
+            values={{
+              name
+            }}
+        />;
       case ContentType.EVENT_CONTENT_TYPE.CHAT_ENDED:
-        return "Chat has ended!";
+        return <FormattedMessage
+            id="transcriptor.endChat"
+            defaultMessage="Chat has ended!"
+        />;
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_IDLE:
-        return `${name} has become idle`;
+        return <FormattedMessage
+            id="transcriptor.idleChat"
+            defaultMessage="{name} has become idle"
+            values={{
+              name
+            }}
+        />;
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_DISCONNECT:
-        return `${name} has been idle too long, disconnecting`;
+        return <FormattedMessage
+            id="transcriptor.disconnectChat"
+            defaultMessage="{name} has been idle too long, disconnecting"
+            values={{
+              name
+            }}
+        />;
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_RETURNED:
-        return `${name} has returned`;
+        return <FormattedMessage
+            id="transcriptor.returnedChat"
+            defaultMessage="{name} has returned"
+            values={{
+              name
+            }}
+        />;
 
       default:
         return "";

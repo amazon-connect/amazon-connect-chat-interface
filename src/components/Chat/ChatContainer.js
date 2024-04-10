@@ -14,6 +14,7 @@ import { defaultTheme } from "connect-theme";
 import { FlexRowContainer } from "connect-theme/Helpers";
 import { CHAT_FEATURE_TYPES } from "./constants";
 import { ContentType } from "./datamodel/Model";
+import { LanguageProvider, LanguageContext } from "../../context/LanguageContext";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ class ChatContainer extends Component {
       chatSession: null,
       composerConfig: {},
       status: "NotInitiated",
+      language: 'en_US'
     };
 
     this.submitChatInitiationHandler = this.initiateChatSession.bind(this);
@@ -101,6 +103,7 @@ class ChatContainer extends Component {
         (input.featurePermissions && input.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS]) ||
         (chatDetails.featurePermissions && chatDetails.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS]);
       const richMessagingEnabled = typeof input.supportedMessagingContentTypes === "string" ? input.supportedMessagingContentTypes.split(",").includes(ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN) : false;
+      const language = input.language || "en_US";
 
       this.setState({
         status: "Initiated",
@@ -109,6 +112,7 @@ class ChatContainer extends Component {
           attachmentsEnabled,
           richMessagingEnabled,
         },
+        language
       });
       success && success(chatSession);
     } catch (error) {
@@ -153,7 +157,21 @@ class ChatContainer extends Component {
         </Wrapper>
       );
     }
-    return <Chat chatSession={this.state.chatSession} composerConfig={this.state.composerConfig} onEnded={this.resetState} {...this.props} />;
+    return (
+        <LanguageProvider>
+          <LanguageContext.Consumer>
+            {({changeLanguage}) => (<>
+              <Chat
+                  chatSession={this.state.chatSession}
+                  composerConfig={this.state.composerConfig}
+                  onEnded={this.resetState}
+                  changeLanguage={changeLanguage}
+                  language={this.state.language}
+                  {...this.props} />
+            </>)}
+          </LanguageContext.Consumer>
+        </LanguageProvider>
+    );
   }
 }
 

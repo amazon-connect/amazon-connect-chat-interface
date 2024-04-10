@@ -1,9 +1,11 @@
 import React from 'react';
+import { IntlProvider } from 'react-intl';
 import ChatContainer from './ChatContainer';
 import { render, waitFor } from '@testing-library/react';
 import ThemeProvider from '../../theme/ThemeProvider';
 import request from '../../utils/fetchRequest';
 import EventBus from "./eventbus";
+import { LanguageProvider } from "../../context/LanguageContext";
 
 jest.mock('../../utils/fetchRequest');
 
@@ -107,9 +109,13 @@ describe("<ChatContainer />", () => {
 
   const renderComponent = () =>
     render(
-        <ThemeProvider>
-            <ChatContainer {...config} />
-        </ThemeProvider>
+        <LanguageProvider>
+          <IntlProvider locale="en">
+            <ThemeProvider>
+                <ChatContainer {...config} />
+            </ThemeProvider>
+          </IntlProvider>
+        </LanguageProvider>
     );
 
   it("should render component successfully", async () => {

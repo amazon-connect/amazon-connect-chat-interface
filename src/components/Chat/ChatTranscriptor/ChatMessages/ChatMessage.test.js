@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from "react";
+import { IntlProvider } from "react-intl";
 import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
 import { ParticipantMessage, ErrorFallback } from "./ChatMessage";
@@ -59,9 +60,11 @@ describe("ChatMessage", () => {
     };
 
     render(
-      <ThemeProvider>
-        <ParticipantMessage {...mockProps} />
-      </ThemeProvider>
+        <IntlProvider locale="en" onError={jest.fn} >
+          <ThemeProvider>
+            <ParticipantMessage {...mockProps} />
+          </ThemeProvider>
+        </IntlProvider>
     );
   }
 

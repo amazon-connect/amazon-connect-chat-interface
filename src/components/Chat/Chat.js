@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import PT from "prop-types";
+import { FormattedMessage } from "react-intl";
 import { CONTACT_STATUS } from "../../constants/global";
 import ChatTranscriptor from "./ChatTranscriptor";
 import ChatComposer from "./ChatComposer";
@@ -73,7 +74,13 @@ const defaultHeaderConfig =  {
   render: () => {
     return (
       <HeaderWrapper>
-        <WelcomeText type={'h2'}>Hi there! </WelcomeText>
+        <WelcomeText type={'h2'}>
+          <FormattedMessage
+            id="header.headerText"
+            defaultMessage= "Hi there! "
+          />
+        </WelcomeText>
+        {/*TODO: translate below texts*/}
         <Text type={'p'}>This is an example of how customers experience chat on your website</Text>
       </HeaderWrapper>
     )
@@ -136,6 +143,9 @@ export default class Chat extends Component {
   componentDidMount() {
     this.init(this.props.chatSession);
     this.resetChatHeight();
+    if (typeof this.props.changeLanguage === "function") {
+      this.props.changeLanguage(this.props.language);
+    }
     this.logger && this.logger.info("Component mounted.")
   }
 
@@ -143,6 +153,10 @@ export default class Chat extends Component {
     if (prevProps.chatSession !== this.props.chatSession) {
       this.cleanUp(prevProps.chatSession);
       this.init(this.props.chatSession);
+    }
+    if (prevProps.language !== this.props.language &&
+        typeof this.props.changeLanguage === "function") {
+      this.props.changeLanguage(this.props.language);
     }
   }
 

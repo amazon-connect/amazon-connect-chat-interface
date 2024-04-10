@@ -1,4 +1,5 @@
 import React from "react";
+import { IntlProvider } from "react-intl";
 import { SystemMessage } from "./SystemMessage";
 import { ContentType } from "../../datamodel/Model";
 import { PARTICIPANT_TYPES } from "../../datamodel/Model";
@@ -14,8 +15,9 @@ describe("SystemMessage", () => {
  
     function createSystemMessage(messageDetails, props) {
         return shallow(
+            <IntlProvider locale="en">
                 <SystemMessage messageDetails={messageDetails} {...props} />
-
+            </IntlProvider>
         );
     }
  

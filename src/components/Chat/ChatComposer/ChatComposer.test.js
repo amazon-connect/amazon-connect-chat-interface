@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from "react";
+import { IntlProvider } from 'react-intl';
 import ChatComposer from "./ChatComposer";
 import { ThemeProvider } from "../../../theme";
 import { render, fireEvent, screen, prettyDOM } from "@testing-library/react";
@@ -22,7 +23,12 @@ let mockProps;
 function renderElement(props) {
   mockComposer = render(
     <ThemeProvider>
-      <ChatComposer {...props} />
+      <IntlProvider
+          locale="en"
+          key="en"
+          messages={{}}>
+        <ChatComposer {...props}/>
+      </IntlProvider>
     </ThemeProvider>
   );
 }
