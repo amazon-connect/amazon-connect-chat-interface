@@ -1,6 +1,73 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
+export const LANGUAGES = [
+  {
+    displayName: "language.english",
+    id: "en_US",
+    value: "en",
+    defaultMessage: "English"
+  },
+  {
+    displayName: "language.german",
+    id: "de_DE",
+    value: "de",
+    defaultMessage: "Deutsch"
+  },
+  {
+    displayName: "language.spanish",
+    id: "es_ES",
+    value: "es",
+    defaultMessage: "Español"
+  },
+  {
+    displayName: "language.french",
+    id: "fr_FR",
+    value: "fr",
+    defaultMessage: "Français"
+  },
+  {
+    displayName: "language.italian",
+    id: "it_IT",
+    value: "it",
+    defaultMessage: "Italiano"
+  },
+  {
+    displayName: "language.japanese",
+    id: "ja_JP",
+    value: "ja",
+    defaultMessage: "日本"
+  },
+  {
+    displayName: "language.korean",
+    id: "ko_KR",
+    value: "ko",
+    defaultMessage: "한국인"
+  },
+  {
+    displayName: "language.portugues",
+    id: "pt_BR",
+    value: "pt",
+    defaultMessage: "Português"
+  },
+  {
+    displayName: "language.Chain",
+    id: "zh_TW",
+    value: "zh",
+    defaultMessage: "中文(简体)"
+  },
+  {
+    displayName: "language.Chain",
+    id: "zh_CN",
+    value: "zh",
+    defaultMessage: "日本語"
+  }
+];
+
+export const LANGUAGE_KEY = "selectedLanguage";
+
+export const DEFAULT_LANGUAGE = "en";
+
 export const CONTACT_STATUS = {
   CONNECTED: "connected",
   MISSED: "missed",

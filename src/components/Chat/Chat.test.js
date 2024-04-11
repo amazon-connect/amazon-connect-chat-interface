@@ -1,4 +1,5 @@
 import React from 'react';
+import { IntlProvider } from 'react-intl';
 import Chat from './Chat';
 import ThemeProvider from '../../theme/ThemeProvider';
 import { render } from "@testing-library/react";
@@ -63,20 +64,22 @@ describe('<Chat />', () => {
 
         test("should reset the header height", () => {
             const mockResetHeightMethod = jest.spyOn(Chat.prototype, "resetChatHeight");
-            render(<ThemeProvider>
-                      <Chat {...mockProps} />
-                    </ThemeProvider>);
+            render(<IntlProvider onError={jest.fn} locale="en">
+                        <ThemeProvider>
+                            <Chat {...mockProps} />
+                        </ThemeProvider>
+                   </IntlProvider>);
             expect(screen.getByTestId('amazon-connect-chat-wrapper')).not.toBe(null);
             expect(mockResetHeightMethod).toBeCalled();
         })
 
         test("Should be able to jitter to fix iphone mobile scroll issue", () => {
             const mockResetHeightMethod = jest.spyOn(Chat.prototype, "resetChatHeight");
-            const mockComposer = render(
-                <ThemeProvider>
-                    <Chat {...mockProps} />
-                </ThemeProvider>
-            );
+            const mockComposer = render(<IntlProvider onError={jest.fn} locale="en">
+                    <ThemeProvider>
+                        <Chat {...mockProps} />
+                    </ThemeProvider>
+                </IntlProvider>);
             expect(screen.getByTestId('amazon-connect-chat-wrapper')).not.toBe(null);
             expect(mockResetHeightMethod).toBeCalled();
       
@@ -88,10 +91,11 @@ describe('<Chat />', () => {
 
         test("should send ReadReceipt when a message is visible in the viewport", () => {
             ChatTranscriptor.mockClear();
-            render(
-                    <ThemeProvider>
-                    <Chat {...mockProps} />
-                    </ThemeProvider>)
+            render(<IntlProvider onError={jest.fn} locale="en">
+                        <ThemeProvider>
+                            <Chat {...mockProps} />
+                        </ThemeProvider>
+                   </IntlProvider>)
             ChatTranscriptor.mock.calls[0][0].sendReadReceipt({});
             expect(mockProps.chatSession.sendReadReceipt).toHaveBeenCalled();
         })

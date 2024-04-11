@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React from "react";
+import { IntlProvider } from 'react-intl';
 import "@testing-library/jest-dom";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import ChatTranscriptor from "./ChatTranscriptor";
@@ -164,8 +165,14 @@ let mockProps;
 
 function renderElement(props) {
   mockTranscriptor = render(
+
     <ThemeProvider>
-      <ChatTranscriptor {...props} />
+      <IntlProvider
+          locale="en"
+          key="en"
+          messages={{}}>
+        <ChatTranscriptor {...props}/>
+      </IntlProvider>
     </ThemeProvider>
   );
 }

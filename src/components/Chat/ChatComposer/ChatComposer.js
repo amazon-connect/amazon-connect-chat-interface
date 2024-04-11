@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { useState, useLayoutEffect, useEffect, useRef, useMemo } from "react";
+import { useIntl } from 'react-intl'
 import styled from "styled-components";
 import throttle from "lodash/throttle";
 import PT from "prop-types";
@@ -307,7 +308,11 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
     addAttachment(contactId, file);
   }
 
-  const ariaLabel = "Type a message";
+  const intl = useIntl();
+  const ariaLabel = intl.formatMessage({
+    id: "chatComposer.placeholder",
+    defaultMessage: "Type a message"
+  });
   const placeholder = attachment == null ? ariaLabel : "";
 
   const richMessagingComposer = (
