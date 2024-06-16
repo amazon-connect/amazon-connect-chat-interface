@@ -82,6 +82,7 @@ describe("<ChatContainer />", () => {
             onParticipantReturned: jest.fn().mockResolvedValue("aaa"),
             onAutoDisconnection: jest.fn().mockResolvedValue("aaa"),
             onParticipantIdle: jest.fn().mockResolvedValue("aaa"),
+            onChatRehydrated: jest.fn().mockResolvedValue("aaa"),
             onDeliveredReceipt: jest.fn().mockResolvedValue("aaa"),
             onEnded: jest.fn().mockResolvedValue("aaa"),
             onConnectionEstablished: jest.fn().mockResolvedValue("aaa"),
