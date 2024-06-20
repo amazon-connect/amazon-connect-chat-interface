@@ -286,6 +286,7 @@ describe("ChatSession", () => {
               sendEvent: jest.fn().mockResolvedValue("bb"),
               sendReadReceipt: jest.fn().mockResolvedValue("bb"),
               sendDeliveredReceipt: jest.fn().mockResolvedValue("bb"),
+              onChatRehydrated: jest.fn().mockResolvedValue("aaa"),
               sendAttachment: jest.fn().mockImplementation(
                 (...input) =>
                   new Promise((resolve, reject) => {
@@ -350,6 +351,7 @@ describe("ChatSession", () => {
       expect(session.client.session.onParticipantReturned).toBeCalled();
       expect(session.client.session.onAutoDisconnection).toBeCalled();
       expect(session.client.session.onDeliveredReceipt).toBeCalled();
+      expect(session.client.session.onChatRehydrated).toBeCalled();
     });
     test("should not update transcript if messageId not found", async () => {
       const session = new ChatSession(chatDetails, region, stage);
@@ -573,5 +575,53 @@ describe("ChatSession", () => {
       // so there are totally 2 messages in transcript
       expect(session.transcript.length).toEqual(2);
     });
+
+    test("should handle chat rehydration correctly", async () => {
+      jest.useFakeTimers();
+      const session = new ChatSession(chatDetails, "", region, stage, true);
+      session.openChatSession(true);
+      const chatRehydrationEventCallBack = session.client.session.onChatRehydrated.mock.calls[0][0]
+      const rehydratedData = {
+        data: {
+          AbsoluteTime: "2023-03-17T08:25:45.992Z",
+          Type: 'EVENT',
+          Id: "test0",
+          InitialContactId: 'InitialContactId',
+          ContentType: "application/vnd.amazonaws.connect.event.chat.rehydrated",
+        },
+        chatDetails: {
+          initialContactId: 'InitialContactId',
+          contactId: 'InitialContactId',
+          participantId: 'ParticipantId',
+          participantToken:
+              'participantToken',
+        },
+      };
+      const modifiedTranscriptResponse = {
+        ...transcriptResponse,
+        data: {
+          ...transcriptResponse.data,
+          NextToken: "nextToken123"
+        }
+      };
+      session.client.getTranscript = jest.fn().mockResolvedValueOnce(modifiedTranscriptResponse);
+      // Call the chat rehydration callback
+      const rehydrationPromise = chatRehydrationEventCallBack(rehydratedData);
+ 
+      // Fast-forward until all timers have been executed
+      jest.advanceTimersByTime(1000);
+ 
+      // Wait for the rehydration promise to resolve
+      await rehydrationPromise;
+ 
+      expect(session.client.getTranscript).toHaveBeenCalled();
+      expect(session.client.getTranscript).toHaveBeenCalledWith(expect.objectContaining({maxResults: 15}));
+      if (session.nextToken) {
+        expect(session.client.getTranscript).toHaveBeenCalledTimes(2);
+      } else {
+        expect(session.client.getTranscript).toHaveBeenCalledTimes(1);
+      }
+    });
+
   });
 });

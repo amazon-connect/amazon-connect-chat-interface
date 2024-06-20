@@ -47,6 +47,10 @@ class ChatJSClient {
   onParticipantIdle(handler) {
     return this.session.onParticipantIdle(handler);
   }
+  
+  onChatRehydrated(handler) {
+    return this.session.onChatRehydrated(handler);
+  }
 
   onTyping(handler) {
     return this.session.onTyping(handler);
@@ -400,6 +404,9 @@ class ChatSession {
     this.client.onParticipantIdle(data => {
       this._handleIdleEvent(data);
     });
+    this.client.onChatRehydrated( async data => {
+      await this._handleChatRehydrated(data);
+    });
     this.client.onReadReceipt((data) => {
       this._handleMessageReceipt("read", data);
     });
@@ -423,6 +430,21 @@ class ChatSession {
     }
   }
   
+  async _handleChatRehydrated(data) {
+    // Setting up 1 sec delay so it does not load transcript immediately when customer joins the chat
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Call to load previous transcript
+      await this.loadPreviousTranscript({maxResults:30});
+      // Call again if needed with nextToken
+      if(this.nextToken){
+        await this.loadPreviousTranscript({maxResults:30});
+      }
+    } catch (err) {
+      console.log("Error while loading previous transcript in _handleChatRehydrated", err);
+    }
+  }
+
   // TRANSCRIPT
   _loadLatestTranscript() {
     console.log("loadPreviousTranscript in single");
