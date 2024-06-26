@@ -3,13 +3,14 @@
 
 import React from "react";
 import "@testing-library/jest-dom";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "../../../../theme";
 import { screen } from "@testing-library/dom";
 import { HeaderText } from "./InteractiveMessage";
 import { InteractiveMessage } from "./InteractiveMessage";
 import { mockQuickReplyContent } from "./InteractiveMessages/QuickReply.test";
 import { mockCarouselContent } from "./InteractiveMessages/Carousel.test";
+import { ContentType } from "../../datamodel/Model";
 
 describe("HeaderText", () => {
   const MOCK_TITLE = "MockTitle";
@@ -252,5 +253,32 @@ describe("Interactive message", () => {
       content: mockCarouselContent,
     });
     expect(screen.getByText(mockCarouselContent.title)).toBeInTheDocument();
+  });
+  it("should show and fire events for view renderer component", () => {
+    renderComponent({
+      ...mockProps,
+      templateType: "ViewResource",
+      content: { Name: "ViewName" }, // content does not matter, we are only checking if component is in dom
+    });
+    let renderer_element = screen.getByTestId("connect-view-renderer");
+    expect(renderer_element).toBeInTheDocument();
+
+    expect(mockProps.addMessage).toHaveBeenCalledTimes(0);
+
+    fireEvent(renderer_element, new CustomEvent('onAction', {
+      detail: { Action: 'action' }
+    }));
+
+    let message = JSON.stringify({
+      action: 'action',
+      data: {},
+      templateType: "ViewResource",
+      version: '1.0'
+    });
+
+    message = { text: message, type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE };
+
+    expect(mockProps.addMessage).toHaveBeenCalledTimes(1);
+    expect(mockProps.addMessage.mock.calls[0][0]).toEqual(message);
   });
 });

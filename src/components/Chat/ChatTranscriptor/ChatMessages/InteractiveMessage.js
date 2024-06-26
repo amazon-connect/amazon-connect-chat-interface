@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import PT from "prop-types";
 import { Text } from "connect-core";
 import { InteractiveMessageType } from "../../datamodel/Model";
@@ -12,6 +12,7 @@ import QuickReply from "./InteractiveMessages/QuickReply";
 import Carousel from "./InteractiveMessages/Carousel";
 import { RichMessageRenderer } from "../../RichMessageComponents";
 import styled from "styled-components";
+import { ContentType } from "../../datamodel/Model"
 
 //#region Styled Components
 const MessageBody = styled.div`
@@ -151,35 +152,68 @@ InteractiveMessage.propTypes = {
 };
 
 export function InteractiveMessage({ content, templateType, addMessage, textInputRef, isCarouselElem, templateIdentifier }) {
-  const [ responseSelected, setResponseSelected] = useState(false);
+  const [responseSelected, setResponseSelected] = useState(false);
+  const ref = useRef();
 
-  function onAddMessage(data){
+  function onAddMessage(data) {
     addMessage(data);
     setResponseSelected(true);
   }
 
-  useLayoutEffect(()=> {
+  /**
+   * use useEffect to set the necessary attributes and listeners required to 
+   * render views and get response from view
+   */
+  useEffect(() => {
+    // function to create chat message from view event
+    const viewOnActionCallback = ((event) => {
+      const actionData = event.detail;
+
+      const reshapedMessage = {
+        action: actionData.Action,
+        data: actionData.Output || {},
+        templateType: templateType,
+        version: '1.0'
+      };
+      const message = JSON.stringify(reshapedMessage);
+
+      addMessage({ text: message, type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE });
+      setResponseSelected(true);
+    });
+
+    if (!ref.current) return;
+    const viewComponent = ref.current;
+    viewComponent.setAttribute('view', JSON.stringify(content));
+    viewComponent.addEventListener('onAction', viewOnActionCallback);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref]);
+
+
+
+  useLayoutEffect(() => {
     if (!textInputRef || !textInputRef.current || !textInputRef.current.focus) {
       return;
     }
     textInputRef.current.focus();
   }, [responseSelected, textInputRef]);
 
-  function renderTemplate(){
+  function renderTemplate() {
     if (templateType === InteractiveMessageType.LIST_PICKER) {
       return <ListPicker content={content} addMessage={onAddMessage} templateType={templateType} isCarouselElem={isCarouselElem} templateIdentifier={templateIdentifier} />
     } else if (templateType === InteractiveMessageType.PANEL) {
-      return <Panel content={content} addMessage={onAddMessage}  templateType={templateType} isCarouselElem={isCarouselElem} templateIdentifier={templateIdentifier} />
+      return <Panel content={content} addMessage={onAddMessage} templateType={templateType} isCarouselElem={isCarouselElem} templateIdentifier={templateIdentifier} />
     } else if (templateType === InteractiveMessageType.TIME_PICKER) {
-      return <TimePicker content={content} addMessage={onAddMessage}/>
-    }
+      return <TimePicker content={content} addMessage={onAddMessage} />
+    } 
   }
 
-  // Render QuickReply and Carousel outside of <MessageBody />
+  // Render ViewResource, QuickReply and Carousel outside of <MessageBody />
   if (templateType === InteractiveMessageType.QUICK_REPLY) {
-    return <QuickReply content={content} addMessage={onAddMessage}/>
+    return <QuickReply content={content} addMessage={onAddMessage} />
   } else if (templateType === InteractiveMessageType.CAROUSEL) {
-    return <Carousel content={content} addMessage={onAddMessage}/>
+    return <Carousel content={content} addMessage={onAddMessage} />
+  } else if (templateType === InteractiveMessageType.VIEW_RESOURCE) {
+    return <connect-view-renderer data-testid="connect-view-renderer" ref={ref} />
   }
 
   return (
@@ -195,7 +229,7 @@ ReactiveImage.propTypes = {
 };
 
 function ReactiveImage({ imageSrc, imageDescription, onImageLoad }) {
-  return <ElementImage src={imageSrc} alt={imageDescription} onLoad={onImageLoad} onError={(err) => console.log("Failed to load image:", err)}/>;
+  return <ElementImage src={imageSrc} alt={imageDescription} onLoad={onImageLoad} onError={(err) => console.log("Failed to load image:", err)} />;
 }
 
 HeaderText.propTypes = {
@@ -206,8 +240,8 @@ HeaderText.propTypes = {
 export function HeaderText({ title, subtitle }) {
   return (
     <TextSection>
-        <RichMessageRenderer content={title} styledWrapper={Title} />
-        {subtitle && (<RichMessageRenderer content={subtitle} styledWrapper={Subtitle} />)}
+      <RichMessageRenderer content={title} styledWrapper={Title} />
+      {subtitle && (<RichMessageRenderer content={subtitle} styledWrapper={Subtitle} />)}
     </TextSection>
   );
 }
@@ -228,7 +262,7 @@ function ExternalLinkIcon() {
   )
 }
 
-export function PickerElementLinkOption({ url, title, target, testId } ) {
+export function PickerElementLinkOption({ url, title, target, testId }) {
   return (
     <PickerElementLink data-testid={testId}>
       <PickerOptionTitle hasNestedSVG={true}>
