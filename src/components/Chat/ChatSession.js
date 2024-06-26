@@ -4,7 +4,7 @@
 import "amazon-connect-chatjs";
 import { CONTACT_STATUS } from "../../constants/global";
 import { modelUtils } from "./datamodel/Utils";
-import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE, AttachmentErrorType, PARTICIPANT_TYPES } from "./datamodel/Model";
+import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE, AttachmentErrorType, PARTICIPANT_TYPES, InteractiveMessageType } from "./datamodel/Model";
 import { getTimeFromTimeStamp } from "../../utils/helper";
 import Eventbus from './eventbus';
 import isJson from "is-json";
@@ -133,6 +133,10 @@ class ChatJSClient {
 
   downloadAttachment(attachmentId) {
     return this.session.downloadAttachment({ attachmentId });
+  }
+
+  describeView(viewTokenObj) {
+    return this.session.describeView(viewTokenObj);
   }
 }
 
@@ -263,15 +267,43 @@ class ChatSession {
     return this.client.sendDeliveredReceipt(messageId, options);
   }
 
-  addOutgoingMessage(data) {
-    const message = modelUtils.createOutgoingTranscriptItem(
+  alterOutgoingMessageForViewsIfRequired(data) {
+    /**
+     * if using guides, expect the response to be of type INTERACTIVE_RESPONSE
+     * else take the no match found branch of the view
+     */
+    const lastIncomingMessageIdx = this._findLastMessageInTranscript(Direction.Incoming, this.transcript);
+    if (lastIncomingMessageIdx >= 0) {
+      const lastIncomingMessage = this.transcript[lastIncomingMessageIdx];
+      try {
+        const lastIncomingMessageData = JSON.parse(lastIncomingMessage.content.data);
+
+        if (lastIncomingMessageData.templateType === InteractiveMessageType.VIEW_RESOURCE &&
+          data.type !== ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE) {
+          let temp_message = {
+            action: " ", // empty string is not allowed
+            data: { content: `${data.text}` },
+            templateType: InteractiveMessageType.VIEW_RESOURCE,
+            version: '1.0'
+          };
+          temp_message = JSON.stringify(temp_message);
+          data = { text: temp_message, type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE };
+        }
+      } catch (e) {
+        console.debug(`Unable to parse message.content.data. Skipping check for previous view message`);
+      }
+    }
+
+    return modelUtils.createOutgoingTranscriptItem(
       PARTICIPANT_MESSAGE,
-      {
-        data: data.text,
-        type: data.type || ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN,
-      },
+      { data: data.text, type: data.type || ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN },
       this.thisParticipant
     );
+  }
+
+  addOutgoingMessage(data) {
+    const message = this.alterOutgoingMessageForViewsIfRequired(data);
+
     this.logger && this.logger.info(`Adding outgoing message. ContactId: ${this.contactId}`);
 
     this._shouldAddToTranscript(message) && this._addItemsToTranscript([message]);
@@ -338,6 +370,10 @@ class ChatSession {
 
   downloadAttachment(attachmentId) {
     return this.client.downloadAttachment(attachmentId);
+  }
+
+  describeView(viewTokenObj) {
+    return this.client.describeView(viewTokenObj);
   }
 
   loadPreviousTranscript() {
@@ -417,8 +453,8 @@ class ChatSession {
     this.client.onEnded((data) => {
       this._handleEndedEvent(data);
     });
-    this.client.onConnectionEstablished(() => {
-      this._loadLatestTranscript();
+    this.client.onConnectionEstablished(async () => {
+      await this._loadLatestTranscript();
     });
   }
 
@@ -461,13 +497,19 @@ class ChatSession {
     }
     return this.client
       .getTranscript(args)
-      .then((response) => {
+      .then(async response => {
         var incomingDataList = response.data.Transcript;
         this.nextToken = response.data.NextToken;
         const transcriptItems = incomingDataList.map((data) => {
           var transcriptItem = modelUtils.createItemFromIncoming(data, this.thisParticipant);
           return transcriptItem;
         });
+        // call describeview to get the view if the newest message is a view message
+        let lastItem = transcriptItems.pop();
+        if (modelUtils.isViewMessage(lastItem) && lastItem.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE)
+          await this._describeAndProcessView(lastItem);
+        transcriptItems.push(lastItem);
+
         this._addItemsToTranscript(transcriptItems);
       })
       .catch((err) => {
@@ -501,7 +543,14 @@ class ChatSession {
               : {}
           );
         }
-      } else {
+        // check if this is a guides message
+        if (modelUtils.isViewMessage(item)) {
+          return this._describeAndProcessView(item).then(() => {
+            this._addItemsToTranscript([item]);
+          });
+        }
+      }
+      else {
         this._triggerEvent("outgoing-message", data);
       }
 
@@ -514,6 +563,40 @@ class ChatSession {
       console.log("_handleIncomingData NOT NOT item created");
     }
   }
+
+  async _describeAndProcessView(item) {
+    const viewDetails = JSON.parse(item.content.data);
+    if (viewDetails.templateType !== InteractiveMessageType.VIEW_RESOURCE) {
+      return;
+    }
+    let newParsedView = {};
+    const ViewResourceInputData = modelUtils.createViewMessageData(viewDetails.data);
+    try {
+      const describeViewResponse = await this.describeView({ viewToken: ViewResourceInputData.viewToken });
+      const newView = describeViewResponse ? describeViewResponse.data.View : {};
+      const Template = JSON.parse(newView.Content.Template);
+      const InputSchema = JSON.parse(newView.Content.InputSchema);
+      newParsedView = {
+        ...newView,
+        Content: {
+          Actions: newView.Content.Actions,
+          Template,
+          InputSchema,
+        },
+        InputData: ViewResourceInputData.viewInputData
+      };
+    } catch (err) {
+      newParsedView = {
+        Content: { InputSchema: {}, Template: {} },
+        ErrorType: 'INVALID_VIEW_ID',
+        InputData: ViewResourceInputData.viewInputData
+      };
+      this.logger && this.logger.warn("ERROR", err, ViewResourceInputData.viewId, ViewResourceInputData.viewInputData);
+    }
+    viewDetails.data.content = newParsedView;
+    item.content.data = JSON.stringify(viewDetails);
+  }
+
 
   _handleMessageReceipt(messageReceiptType, dataInput) {
     var messageReceiptData = dataInput.data;
@@ -574,7 +657,7 @@ class ChatSession {
 
     const newItemMap = items.reduce((acc, item) => ({ ...acc, [item.id]: item }), {});
 
-    const newTranscript = this.transcript.filter((item) => newItemMap[item.id] === undefined);
+    let newTranscript = this.transcript.filter((item) => newItemMap[item.id] === undefined);
     self._removePreviousInteractiveMessage(newTranscript, items);
     newTranscript.push(...items);
     newTranscript.sort((a, b) => {
@@ -619,6 +702,12 @@ class ChatSession {
       newTranscript[lastDeliveredMessageIdx].lastDeliveredReceipt = true;
     }
 
+    // remove any view messages that are not the latest message
+    newTranscript = newTranscript.filter((item, idx) => {
+      return (idx === lastIncomingMessageIdx && lastOutgoingMessageIdx <= lastIncomingMessageIdx) || !(modelUtils.isViewMessage(item) &&
+        item.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE)
+    });
+
     this._updateTranscript(newTranscript);
   }
 
@@ -626,7 +715,7 @@ class ChatSession {
     try {
       const newInteractiveMessage = newTranscript.find((message) => {
         const contentType = message.content.type;
-        return contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE;
+        return contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE && !modelUtils.isViewMessage(message);
       })
       if(newInteractiveMessage) {
         const content = JSON.parse(newInteractiveMessage.content.data);
@@ -746,7 +835,7 @@ class ChatSession {
   // The message of clicking "Show more" or "Previous options" in interactive message should not add to transcript
   _shouldAddToTranscript(message) {
     try {
-      if(message.content && message.content.data) {
+      if (message.content && message.content.data && !modelUtils.isViewMessage(message)) {
         const str = message.content.data;
         if(isJson(str)) {
           const { data } = JSON.parse(str);

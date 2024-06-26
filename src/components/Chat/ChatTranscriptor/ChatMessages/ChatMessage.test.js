@@ -286,5 +286,65 @@ describe("ChatMessage", () => {
       const { getByText } = within(screen.getByTestId("main-message"));
       expect(getByText("Explore our travel options - View All Destinations")).toBeInTheDocument();
     });
+
+    it("should be able to render view message", () => {
+      let viewResponseData = {
+        actionName: "ActionName",
+        key: {
+          hello: "world"
+        }
+      }
+      let message = {
+        transportDetails: {
+          status: "SendSuccess",
+          direction: "Incoming",
+          sentTime: 1654950925, // 6/11/2022
+        },
+        content: {
+          data: JSON.stringify({ templateType: "ViewResource", version: "1.0", action: "ActionSelected", data: viewResponseData }), // data does not matter
+          view: { "hello": "world" },
+          type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+        },
+      }
+
+      expect(JSON.parse(message.content.data).content).not.toEqual({ "hello": "world" });
+
+      renderComponent(message, { isLatestMessage: true });
+
+      expect(screen.getByTestId("connect-view-renderer")).toBeInTheDocument();
+
+    });
+
+    it("should render view response message as plain text", () => {
+      renderComponent({
+        transportDetails: {
+          status: "SendSuccess",
+          direction: "Outgoing",
+          sentTime: 1654950925, // 6/11/2022
+        },
+        content: {
+          data: JSON.stringify({ templateType: "ViewResource", version: "1.0", action: "ActionSelected", data: {} }),
+          type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE,
+        },
+      }, { isLatestMessage: true });
+
+      expect(screen.getByText("ActionSelected")).toBeInTheDocument();
+    });
+
+    it("should render view response message as plain text with data content when action is a white space and view name is not present", () => {
+      renderComponent({
+        transportDetails: {
+          status: "SendSuccess",
+          direction: "Outgoing",
+          sentTime: 1654950925, // 6/11/2022
+        },
+        content: {
+          data: JSON.stringify({ templateType: "ViewResource", version: "1.0", action: " ", data: { content: "hello world" } }),
+          type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE,
+        },
+      }, { isLatestMessage: true });
+
+      expect(screen.getByText("hello world")).toBeInTheDocument();
+    });
   });
 });

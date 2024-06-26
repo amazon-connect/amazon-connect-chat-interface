@@ -10,6 +10,7 @@ import {
   PARTICIPANT_TYPES,
   PARTICIPANT_MESSAGE,
   ATTACHMENT_MESSAGE,
+  InteractiveMessageType,
 } from "./Model";
 
 function isRecognizedEvent(eventName) {
@@ -150,6 +151,57 @@ function isParticipantAgentOrCustomer(participantRole) {
   return (participantRole === PARTICIPANT_TYPES.CUSTOMER || participantRole === PARTICIPANT_TYPES.AGENT);
 }
 
+/**
+ * A utility function to parse depth of 1 fields in the partially parsed view input data.
+ *
+ * @param {ViewInputData} parsedViewInputData - the partially parsed view input data
+ * @returns {ViewInputData} the fully parsed view input data
+ */
+function fullyParseViewInputData(parsedViewInputData) {
+  let fullyParsedViewInputData = {};
+  Object.entries(parsedViewInputData).forEach(([key, value]) => {
+    /**
+     * There are two valid cases here: value is a string or an object.
+     * In the cases that it is an object or an unparsable string, JSON.parse will throw.
+     * In those cases, we will let the renderer see the raw value and determine whether it's the right format.
+     * If it is in fact a valid stringified object, we will pass the parsed object to the renderer.
+     */
+    try {
+      fullyParsedViewInputData[key] = JSON.parse(value);
+    } catch (e) {
+      fullyParsedViewInputData[key] = value;
+    }
+  });
+  return fullyParsedViewInputData;
+}
+
+function createViewMessageData(data) {
+  try {
+    let parsedViewInputData = typeof data.content.viewData === "string" ? JSON.parse(data.content.viewData) : data.content.viewData;
+    const outputViewData = {
+      viewId: data.content.viewId,
+      viewToken: data.content.viewToken,
+      viewInputData: fullyParseViewInputData(parsedViewInputData)
+    }
+    return outputViewData;
+  } catch (err) {
+    console.warn("ERROR", err, data);
+  }
+}
+
+function isViewMessage(message) {
+  try {
+    return message.content && message.content.data &&
+      JSON.parse(message.content.data).templateType === InteractiveMessageType.VIEW_RESOURCE &&
+      (
+        message.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE ||
+        message.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE
+      );
+  } catch (e) {
+    return false;
+  }
+}
+
 var modelUtils = {
   createItemFromIncoming: createItemFromIncoming,
   createOutgoingTranscriptItem: createOutgoingTranscriptItem,
@@ -160,7 +212,9 @@ var modelUtils = {
   isAttachmentContentType: isAttachmentContentType,
   createIncomingTranscriptReceiptItem: createIncomingTranscriptReceiptItem,
   isTypeMessageOrAttachment: isTypeMessageOrAttachment,
-  isParticipantAgentOrCustomer: isParticipantAgentOrCustomer
+  isParticipantAgentOrCustomer: isParticipantAgentOrCustomer,
+  createViewMessageData: createViewMessageData,
+  isViewMessage: isViewMessage,
 };
 
 export { modelUtils };

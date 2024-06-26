@@ -7,13 +7,14 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { config } from "./utils/log";
+import { constructGuidesRendererUrl, setupGuidesRenderer } from './utils/helper';
 
 import defaultTheme from './theme/defaultTheme';
 
-(function (connect) {
+(function(connect) {
   connect.LogManager && connect.LogManager.updateLoggerConfig(config);
   connect.ChatInterface = connect.ChatInterface || {};
-  connect.ChatInterface.init = ({containerId, ...props}) => {
+  connect.ChatInterface.init = ({ containerId, ...props }) => {
     if (props.widgetType) {
       config.csmConfig = {
         widgetType: props.widgetType
@@ -26,6 +27,10 @@ import defaultTheme from './theme/defaultTheme';
       }
     };
     connect.ChatSession.setGlobalConfig(config);
+
+    // Guides in Chat
+    setupGuidesRenderer(props);
+
     ReactDOM.render(
       <BrowserRouter><App {...props}/></BrowserRouter>, document.getElementById(containerId) || document.getElementById("root"));
   };
