@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { config } from "./utils/log";
-import { constructGuidesRendererUrl, setupGuidesRenderer } from './utils/helper';
+import { setupGuidesRenderer } from './utils/helper';
 
 import defaultTheme from './theme/defaultTheme';
 
