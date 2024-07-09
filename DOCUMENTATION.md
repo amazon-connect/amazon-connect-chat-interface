@@ -53,6 +53,8 @@ Looking to build a custom chat-interface for Amazon Connect Chat? Learn how to s
 
 - **Passing Attribute to Contact Flow** - pass custom attributes to the the contact flow in the StartChatContact request. Please see [`PassingAttributeToContactFlow.md`](.github/docs/PassingAttributeToContactFlow.md) for more details
 
+- **Step by Step Guides in Chat** - interact with step-by-step guides in a chat widget. Please see [`StepByStepGuidesInChatFeature.md`](.github/docs/StepByStepGuidesInChatFeature.md) for more details.
+
 ## Customization
 
 ### Chat Interface Configuration

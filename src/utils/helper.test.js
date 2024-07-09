@@ -212,11 +212,7 @@ describe("Guides in Chat", () => {
 
   it("should not be able to insert guides renderer script in head when invalid config is provided", () => {
     window.connect = {};
-    let props = { guidesInChat: { instanceAlias: 'test-instance' } };
-    setupGuidesRenderer(props);
-    expect(document.head.innerHTML).not.toContain('connectwidget/static/views/renderer');
-
-    props = { guidesInChat: { version: 'latest' } };
+    let props = { guidesInChat: { version: 'latest' } };
     setupGuidesRenderer(props);
     expect(document.head.innerHTML).not.toContain('connectwidget/static/views/renderer');
 
@@ -227,9 +223,13 @@ describe("Guides in Chat", () => {
 
   it("should insert guides renderer script in head", () => {
     window.connect = {};
-    let props = { guidesInChat: { instanceAlias: 'test-instance', version: 'latest' }};
+    let props = { guidesInChat: { instanceAlias: 'test-instance' } };
     setupGuidesRenderer(props);
     expect(document.head.innerHTML).toContain('<script src="https://test-instance.my.connect.aws/connectwidget/static/views/renderer/latest/index.js"></script>');
+    
+    props = { guidesInChat: { instanceAlias: 'test-instance', version: 'abcd' }};
+    setupGuidesRenderer(props);
+    expect(document.head.innerHTML).toContain('<script src="https://test-instance.my.connect.aws/connectwidget/static/views/renderer/abcd/index.js"></script>');
   });
 
   afterAll(() => {

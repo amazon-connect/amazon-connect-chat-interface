@@ -148,9 +148,9 @@ export const constructGuidesRendererUrl = (instanceAlias, rendererVersion) => {
 export const setupGuidesRenderer = (props) => {
   const logger = connect.LogManager ? connect.LogManager.getLogger({ prefix: "ChatInterface-Chat" }): console;
   if (props.guidesInChat) {
-    const version = props.guidesInChat.version;
+    const version = props.guidesInChat.version || 'latest';
     const instanceAlias = props.guidesInChat.instanceAlias;
-    if (instanceAlias && version) {
+    if (instanceAlias) {
       const guidesRendererUrl = constructGuidesRendererUrl(instanceAlias, version);
       logger && logger.debug('[GuidesInChat] Using guides renderer url ',guidesRendererUrl);
 
