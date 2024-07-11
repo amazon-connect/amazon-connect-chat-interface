@@ -128,3 +128,39 @@ export const truncateStrFromCharLimit = (str, InteractiveMessageType, fieldLimit
     return sanitizedStr.substring(0, MAX_LENGTH) + "...";
   }
 }
+
+/** 
+ * Generates the url to fetch guides renderer
+ */
+export const constructGuidesRendererUrl = (instanceAlias, rendererVersion) => {
+  if (!instanceAlias || !rendererVersion) {
+    console.warn("[GuidesInChat] Unable to generate guides renderer url. Chat will not be able to render views");
+    return '';
+  }
+  const url = `https://${instanceAlias}.my.connect.aws/connectwidget/static/views/renderer/${rendererVersion}/index.js`;
+  return url;
+}
+
+/**
+ * Insert script in head to fetch guides renderer if required
+ * @param {object} props props that were passed with the init call for this widget
+ */
+export const setupGuidesRenderer = (props) => {
+  const logger = connect.LogManager ? connect.LogManager.getLogger({ prefix: "ChatInterface-Chat" }): console;
+  if (props.guidesInChat) {
+    const version = props.guidesInChat.version || 'latest';
+    const instanceAlias = props.guidesInChat.instanceAlias;
+    if (instanceAlias) {
+      const guidesRendererUrl = constructGuidesRendererUrl(instanceAlias, version);
+      logger && logger.debug('[GuidesInChat] Using guides renderer url ',guidesRendererUrl);
+
+      const script = document.createElement("script");
+      script.src = guidesRendererUrl;
+      document.head.appendChild(script);
+    } else {
+      logger && logger.warn('[GuidesInChat] Could not find necessary configuration to fetch renderer. Guides in chat may not render');
+    }
+  } else {
+    logger &&logger.warn('[GuidesInChat] Configuration was not provided. Guides in chat may not render if used outside of connect communication widget');
+  }
+}

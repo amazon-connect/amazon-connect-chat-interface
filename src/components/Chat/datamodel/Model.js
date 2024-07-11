@@ -102,7 +102,8 @@ export const InteractiveMessageType = {
   TIME_PICKER: "TimePicker",
   PANEL: "Panel",
   QUICK_REPLY: "QuickReply",
-  CAROUSEL: "Carousel"
+  CAROUSEL: "Carousel",
+  VIEW_RESOURCE: "ViewResource",
 };
 
 export const InteractiveMessageSelectionType = {

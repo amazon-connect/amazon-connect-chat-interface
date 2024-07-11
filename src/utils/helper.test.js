@@ -3,6 +3,8 @@ import {
   INTERACTIVE_MESSAGE_CONSTRAINTS,
   truncateElementFromLimit,
   truncateStrFromCharLimit,
+  constructGuidesRendererUrl,
+  setupGuidesRenderer
 } from "./helper";
 import { InteractiveMessageType } from "../components/Chat/datamodel/Model";
 
@@ -182,4 +184,56 @@ describe("truncateStrFromCharLimit util", () => {
   ])("should detect and remove any malicious XSS attack snippets", (rawStr, expectedCleanStr) => {
     expect(truncateStrFromCharLimit(rawStr, InteractiveMessageType.PANEL, "titleCharLimit")).toEqual(expectedCleanStr);
   });
+});
+
+describe("Guides in Chat", () => {
+  it("should be able to generate guides url", () => {
+    let url = constructGuidesRendererUrl('test-instance', 'latest');
+    expect(url).toEqual('https://test-instance.my.connect.aws/connectwidget/static/views/renderer/latest/index.js');
+
+    url = constructGuidesRendererUrl('test-instance', '2.3.4');
+    expect(url).toEqual('https://test-instance.my.connect.aws/connectwidget/static/views/renderer/2.3.4/index.js');
+  });
+
+  it("should not be able to generate guides renderer url", () => {
+    let url = constructGuidesRendererUrl('test-instance', '');
+    expect(url).toEqual('');
+
+    url = constructGuidesRendererUrl();
+    expect(url).toEqual('');
+  });
+
+  it("should not be able to insert guides renderer script in head when guidesInChat is not provided", () => {
+    window.connect = {};
+    let props = {};
+    setupGuidesRenderer(props);
+    expect(document.head.innerHTML).not.toContain('connectwidget/static/views/renderer');
+  });
+
+  it("should not be able to insert guides renderer script in head when invalid config is provided", () => {
+    window.connect = {};
+    let props = { guidesInChat: { version: 'latest' } };
+    setupGuidesRenderer(props);
+    expect(document.head.innerHTML).not.toContain('connectwidget/static/views/renderer');
+
+    props = { guidesInChat: { instanceAlias: undefined, version: undefined } };
+    setupGuidesRenderer(props);
+    expect(document.head.innerHTML).not.toContain('connectwidget/static/views/renderer');
+  });
+
+  it("should insert guides renderer script in head", () => {
+    window.connect = {};
+    let props = { guidesInChat: { instanceAlias: 'test-instance' } };
+    setupGuidesRenderer(props);
+    expect(document.head.innerHTML).toContain('<script src="https://test-instance.my.connect.aws/connectwidget/static/views/renderer/latest/index.js"></script>');
+    
+    props = { guidesInChat: { instanceAlias: 'test-instance', version: 'abcd' }};
+    setupGuidesRenderer(props);
+    expect(document.head.innerHTML).toContain('<script src="https://test-instance.my.connect.aws/connectwidget/static/views/renderer/abcd/index.js"></script>');
+  });
+
+  afterAll(() => {
+    delete window.connect;
+  });
+
 });

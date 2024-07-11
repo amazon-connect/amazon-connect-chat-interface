@@ -316,7 +316,7 @@ export class ParticipantMessage extends PureComponent {
       bodyStyleConfig.removePadding = true;
 
       const { templateType } = JSON.parse(this.props.messageDetails.content.data);
-      if (templateType === InteractiveMessageType.QUICK_REPLY || templateType === InteractiveMessageType.CAROUSEL) {
+      if (templateType === InteractiveMessageType.VIEW_RESOURCE || templateType === InteractiveMessageType.QUICK_REPLY || templateType === InteractiveMessageType.CAROUSEL) {
         bodyStyleConfig.childWillAddBackground = true;
       }
     }
@@ -407,6 +407,15 @@ export class ParticipantMessage extends PureComponent {
       this.triggerCountMetric(CSM_CONSTANTS.RENDER_RICH_MESSAGE)
       return <RichMessageRenderer content={data.content.title} />
     }
+    if (contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE &&
+      JSON.parse(content).templateType === InteractiveMessageType.VIEW_RESOURCE) {
+      // this is a view response, render accordingly
+      let { action, data } = JSON.parse(content);
+      if (!action.trim() && data)
+        action = data.content;
+      return <PlainTextMessage content={action} />
+    }
+
     if (contentType === ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN) {
       this.triggerCountMetric(CSM_CONSTANTS.RENDER_RICH_MESSAGE)
       return <RichMessageRenderer content={content} />

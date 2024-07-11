@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import ChatSession from "./ChatSession";
-import { AttachmentErrorType, ContentType } from "./datamodel/Model";
+import { AttachmentErrorType, ContentType, InteractiveMessageType } from "./datamodel/Model";
 
 const ParticipantId = "123";
 const chatDetails = {
@@ -21,24 +21,22 @@ const transcriptResponse = {
       {
         Id: "italics",
         Type: "message",
-        ParticipantId: "456",
+        ParticipantId: "123",
         AbsoluteTime: AbsoluteTime,
+        ParticipantRole: 'CUSTOMER',
         transportDetails: {
           direction: "Outgoing",
           status: "SendSuccess",
         },
-        ParticipantRole: "CUSTOMER",
-        content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
-          data: "*italics*",
-        },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+        Content: "*italic*",
       },
       {
         Id: "bold",
         Type: "message",
-        ParticipantId: "123",
+        ParticipantId: "456",
         AbsoluteTime: AbsoluteTime + 1000,
-        ParticipantRole: "AGENT",
+        ParticipantRole: 'AGENT',
         transportDetails: {
           direction: "Incoming",
           messageReceiptType: "delivered",
@@ -55,40 +53,34 @@ const transcriptResponse = {
           ],
         },
         lastDeliveredReceipt: true,
-        content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
-          data: "**bold**",
-        },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+        Content: "**bold**",
       },
       {
         Id: "numberedList",
         Type: "message",
         ParticipantId: "456",
         AbsoluteTime: AbsoluteTime + 2000,
-        ParticipantRole: "AGENT",
+        ParticipantRole: 'AGENT',
         transportDetails: {
           direction: "Incoming",
           status: "SendSuccess",
         },
-        content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
-          data: "1. item1 \n 1. item2",
-        },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+        Content: "1. item1 \n 1. item2",
       },
       {
         Id: "bulletedList",
         Type: "message",
         ParticipantId: "123",
         AbsoluteTime: AbsoluteTime + 3000,
-        ParticipantRole: "CUSTOMER",
+        ParticipantRole: 'CUSTOMER',
         transportDetails: {
           direction: "Outgoing",
           status: "SendSuccess",
         },
-        content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
-          data: "* item3 \n * item4",
-        },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+        Content: "* item3 \n * item4",
       },
       {
         AbsoluteTime: AbsoluteTime + 4000,
@@ -106,19 +98,56 @@ const transcriptResponse = {
         Type: "MESSAGE",
       },
       {
-        Id: "bulletedList2",
+        Id: "view_message_1",
         Type: "message",
-        ParticipantId: "123",
+        ParticipantId: "789",
         AbsoluteTime: AbsoluteTime + 5000,
-        ParticipantRole: "CUSTOMER",
+        ParticipantRole: 'SYSTEM',
+        transportDetails: {
+          direction: "Incoming",
+          status: "SendSuccess",
+        },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+        Content: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE }),
+      },
+      {
+        Id: "view_response_1",
+        Type: "message",
+        ParticipantId: "789",
+        AbsoluteTime: AbsoluteTime + 6000,
+        ParticipantRole: 'CUSTOMER',
         transportDetails: {
           direction: "Outgoing",
           status: "SendSuccess",
         },
-        content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
-          data: "* item3 \n * item4",
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE,
+        Content: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE }),
+      },
+      {
+        Id: "bulletedList2",
+        Type: "message",
+        ParticipantId: "123",
+        AbsoluteTime: AbsoluteTime + 7000,
+        ParticipantRole: 'CUSTOMER',
+        transportDetails: {
+          direction: "Outgoing",
+          status: "SendSuccess",
         },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+        Content: "* item3 \n * item4",
+      },
+      {
+        Id: "view_message_2",
+        Type: "message",
+        ParticipantId: "789",
+        AbsoluteTime: AbsoluteTime + 8000,
+        ParticipantRole: 'SYSTEM',
+        transportDetails: {
+          direction: "Incoming",
+          status: "SendSuccess",
+        },
+        ContentType: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+        Content: '{"version":"1.0","templateType":"ViewResource", "data": {"content":{"viewId":"detail","viewData":{"key":"viewData"},"viewToken":"viewToken"}}}',
       },
     ],
   },
@@ -147,6 +176,7 @@ beforeAll(() => {
                 }
               })
           ),
+          describeView: jest.fn().mockResolvedValue("view"),
         };
       },
     },
@@ -298,6 +328,7 @@ describe("ChatSession", () => {
                   })
               ),
               getTranscript: () => Promise.resolve(transcriptResponse),
+              describeView: jest.fn().mockResolvedValue("view"),
             };
           },
         },
@@ -623,5 +654,238 @@ describe("ChatSession", () => {
       }
     });
 
+    test("should call describeView when interactive view message is received", () => {
+      const session = new ChatSession(
+        chatDetails,
+        "",
+        region,
+        stage,
+        true
+      );
+      session.client.onMessage = jest.fn();
+      session.client.session.onMessage.mockClear();
+      session.client.session.sendEvent.mockClear();
+      session.openChatSession(true);
+      const callbackFn = session.client.onMessage.mock.calls[0][0];
+      let dataInput = JSON.parse(
+        '{"data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","ContentType":"application/vnd.amazonaws.connect.message.interactive","Id":"ID","Type":"MESSAGE","ParticipantId":"ParticipantId","DisplayName":"Agent","ParticipantRole":"AGENT","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}'
+      );
+      dataInput.data.Content = '{"version":"1.0","templateType":"ViewResource", "data": {"content":{"viewId":"detail","viewData":{"key":"viewData"},"viewToken":"viewToken"}}}';
+      callbackFn(dataInput);
+      expect(session.client.session.describeView).toBeCalled();
+      expect(session.client.session.describeView.mock.calls[0][0]).toEqual({
+        viewToken: "viewToken"
+      });
+    });
+
+    test("should alter message if trying to send a non interactive response for a previous view resource interactive message", () => {
+      const session = new ChatSession(
+        chatDetails,
+        "",
+        region,
+        stage,
+        true
+      );
+      session.openChatSession(true);
+      session.transcript = [
+        {
+          Id: "test",
+          Type: "message",
+          ParticipantId: "456",
+          AbsoluteTime: AbsoluteTime + 1000,
+          ParticipantRole: 'AGENT',
+          transportDetails: {
+            direction: "Incoming",
+            messageReceiptType: "delivered",
+            status: "SendSuccess",
+          },
+          MessageMetadata: {
+            MessageId: "test",
+            Receipts: [
+              {
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+              },
+            ],
+          },
+          lastDeliveredReceipt: true,
+          content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+            data: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE })
+          },
+        },
+      ]
+
+      // create outgoing plain text
+      const dataInput = {
+        text: "hi hello"
+      }
+
+      // send outgoing plaintext
+      session.addOutgoingMessage(dataInput);
+
+      //expect client to send interactive response
+      expect(session.client.session.sendMessage).toBeCalled();
+      expect(session.client.session.sendMessage.mock.calls[0][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE);
+
+      const message = session.client.session.sendMessage.mock.calls[0][0].message;
+      expect(JSON.parse(message).action).toEqual(" ");
+      expect(JSON.parse(message).data).toEqual({ content: "hi hello" });
+    });
+
+    test("clear view message after customer interacts with it", () => {
+      const session = new ChatSession(
+        chatDetails,
+        "",
+        region,
+        stage,
+        true
+      );
+      session.openChatSession(true);
+      const interactiveMessageInTranscript =
+      {
+        Id: "test_1",
+        Type: "message",
+        ParticipantId: "456",
+        AbsoluteTime: AbsoluteTime + 1000,
+        ParticipantRole: 'SYSTEM',
+        transportDetails: {
+          direction: "Incoming",
+          messageReceiptType: "delivered",
+          status: "SendSuccess",
+        },
+        MessageMetadata: {
+          MessageId: "test1",
+          Receipts: [
+            {
+              RecipientParticipantId: "RecipientParticipantId",
+              DeliveredTimestamp: new Date().toISOString(),
+              ReadTimestamp: new Date().toISOString(),
+            },
+          ],
+        },
+        lastDeliveredReceipt: true,
+        content: {
+          type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+          data: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE })
+        },
+      };
+
+      session.transcript = [
+        {
+          Id: "test_0",
+          Type: "message",
+          ParticipantId: "123",
+          AbsoluteTime: AbsoluteTime,
+          ParticipantRole: 'CUSTOMER',
+          transportDetails: {
+            direction: "Outgoing",
+            messageReceiptType: "delivered",
+            status: "SendSuccess",
+          },
+          MessageMetadata: {
+            MessageId: "test0",
+            Receipts: [
+              {
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+              },
+            ],
+          },
+          lastDeliveredReceipt: true,
+          content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE,
+            data: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE })
+          },
+        },
+        interactiveMessageInTranscript
+      ]
+      // create response
+      const dataInput = {
+        text: JSON.stringify({ templateType: 'ViewResource', data: {} }),
+        type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE
+      }
+
+      expect(session.transcript.includes(interactiveMessageInTranscript)).toBeTruthy();
+
+      // send outgoing plaintext
+      session.addOutgoingMessage(dataInput);
+
+      // expect client to send interactive response
+      expect(session.client.session.sendMessage).toBeCalled();
+
+      expect(session.transcript.length).toEqual(2);
+
+      // interactive message is removed
+      expect(session.transcript.includes(interactiveMessageInTranscript)).not.toBeTruthy();
+    });
+
+    test("should not alter message if trying to send a non interactive response for a previous non view resource message", () => {
+      const session = new ChatSession(
+        chatDetails,
+        "",
+        region,
+        stage,
+        true
+      );
+      session.openChatSession(true);
+      session.transcript = [
+        {
+          Id: "test",
+          Type: "message",
+          ParticipantId: "456",
+          AbsoluteTime: AbsoluteTime + 1000,
+          ParticipantRole: 'AGENT',
+          transportDetails: {
+            direction: "Incoming",
+            messageReceiptType: "delivered",
+            status: "SendSuccess",
+          },
+          MessageMetadata: {
+            MessageId: "test",
+            Receipts: [
+              {
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+              },
+            ],
+          },
+          lastDeliveredReceipt: true,
+          content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN,
+            data: "hello"
+          },
+        },
+      ]
+
+      // create outgoing plain text
+      const dataInput = {
+        text: "hi hello"
+      }
+
+      // send outgoing plaintext
+      session.addOutgoingMessage(dataInput);
+
+      //expect client to send interactive response
+      expect(session.client.session.sendMessage).toBeCalled();
+      expect(session.client.session.sendMessage.mock.calls[0][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN);
+    });
+
+    test("should remove old views and retain new one when loading transcript", async () => {
+      const session = new ChatSession(chatDetails, region, stage);
+      session.openChatSession(true);
+      const transcriptLength = transcriptResponse.data.Transcript.length;
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
+
+      await connectionEstablishedCallback();
+      // there is only 1 view message that needs to be removed when loading transcript
+      expect(session.transcript.length).toEqual(transcriptLength - 1);
+      // should be called for the latest message
+      expect(session.client.session.describeView).toBeCalledTimes(1);
+    });
   });
 });
