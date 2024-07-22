@@ -97,7 +97,7 @@
     "@emotion/core": "^10.0.35",
     "@svgr/webpack": "^6.2.1",
     "@types/jest": "^28.0.0",
-    "amazon-connect-chatjs": "^2.2.4",
+    "amazon-connect-chatjs": "^2.3.0",
     "core-js": "^3.8.3",
     "dompurify": "^3.0.3",
     "draft-js": "^0.11.7",
