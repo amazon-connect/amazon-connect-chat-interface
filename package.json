@@ -115,7 +115,7 @@
     "react-spinners": "^0.10.4",
     "react-textarea-autosize": "8.4.0",
     "styled-components": "^4.1.1",
-    "webpack": "^4.46.0",
+    "webpack": "^5.95.0",
     "whatwg-fetch": "^3.2.0",
     "workbox-webpack-plugin": "^7.0.0",
     "braces": "^3.0.3"
