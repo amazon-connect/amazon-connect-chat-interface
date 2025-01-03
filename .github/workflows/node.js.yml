@@ -19,6 +19,9 @@ jobs:
         node-version: [15.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    env:
+      CI: false
+
     steps:
     - uses: actions/checkout@v2
     
