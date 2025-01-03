@@ -870,7 +870,6 @@ class ChatSession {
         identityProvider = this.customizationParams.authenticationIdentityProvider,
         content = {}, 
         authenticationUrl = '', 
-        state = '',
         sessionId = '',
         item,
         getAuthenticationUrlResponse;
@@ -885,7 +884,6 @@ class ChatSession {
       try {
         getAuthenticationUrlResponse = await this.getAuthenticationUrl(sessionId);
         authenticationUrl = getAuthenticationUrlResponse.data.AuthenticationUrl
-        state = new URLSearchParams(authenticationUrl.split('?')[1]).get('state');
       }
       catch (error) {
         console.error("Unable to get sign in URL", error)
