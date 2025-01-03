@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import ChatSession from "./ChatSession";
+import ChatSession, {getCurrentChatSessionInstance, setCurrentChatSessionInstance} from "./ChatSession";
 import { AttachmentErrorType, ContentType, InteractiveMessageType } from "./datamodel/Model";
 
 const ParticipantId = "123";
@@ -177,6 +177,8 @@ beforeAll(() => {
               })
           ),
           describeView: jest.fn().mockResolvedValue("view"),
+          getAuthenticationUrl: jest.fn().mockResolvedValue("auth"),
+          cancelParticipantAuthentication: jest.fn().mockResolvedValue("auth")
         };
       },
     },
@@ -201,9 +203,14 @@ describe("ChatSession", () => {
           },
         };
         session = new ChatSession(chatDetails, region, stage);
+        setCurrentChatSessionInstance(session);
       });
       test("logger should be defined when LogManager is available", () => {
         expect(session.logger).toBeDefined();
+      });
+
+      test("getCurrentChatSession returns the current chat session", () => {
+        expect(getCurrentChatSessionInstance()).toBe(session);
       });
 
       test("logger should be called when addOutgoingMessage is triggered", () => {
@@ -235,6 +242,15 @@ describe("ChatSession", () => {
       test("logger should be called when closeChat is triggered", () => {
         session.closeChat();
         expect(session.logger.info).toBeCalled();
+      });
+      test("Authentication: should get auth url from chatJs", () => {
+        const returnVal = session.getAuthenticationUrl({sessionId: 'test', redirectUri: 'test'});
+        expect(session.client.session.getAuthenticationUrl).toBeCalled();
+      });
+    
+      test("Authentication: should cancel authentication from chatJs", () => {
+        const returnVal = session.cancelParticipantAuthentication({sessionId: 'test'});
+        expect(session.client.session.cancelParticipantAuthentication).toBeCalled();
       });
       test("sendAttachment: should display correct message if ServiceQuotaExceeded", () => {
         const DEFAULT_MESSAGE = "DEFAULT_MESSAGE";
@@ -311,6 +327,12 @@ describe("ChatSession", () => {
               onDeliveredReceipt: jest.fn().mockResolvedValue("aaa"),
               onEnded: jest.fn().mockResolvedValue("aaa"),
               onConnectionEstablished: jest.fn().mockResolvedValue("aaa"),
+              onAuthenticationInitiated: jest.fn().mockResolvedValue("aaa"),
+              onAuthenticationTimeout: jest.fn().mockResolvedValue("aaa"),
+              onAuthenticationSuccessful: jest.fn().mockResolvedValue("aaa"),
+              onAuthenticationCanceled: jest.fn().mockResolvedValue("aaa"),
+              onParticipantDisplayNameUpdated: jest.fn().mockResolvedValue("aaa"),
+              onAuthenticationFailed: jest.fn().mockResolvedValue("aaa"),
               connect: jest.fn().mockResolvedValue("aaa"),
               sendMessage: jest.fn().mockResolvedValue("aaa"),
               sendEvent: jest.fn().mockResolvedValue("bb"),
@@ -329,6 +351,7 @@ describe("ChatSession", () => {
               ),
               getTranscript: () => Promise.resolve(transcriptResponse),
               describeView: jest.fn().mockResolvedValue("view"),
+              getAuthenticationUrl: jest.fn().mockResolvedValue("view"),
             };
           },
         },
@@ -374,6 +397,89 @@ describe("ChatSession", () => {
       eventCallback(idleMessage);
       expect(addItemsToTranscriptSpy).toHaveBeenCalledTimes(2);
     });
+    test("should call authentication init event handler to update the transcript", async () => {
+      const session = new ChatSession(chatDetails, region, stage, { authenticationRedirectUri:'test', authenticationIdentityProvider: 'test'});
+      session.customizationParams = { authenticationRedirectUri:'test', authenticationIdentityProvider: 'test'}
+      const addItemsToTranscriptSpy = jest.spyOn(session, '_handleAuthenticationInitiated');
+      const getAuthURL = jest.spyOn(session, 'getAuthenticationUrl');
+      session.openChatSession(true);
+      const eventCallback =
+        session.client.session.onAuthenticationInitiated.mock.calls[0][0];
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
+      await connectionEstablishedCallback();
+      const authMessage = {
+        data: {
+          Content: JSON.stringify({
+            sessionId: 'dd'
+          }),
+          MessageMetadata: {
+            MessageId: "italics",
+            Receipts: [
+              {
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+                RecipientParticipantId: "123",
+              },
+            ],
+          },
+          InitialContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
+          ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
+        },
+        chatDetails: {
+          participantId: "participantId"
+        }
+      };
+      eventCallback(authMessage);
+      expect(addItemsToTranscriptSpy).toHaveBeenCalledTimes(1);
+      expect(getAuthURL).toHaveBeenCalledTimes(1);
+    });
+
+    
+    test("should call authentication lifecycle event handler to update the transcript", async () => {
+      const session = new ChatSession(chatDetails, region, stage);
+      const addItemsToTranscriptSpy = jest.spyOn(session, '_handleAuthenticationLifecycleEvent');
+      session.openChatSession(true);
+      const eventCallbackCancelled =
+        session.client.session.onAuthenticationCanceled.mock.calls[0][0];
+      const eventCallbackFailed =
+        session.client.session.onAuthenticationFailed.mock.calls[0][0];
+      const eventCallbackSuccess =
+        session.client.session.onAuthenticationSuccessful.mock.calls[0][0];
+      const eventCallbackTimeout =
+        session.client.session.onAuthenticationTimeout.mock.calls[0][0];
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
+      await connectionEstablishedCallback();
+      const authMessage = {
+        data: {
+          Content: JSON.stringify({
+            sessionId: 'dd'
+          }),
+          MessageMetadata: {
+            MessageId: "italics",
+            Receipts: [
+              {
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+                RecipientParticipantId: "123",
+              },
+            ],
+          },
+          InitialContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
+          ContactId: "eb628fa4-9667-464f-905b-36de2f86f202",
+        },
+        chatDetails: {
+          participantId: "participantId"
+        }
+      };
+      eventCallbackCancelled(authMessage);
+      eventCallbackFailed(authMessage);
+      eventCallbackSuccess(authMessage);
+      eventCallbackTimeout(authMessage);
+      expect(addItemsToTranscriptSpy).toHaveBeenCalledTimes(4);
+    });
+
     test("should register Read and Delivered and idle events", () => {
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
@@ -383,6 +489,11 @@ describe("ChatSession", () => {
       expect(session.client.session.onAutoDisconnection).toBeCalled();
       expect(session.client.session.onDeliveredReceipt).toBeCalled();
       expect(session.client.session.onChatRehydrated).toBeCalled();
+      expect(session.client.session.onAuthenticationInitiated).toBeCalled();
+      expect(session.client.session.onAuthenticationCanceled).toBeCalled();
+      expect(session.client.session.onAuthenticationFailed).toBeCalled();
+      expect(session.client.session.onAuthenticationSuccessful).toBeCalled();
+      expect(session.client.session.onParticipantDisplayNameUpdated).toBeCalled();
     });
     test("should not update transcript if messageId not found", async () => {
       const session = new ChatSession(chatDetails, region, stage);

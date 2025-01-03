@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 import PT from "prop-types";
 import Linkify from "react-linkify";
+import { getCurrentChatSessionInstance } from "../../ChatSession";
 import {
   ATTACHMENT_MESSAGE,
   AttachmentStatus,
@@ -173,7 +174,11 @@ export class ParticipantMessage extends PureComponent {
 
   renderHeader() {
     const isOutgoingMsg = this.props.messageDetails.transportDetails.direction === Direction.Outgoing;
-    const displayName = this.props.messageDetails.displayName || (isOutgoingMsg ? "Customer" : "Agent");
+    const authenticatedParticipantDisplayName = getCurrentChatSessionInstance().authenticatedParticipantDisplayName;
+    let displayName = this.props.messageDetails.displayName || (isOutgoingMsg ? "Customer" : "Agent");
+    if(isOutgoingMsg && authenticatedParticipantDisplayName){
+      displayName = authenticatedParticipantDisplayName;
+    }
     const transportDetails = this.props.messageDetails.transportDetails;
     const statusStringPrefix = "connect-chat-transport-status-";
 

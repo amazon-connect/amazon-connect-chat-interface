@@ -5,10 +5,11 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import PT from "prop-types";
 import { ContentType } from "../../datamodel/Model";
-
+import { AuthenticationMessage } from './AuthenticationMessage'
 export class SystemMessage extends React.PureComponent {
   static propTypes = {
-    messageDetails: PT.object.isRequired
+    messageDetails: PT.object.isRequired,
+    authenticationUrl: PT.string
   };
 
   static defaultProps = {};
@@ -17,7 +18,9 @@ export class SystemMessage extends React.PureComponent {
     console.log("SystemMessage getMessageText");
     console.log(this.props);
     let name = this.props.messageDetails.displayName;
-    switch (this.props.messageDetails.content.type) {
+    const type = this.props.messageDetails.content.type;
+    const content = this.props.messageDetails.content;
+    switch (type) {
       case ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_JOINED:
         name = this.props.messageDetails.displayName;
         return <FormattedMessage
@@ -36,6 +39,14 @@ export class SystemMessage extends React.PureComponent {
               name
             }}
         />;
+      case ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_INITIATED:
+        return <AuthenticationMessage link={this.props.messageDetails.authenticationUrl} content={content} ></AuthenticationMessage>
+      case ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_EXPIRED:
+      case ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_FAILED:
+      case ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_SUCCESSFUL:
+      case ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_TIMEOUT:
+      case ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_CANCELLED:
+        return <AuthenticationMessage content={content}></AuthenticationMessage>
       case ContentType.EVENT_CONTENT_TYPE.CHAT_ENDED:
         return <FormattedMessage
             id="transcriptor.endChat"

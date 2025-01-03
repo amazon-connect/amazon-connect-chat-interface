@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { Button, Loader } from "connect-core";
 import Chat from "./Chat";
-import ChatSession from "./ChatSession";
+import ChatSession, { setCurrentChatSessionInstance } from "./ChatSession";
 import { initiateChat } from "./ChatInitiator";
 import EventBus from "./eventbus";
 import "./ChatInterface";
@@ -95,10 +95,14 @@ class ChatContainer extends Component {
    */
   async submitChatInitiation(input, success, failure) {
     this.setState({ status: "Initiating" });
-
+    const customizationParams = {
+      authenticationRedirectUri: input.authenticationRedirectUri || '',
+      authenticationIdentityProvider: input.authenticationIdentityProvider || ''
+    }
     try {
       const chatDetails = await initiateChat(input);
-      const chatSession = await this.openChatSession(chatDetails, input.name, input.region, input.stage);
+      const chatSession = await this.openChatSession(chatDetails, input.name, input.region, input.stage, customizationParams);
+      setCurrentChatSessionInstance(chatSession);
       const attachmentsEnabled =
         (input.featurePermissions && input.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS]) ||
         (chatDetails.featurePermissions && chatDetails.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS]);
@@ -121,8 +125,8 @@ class ChatContainer extends Component {
     }
   }
 
-  openChatSession(chatDetails, name, region, stage) {
-    const chatSession = new ChatSession(chatDetails, name, region, stage);
+  openChatSession(chatDetails, name, region, stage, customizationParams) {
+    const chatSession = new ChatSession(chatDetails, name, region, stage, customizationParams);
     chatSession.onChatClose(() => {
       EventBus.trigger("endChat", {});
     });

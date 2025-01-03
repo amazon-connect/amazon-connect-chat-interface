@@ -23,6 +23,13 @@ export const ContentType = {
     PARTICIPANT_DISCONNECT: "application/vnd.amazonaws.connect.event.participant.autodisconnection",
     PARTICIPANT_RETURNED: "application/vnd.amazonaws.connect.event.participant.returned",
     CONNECTION_ACKNOWLEDGED: "application/vnd.amazonaws.connect.event.connection.acknowledged",
+    AUTHENTICATION_INITIATED: "application/vnd.amazonaws.connect.event.authentication.initiated",
+    AUTHENTICATION_SUCCESSFUL: "application/vnd.amazonaws.connect.event.authentication.succeeded",
+    AUTHENTICATION_FAILED: "application/vnd.amazonaws.connect.event.authentication.failed",
+    AUTHENTICATION_TIMEOUT: "application/vnd.amazonaws.connect.event.authentication.timeout",
+    AUTHENTICATION_EXPIRED: "application/vnd.amazonaws.connect.event.authentication.expired",
+    AUTHENTICATION_CANCELLED: "application/vnd.amazonaws.connect.event.authentication.cancelled",
+    DISPLAY_NAME_UPDATED: "application/vnd.amazonaws.connect.event.participant.displayname.updated",
     CHAT_ENDED: "application/vnd.amazonaws.connect.event.chat.ended",
   },
   MESSAGE_CONTENT_TYPE: {
