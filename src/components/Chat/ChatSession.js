@@ -11,6 +11,14 @@ import isJson from "is-json";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
+var CurrentChatSessionInstance = {};
+export function getCurrentChatSessionInstance () {
+  return CurrentChatSessionInstance;
+}
+
+export function setCurrentChatSessionInstance (chatSession) {
+  CurrentChatSessionInstance = chatSession;
+}
 // Low-level abstraction on top of Chat.JS
 class ChatJSClient {
   session = null;
@@ -50,6 +58,30 @@ class ChatJSClient {
   
   onChatRehydrated(handler) {
     return this.session.onChatRehydrated(handler);
+  }
+
+  onAuthenticationInitiated(handler) {
+    return this.session.onAuthenticationInitiated(handler);
+  }
+
+  onAuthenticationTimeout(handler) {
+    return this.session.onAuthenticationTimeout(handler);
+  }
+
+  onAuthenticationFailed(handler) {
+    return this.session.onAuthenticationFailed(handler);
+  }
+
+  onAuthenticationSuccessful(handler) {
+    return this.session.onAuthenticationSuccessful(handler);
+  }
+
+  onAuthenticationCanceled(handler) {
+    return this.session.onAuthenticationCanceled(handler);
+  }
+
+  onParticipantDisplayNameUpdated(handler) {
+    return this.session.onParticipantDisplayNameUpdated(handler);
   }
 
   onTyping(handler) {
@@ -138,6 +170,14 @@ class ChatJSClient {
   describeView(viewTokenObj) {
     return this.session.describeView(viewTokenObj);
   }
+
+  getAuthenticationUrl(authenticationConfiguration) {
+    return this.session.getAuthenticationUrl(authenticationConfiguration);
+  }
+
+  cancelParticipantAuthentication(sessionId) {
+    return this.session.cancelParticipantAuthentication(sessionId);
+  }
 }
 
 class ChatSession {
@@ -167,8 +207,9 @@ class ChatSession {
     "chat-closed": [],
   };
 
-  constructor(chatDetails, displayName, region, stage) {
+  constructor(chatDetails, displayName, region, stage, customizationParams) {
     this.client = new ChatJSClient(chatDetails, region, stage);
+    this.customizationParams = customizationParams || {};
     this.contactId = this.client.getContactId();
     this.thisParticipant = {
       participantId: this.client.getParticipantId(),
@@ -376,6 +417,19 @@ class ChatSession {
     return this.client.describeView(viewTokenObj);
   }
 
+  getAuthenticationUrl(sessionId) {
+    return this.client.getAuthenticationUrl({
+      redirectUri: this.customizationParams.authenticationRedirectUri,
+      sessionId: sessionId
+    });
+  }
+
+  cancelParticipantAuthentication(sessionId) {
+    return this.client.cancelParticipantAuthentication({
+      sessionId: sessionId
+    });
+  }
+
   loadPreviousTranscript() {
     console.log("loadPreviousTranscript in single");
     var args = {};
@@ -452,6 +506,24 @@ class ChatSession {
 
     this.client.onEnded((data) => {
       this._handleEndedEvent(data);
+    });
+    this.client.onAuthenticationInitiated(async data => {
+      await this._handleAuthenticationInitiated(data);
+    });
+    this.client.onAuthenticationTimeout(async data => {
+      await this._handleAuthenticationLifecycleEvent(data);
+    });
+    this.client.onAuthenticationFailed(async data => {
+      await this._handleAuthenticationLifecycleEvent(data);
+    });
+    this.client.onAuthenticationSuccessful(async data => {
+      await this._handleAuthenticationLifecycleEvent(data);
+    });
+    this.client.onAuthenticationCanceled(async data => {
+      await this._handleAuthenticationLifecycleEvent(data);
+    });
+    this.client.onParticipantDisplayNameUpdated(async data => {
+      this.authenticatedParticipantDisplayName = data.data.DisplayName;
     });
     this.client.onConnectionEstablished(async () => {
       await this._loadLatestTranscript();
@@ -791,6 +863,46 @@ class ChatSession {
     this._updateContactStatus(CONTACT_STATUS.ENDED);
     this._triggerEvent("chat-disconnected");
     Eventbus.trigger('agentEndChat', {});
+  }
+
+  async _handleAuthenticationInitiated(data) {
+    var eventDetails = data.data,
+        identityProvider = this.customizationParams.authenticationIdentityProvider,
+        content = {}, 
+        authenticationUrl = '', 
+        sessionId = '',
+        item,
+        getAuthenticationUrlResponse;
+    try {
+      content = JSON.parse(eventDetails.Content || '{}');
+    } catch (error) {
+        console.error("Invalid JSON content", error);
+    }
+    sessionId = content.SessionId;
+    item = modelUtils.createItemFromIncoming(eventDetails);
+    if (item) {
+      try {
+        getAuthenticationUrlResponse = await this.getAuthenticationUrl(sessionId);
+        authenticationUrl = getAuthenticationUrlResponse.data.AuthenticationUrl
+      }
+      catch (error) {
+        console.error("Unable to get sign in URL", error)
+      }
+      item.authenticationUrl = authenticationUrl;
+      if(identityProvider){
+        item.authenticationUrl += `&identity_provider=${identityProvider}`;
+      }
+      this._shouldAddToTranscript(item) && this._addItemsToTranscript([item]);
+    }
+  }
+
+  async _handleAuthenticationLifecycleEvent(data) {
+    var eventDetails = data.data;
+    var item = modelUtils.createItemFromIncoming(eventDetails);
+    if (item) {
+      Eventbus.trigger('authenticationComplete', {});
+      this._shouldAddToTranscript(item) && this._addItemsToTranscript([item]);
+    }
   }
 
   // TYPING PARTICIPANTS

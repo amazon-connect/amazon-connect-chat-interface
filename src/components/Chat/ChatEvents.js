@@ -14,6 +14,7 @@ export class ChatEvents {
     );
     EventBus.on('agentEndChat', this.agentEndChat.bind(this));
     EventBus.on('escalateToVoice', this.escalateToVoice.bind(this));
+    EventBus.on("authenticationComplete", this.authenticationComplete.bind(this))
   }
 
   _eventHandlers = {
@@ -23,6 +24,7 @@ export class ChatEvents {
     'push-notification-eligible-message-received': [],
     'agent-end-chat': [],
     'voice-escalation': [],
+    'authentication-complete': []
   };
 
   onVoiceEscalation(callback) {
@@ -50,6 +52,12 @@ export class ChatEvents {
   }
   onPushNotificationEligibleMessageReceived(callback) {
     this.on('push-notification-eligible-message-received', function (...rest) {
+      callback(...rest);
+    });
+  }
+
+  onAuthenticationComplete(callback) {
+    this.on("authentication-complete", function(...rest){
       callback(...rest);
     });
   }
@@ -92,6 +100,9 @@ export class ChatEvents {
   }
   agentEndChat() {
     this._triggerEvent('agent-end-chat');
+  }
+  authenticationComplete() {
+    this._triggerEvent("authentication-complete");
   }
 }
 
