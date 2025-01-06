@@ -12,6 +12,11 @@ describe('ChatEvents', () => {
     expect(myFn).toBeCalled();
   });
 
+  test('authenticationComplete event', () => {
+    myChatEvent.onAuthenticationComplete(myFn);
+    EventBus.trigger("authenticationComplete", {});
+  })
+
   test('escalateToVoice event', () => {
     myChatEvent.onVoiceEscalation(myFn);
     EventBus.trigger('escalateToVoice', {});

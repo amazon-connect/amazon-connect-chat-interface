@@ -29,3 +29,6 @@ export const INTERACTIVE_MESSAGE = {
   },
   VERSION: "1.0"
 }
+
+export const AUTHENTICATION_POPUP_WIDTH = 600;
+export const AUTHENTICATION_POPUP_HEIGHT = 600;

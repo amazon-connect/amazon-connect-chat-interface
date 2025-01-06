@@ -6,7 +6,9 @@ import { PARTICIPANT_TYPES } from "../../datamodel/Model";
  
 const TEST_DISPLAY_NAME = 'Test';
 const GENERIC_DISPLAY_NAME = 'Generic Display Name';
- 
+window.connect = jest.fn();
+window.connect.ChatEvents = jest.fn();
+window.connect.ChatEvents.onAuthenticationComplete = jest.fn();
 describe("SystemMessage", () => {
     let wrapper = null;
     const additionalProps = {
@@ -34,6 +36,30 @@ describe("SystemMessage", () => {
         }
         wrapper = createSystemMessage(joinedEvent);
         expect(wrapper.html()).toContain(`${TEST_DISPLAY_NAME} has joined the chat`);
+    });
+
+    it("should render auth initiated event successfully", () => {
+        const joinedEvent = {
+            content: {
+                type: ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_INITIATED,
+            },
+            displayName: TEST_DISPLAY_NAME,
+            authenticationUrl: 'www.example.com'
+        }
+        wrapper = createSystemMessage(joinedEvent);
+        expect(wrapper.html()).toContain(`Please sign into your account`);
+    });
+
+    it("should render auth cancelled event successfully", () => {
+        const event = {
+            content: {
+                type: ContentType.EVENT_CONTENT_TYPE.AUTHENTICATION_CANCELLED,
+            },
+            displayName: TEST_DISPLAY_NAME,
+            authenticationUrl: 'www.example.com'
+        }
+        wrapper = createSystemMessage(event);
+        expect(wrapper.html()).toContain(`Sign in cancelled`);
     });
  
     it("should render left event successfully", () => {
