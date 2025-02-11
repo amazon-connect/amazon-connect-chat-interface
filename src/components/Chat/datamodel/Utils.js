@@ -12,6 +12,7 @@ import {
   ATTACHMENT_MESSAGE,
   InteractiveMessageType,
 } from "./Model";
+import { DEFAULT_BOT_DISPLAY_NAME } from "../constants";
 
 function isRecognizedEvent(eventName) {
   var values = Object.values(ContentType.EVENT_CONTENT_TYPE);
@@ -151,6 +152,24 @@ function isParticipantAgentOrCustomer(participantRole) {
   return (participantRole === PARTICIPANT_TYPES.CUSTOMER || participantRole === PARTICIPANT_TYPES.AGENT);
 }
 
+function isParticipantLeftOrChatEndedContentType(contentType) {
+  return contentType === ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_LEFT || contentType === ContentType.EVENT_CONTENT_TYPE.CHAT_ENDED;
+}
+
+function isParticipantJoinedContentType(contentType) {
+  return contentType === ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_JOINED;
+}
+
+function isParticipantAgentOrSupervisor(participantRole) {
+  return participantRole === PARTICIPANT_TYPES.AGENT || participantRole === PARTICIPANT_TYPES.SUPERVISOR;
+}
+
+function isParticipantBot(displayName, participantRole) {
+  return (
+      displayName === DEFAULT_BOT_DISPLAY_NAME || participantRole === PARTICIPANT_TYPES.CUSTOM_BOT
+  );
+}
+
 /**
  * A utility function to parse depth of 1 fields in the partially parsed view input data.
  *
@@ -215,6 +234,10 @@ var modelUtils = {
   isParticipantAgentOrCustomer: isParticipantAgentOrCustomer,
   createViewMessageData: createViewMessageData,
   isViewMessage: isViewMessage,
+  isParticipantLeftOrChatEndedContentType: isParticipantLeftOrChatEndedContentType,
+  isParticipantJoinedContentType: isParticipantJoinedContentType,
+  isParticipantAgentOrSupervisor: isParticipantAgentOrSupervisor,
+  isParticipantBot: isParticipantBot,
 };
 
 export { modelUtils };

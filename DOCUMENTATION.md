@@ -51,9 +51,11 @@ Looking to build a custom chat-interface for Amazon Connect Chat? Learn how to s
 
 - **Persistent Chat** - allow customers to resume previous conversations with the context, metadata, and transcripts carried forward to the next agent. Please see [`PersistentChatFeature.md`](.github/docs/PersistentChatFeature.md) for more details.
 
-- **Passing Attribute to Contact Flow** - pass custom attributes to the the contact flow in the StartChatContact request. Please see [`PassingAttributeToContactFlow.md`](.github/docs/PassingAttributeToContactFlow.md) for more details
+- **Passing Attribute to Contact Flow** - pass custom attributes to the contact flow in the StartChatContact request. Please see [`PassingAttributeToContactFlow.md`](.github/docs/PassingAttributeToContactFlow.md) for more details.
 
 - **Step by Step Guides in Chat** - interact with step-by-step guides in a chat widget. Please see [`StepByStepGuidesInChatFeature.md`](.github/docs/StepByStepGuidesInChatFeature.md) for more details.
+
+- **Typing Event For Bots** - show typing indicator for Lex and Custom Bot messages. Please see [`TypingEventForBots.md`](.github/docs/TypingEventForBots.md) for more details.
 
 ## Customization
 

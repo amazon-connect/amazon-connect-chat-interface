@@ -101,7 +101,7 @@ class ChatContainer extends Component {
     }
     try {
       const chatDetails = await initiateChat(input);
-      const chatSession = await this.openChatSession(chatDetails, input.name, input.region, input.stage, customizationParams);
+      const chatSession = await this.openChatSession(chatDetails, input.name, input.region, input.stage, input.featurePermissions, customizationParams);
       setCurrentChatSessionInstance(chatSession);
       const attachmentsEnabled =
         (input.featurePermissions && input.featurePermissions[CHAT_FEATURE_TYPES.ATTACHMENTS]) ||
@@ -125,8 +125,8 @@ class ChatContainer extends Component {
     }
   }
 
-  openChatSession(chatDetails, name, region, stage, customizationParams) {
-    const chatSession = new ChatSession(chatDetails, name, region, stage, customizationParams);
+  openChatSession(chatDetails, name, region, stage, featurePermissions, customizationParams) {
+    const chatSession = new ChatSession(chatDetails, name, region, stage, featurePermissions, customizationParams);
     chatSession.onChatClose(() => {
       EventBus.trigger("endChat", {});
     });

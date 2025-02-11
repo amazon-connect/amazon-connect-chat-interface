@@ -8,6 +8,7 @@ import { ContentType, PARTICIPANT_MESSAGE, Direction, Status, ATTACHMENT_MESSAGE
 import { getTimeFromTimeStamp } from "../../utils/helper";
 import Eventbus from './eventbus';
 import isJson from "is-json";
+import { CHAT_FEATURE_TYPES, MOCK_TYPING_PARTICIPANT_ID, MOCK_TYPING_PARTICIPANT_NAME } from "./constants";
 
 const SYSTEM_EVENTS = Object.values(ContentType.EVENT_CONTENT_TYPE);
 const DEFAULT_PREFIX = "Amazon-Connect-ChatInterface-ChatSession";
@@ -188,6 +189,8 @@ class ChatSession {
   contactId = null;
   contactStatus = CONTACT_STATUS.DISCONNECTED;
   nextToken = null;
+  typingEventForBotsEnabled = false;
+  isBotInChat = false;
 
   /**
    * Flag set when an outgoing message from the Customer is in flight.
@@ -207,7 +210,7 @@ class ChatSession {
     "chat-closed": [],
   };
 
-  constructor(chatDetails, displayName, region, stage, customizationParams) {
+  constructor(chatDetails, displayName, region, stage, featurePermissions, customizationParams) {
     this.client = new ChatJSClient(chatDetails, region, stage);
     this.customizationParams = customizationParams || {};
     this.contactId = this.client.getContactId();
@@ -230,6 +233,7 @@ class ChatSession {
         prefix: DEFAULT_PREFIX,
       });
     }
+    this.typingEventForBotsEnabled = featurePermissions && featurePermissions[CHAT_FEATURE_TYPES.TYPING_EVENT_FOR_BOTS];
   }
 
   // Callbacks
@@ -598,11 +602,12 @@ class ChatSession {
 
     if (item) {
       if (!this._isRoundtripMessage(data)) {
+        // There is incoming data from some participant. Remove the typing indicator for that participant.
         this._updateTypingParticipantsUsingIncoming(item);
       }
       console.log("_handleIncomingData item created");
 
-      const { transportDetails, type, participantRole } = item;
+      const { transportDetails, type, participantRole, content, displayName } = item;
       if (transportDetails.direction === Direction.Incoming) {
         this._triggerEvent("incoming-message", data);
         if (modelUtils.isTypeMessageOrAttachment(type) && modelUtils.isParticipantAgentOrCustomer(participantRole)) {
@@ -621,8 +626,32 @@ class ChatSession {
             this._addItemsToTranscript([item]);
           });
         }
-      }
-      else {
+
+        // Check if mocking typing for Lex / Custom Bot is enabled
+        if (this.typingEventForBotsEnabled) {
+          if (this.isBotInChat) {
+            // Remove mock typing since new incoming data received.
+            this._removeMockTypingParticipant();
+            // Mark Bot as not in chat if an Agent or Supervisor joins the chat.
+            this.isBotInChat = !modelUtils.isParticipantAgentOrSupervisor(participantRole) || !modelUtils.isParticipantJoinedContentType(content.type);
+          } else {
+            // Mark Bot as in chat if we receive any incoming data from Lex / Custom Bot.
+            this.isBotInChat = modelUtils.isParticipantBot(displayName, participantRole);
+          }
+        }
+
+      } else { // For outgoing data
+
+        // Check if mocking typing for Lex / Custom Bot is enabled AND if Bot is in chat
+        if (this.typingEventForBotsEnabled && this.isBotInChat) {
+          if (modelUtils.isTypeMessageOrAttachment(type)) {
+            // Customer has sent outgoing message or attachment. Mock typing while waiting for new incoming data.
+            this._handleMockTypingEvent(participantRole);
+          } else if (modelUtils.isParticipantLeftOrChatEndedContentType(content.type)) {
+            // Customer has left. Remove typing indicator in 'Close Chat' view.
+            this._removeMockTypingParticipant();
+          }
+        }
         this._triggerEvent("outgoing-message", data);
       }
 
@@ -931,6 +960,19 @@ class ChatSession {
     console.log(this.typingParticipants);
   }
 
+  _handleMockTypingEvent(participantRole) {
+    const mockTypingParticipant = {
+      participantId: MOCK_TYPING_PARTICIPANT_ID,
+      displayName: MOCK_TYPING_PARTICIPANT_NAME,
+      direction: Direction.Incoming,
+      participantRole: participantRole,
+    }
+    const updatedTypingParticipants = this.typingParticipants;
+
+    updatedTypingParticipants.push(mockTypingParticipant);
+    this._updateTypingParticipants(updatedTypingParticipants);
+  }
+
   _updateTypingParticipantsUsingIncoming(item) {
     if (item.type === PARTICIPANT_MESSAGE) {
       this._removeTypingParticipant(item.participantId);
@@ -938,10 +980,14 @@ class ChatSession {
   }
 
   _removeTypingParticipant(participantId) {
-    //this.typingParticipants = this.typingParticipants.filter(
-    //  tp => tp.participantDetails.participantId !== participantId
-    //);
-    this._updateTypingParticipants([]);
+    // Remove participant that matches the specified participantId
+    const remainingTypingParticipants = this.typingParticipants.filter(participant => participant.participantId !== participantId);
+    this._updateTypingParticipants(remainingTypingParticipants);
+  }
+
+  _removeMockTypingParticipant() {
+    const remainingTypingParticipants = this.typingParticipants.filter(participant => participant.participantId !== MOCK_TYPING_PARTICIPANT_ID);
+    this._updateTypingParticipants(remainingTypingParticipants);
   }
 
   // The message of clicking "Show more" or "Previous options" in interactive message should not add to transcript

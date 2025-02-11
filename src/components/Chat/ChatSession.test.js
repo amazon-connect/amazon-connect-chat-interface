@@ -2,7 +2,14 @@
 // SPDX-License-Identifier: MIT-0
 
 import ChatSession, {getCurrentChatSessionInstance, setCurrentChatSessionInstance} from "./ChatSession";
-import { AttachmentErrorType, ContentType, InteractiveMessageType } from "./datamodel/Model";
+import {
+  AttachmentErrorType, CHAT_EVENT,
+  ContentType,
+  InteractiveMessageType,
+  PARTICIPANT_MESSAGE,
+  PARTICIPANT_TYPES
+} from "./datamodel/Model";
+import { MOCK_TYPING_PARTICIPANT_ID } from "./constants";
 
 const ParticipantId = "123";
 const chatDetails = {
@@ -716,6 +723,77 @@ describe("ChatSession", () => {
       // interactiveMessageRes4 is from a new session, so it can be added to transcript
       // so there are totally 2 messages in transcript
       expect(session.transcript.length).toEqual(2);
+    });
+
+    test('Should mock typing indicator for Lex Bots', () => {
+      const featurePermissions = {
+        "TYPING_EVENT_FOR_BOTS": true,
+      };
+
+      const session = new ChatSession(chatDetails, "", region, stage, featurePermissions);
+
+      session.client.onMessage = jest.fn();
+      session.client.session.onMessage.mockClear();
+      session.client.session.sendEvent.mockClear();
+      session.openChatSession(true);
+
+      const messageCallbackFn = session.client.onMessage.mock.calls[0][0];
+
+      const botDataInput = JSON.parse('{"transportDetails": "Incoming","data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","ContentType":"application/vnd.amazonaws.connect.message.interactive","Id":"ID","Type":"MESSAGE","ParticipantId":"ParticipantId","DisplayName":"BOT","ParticipantRole":"SYSTEM","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}');
+      botDataInput.data.Content = JSON.parse('{"templateType":"ListPicker","version":"1.0","data":{"content":{"title":"What produce would you like to buy?","subtitle":"Tap to select option","elements":[{"title":"Acupuncture","subtitle":"$1.00"},{"title":"Chiropractor","subtitle":"$1.00"},{"title":"Naturopath","subtitle":"$1.00"}]}}}',)
+      const customerDataInput = JSON.parse('{"transportDetails": "Outgoing","data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","ContentType":"text/markdown","Content": "Hi","Id":"ID","Type":"MESSAGE","ParticipantId":"ParticipantId","DisplayName":"Customer","ParticipantRole":"CUSTOMER","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}');
+      const agentDataInput = JSON.parse('{"transportDetails": "Incoming","data":{"AbsoluteTime":"2022-08-30T03:25:11.004Z","ContentType":"application/vnd.amazonaws.connect.event.participant.joined","Id":"ID","Type":"EVENT","ParticipantId":"ParticipantId","DisplayName":"Agent","ParticipantRole":"AGENT","InitialContactId":"contactId","ContactId":"contactId"},"chatDetails":{"initialContactId":"initialContactId","contactId":"contactId","participantId":"participantId","participantToken":"Token="}}');
+
+
+      expect(session.isBotInChat).toEqual(false);
+
+      // Bot first joins chat. Expect flag to indicate there's Bot
+      messageCallbackFn(botDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeUndefined();
+      expect(session.isBotInChat).toEqual(true);
+
+      // Expect mock typing indicator for Bot.
+      messageCallbackFn(customerDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeDefined();
+      expect(session.isBotInChat).toEqual(true);
+
+      // Expect mock typing indicator to be replaced with incoming Bot data.
+      messageCallbackFn(botDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeUndefined();
+      expect(session.isBotInChat).toEqual(true);
+
+      // Agent joins chat. Expect flag to indicate no Bot
+      messageCallbackFn(agentDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeUndefined();
+      expect(session.isBotInChat).toEqual(false);
+
+      // Agent send message in chat.  Expect flag to indicate no Bot
+      agentDataInput.data.ContentType = ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN;
+      agentDataInput.data.Content = "Hi";
+      agentDataInput.data.Type = PARTICIPANT_MESSAGE;
+      messageCallbackFn(agentDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeUndefined();
+      expect(session.isBotInChat).toEqual(false);
+
+      // Bot joins chat again. Expect flag to indicate there's Bot.
+      botDataInput.data.ParticipantRole = PARTICIPANT_TYPES.CUSTOM_BOT;
+      messageCallbackFn(botDataInput);
+      expect(session.isBotInChat).toEqual(true);
+
+      // Expect mock typing indicator for Bot.
+      messageCallbackFn(customerDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeDefined();
+
+      // Customer leaves chat. Expect flag to indicate Bot is in chat. No mock typing indicator.
+      customerDataInput.data.ContentType = ContentType.EVENT_CONTENT_TYPE.PARTICIPANT_LEFT;
+      customerDataInput.data.Type = CHAT_EVENT;
+      messageCallbackFn(customerDataInput);
+      expect(session.isBotInChat).toEqual(true);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeUndefined();
+
+      customerDataInput.data.ContentType = ContentType.EVENT_CONTENT_TYPE.CHAT_ENDED;
+      messageCallbackFn(customerDataInput);
+      expect(session.typingParticipants.find(tp => tp.participantId === MOCK_TYPING_PARTICIPANT_ID)).toBeUndefined();
     });
 
     test("should handle chat rehydration correctly", async () => {

@@ -7,7 +7,10 @@ export const ATTACHMENT_MESSAGE = "ATTACHMENT";
 
 export const PARTICIPANT_TYPES = {
   AGENT: "AGENT",
+  SUPERVISOR: "SUPERVISOR",
   CUSTOMER: "CUSTOMER",
+  SYSTEM: "SYSTEM",
+  CUSTOM_BOT: "CUSTOM_BOT"
 };
 
 export const ContentType = {
