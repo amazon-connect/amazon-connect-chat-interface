@@ -6,6 +6,7 @@ import ThemeProvider from '../../theme/ThemeProvider';
 import request from '../../utils/fetchRequest';
 import EventBus from "./eventbus";
 import { LanguageProvider } from "../../context/LanguageContext";
+import * as ChatInitiator from "./ChatInitiator";
 
 jest.mock('../../utils/fetchRequest');
 
@@ -144,6 +145,21 @@ describe("<ChatContainer />", () => {
     EventBus.trigger("initChat", clientConfig, success, failure);
     await waitFor(() => {
       expect(failure).toBeCalled();
+    })
+  })
+
+  it('should render and not call initiateChat when chatSessionParameters exists', async () => {
+    const spy = jest.spyOn(ChatInitiator,  'initiateChat')
+    const config = {
+      ...clientConfig,
+      chatSessionParameters: startChatResponse.json.data.startChatResult
+    };
+    renderComponent();
+    const success = jest.fn();
+    const failure = jest.fn();
+    EventBus.trigger("initChat", config, success, failure);
+    await waitFor(() => {
+      expect(spy).not.toHaveBeenCalled();
     })
   })
 })

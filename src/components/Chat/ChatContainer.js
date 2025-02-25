@@ -100,7 +100,7 @@ class ChatContainer extends Component {
       authenticationIdentityProvider: input.authenticationIdentityProvider || ''
     }
     try {
-      const chatDetails = await initiateChat(input);
+      const chatDetails = input.chatSessionParameters ? {startChatResult: input.chatSessionParameters} : await initiateChat(input);
       const chatSession = await this.openChatSession(chatDetails, input.name, input.region, input.stage, customizationParams);
       setCurrentChatSessionInstance(chatSession);
       const attachmentsEnabled =
