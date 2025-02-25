@@ -140,7 +140,6 @@ describe("<ChatContainer />", () => {
   it('should fail to render component', async () => {
     request.mockRejectedValue(new Error('error'));
     renderComponent();
-    console.log(JSON.stringify(clientConfig))
     const success = jest.fn();
     const failure = jest.fn();
     EventBus.trigger("initChat", clientConfig, success, failure);
@@ -151,12 +150,10 @@ describe("<ChatContainer />", () => {
 
   it('should render and not call initiateChat when chatSessionParameters exists', async () => {
     const spy = jest.spyOn(ChatInitiator,  'initiateChat')
-
     const config = {
       ...clientConfig,
       chatSessionParameters: startChatResponse.json.data.startChatResult
     };
-    console.log(JSON.stringify(config))
     renderComponent();
     const success = jest.fn();
     const failure = jest.fn();
