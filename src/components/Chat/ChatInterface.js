@@ -14,6 +14,7 @@ class ChatInterface {
     region: "",
     stage: "prod",
     contactAttributes: {},
+    chatSessionParameters: {},
     featurePermissions: {}
   }
 

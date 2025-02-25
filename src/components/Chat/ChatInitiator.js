@@ -32,6 +32,9 @@ function safeParse(jsonString, defaultValue) {
  * @returns {Promise} Promise object that resolves to chatDetails objects
  */
 export function initiateChat(input) {
+  if (input.chatSessionParameters) {
+    return { startChatResult: input.chatSessionParameters };
+  }
   const initiateChatRequest = {
     InstanceId: input.instanceId,
     ContactFlowId: input.contactFlowId,
