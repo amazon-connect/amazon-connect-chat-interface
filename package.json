@@ -138,7 +138,7 @@
     "babel-jest": "27.2.0",
     "babel-loader": "^8.3.0",
     "babel-plugin-named-asset-import": "^0.2.3",
-    "babel-preset-react-app": "^8.0.0",
+    "babel-preset-react-app": "^10.1.0",
     "bfj": "6.1.1",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
     "chalk": "2.4.1",
