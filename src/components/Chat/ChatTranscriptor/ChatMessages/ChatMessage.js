@@ -396,7 +396,10 @@ export class ParticipantMessage extends PureComponent {
     
     if (contentType === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE) {
       const { data, templateType } = JSON.parse(content);
-      if (this.props.isLatestMessage) {
+
+      // before: render an interactive message (including view message) only if it's the latest message in chat transcript
+      // after: render an interactive message if it's the latest message in chat transcript, or if it's a view message
+      if (this.props.isLatestMessage || JSON.parse(content).templateType === InteractiveMessageType.VIEW_RESOURCE) {
         this.triggerCountMetric(templateType + CSM_CONSTANTS.RENDER_INTERACTIVE_MESSAGE)
         return (
           <ErrorBoundary fallback={<ErrorFallback InteractiveMessageType={templateType}/>} >

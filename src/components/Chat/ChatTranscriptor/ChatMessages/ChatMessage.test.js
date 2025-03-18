@@ -287,7 +287,9 @@ describe("ChatMessage", () => {
       expect(getByText("Explore our travel options - View All Destinations")).toBeInTheDocument();
     });
 
-    it("should be able to render view message", () => {
+    it.each([
+      true, false
+    ])("should be able to render view message no matter if it's the latest message", (isLatestMessage) => {
       let viewResponseData = {
         actionName: "ActionName",
         key: {
@@ -309,7 +311,7 @@ describe("ChatMessage", () => {
 
       expect(JSON.parse(message.content.data).content).not.toEqual({ "hello": "world" });
 
-      renderComponent(message, { isLatestMessage: true });
+      renderComponent(message, { isLatestMessage: isLatestMessage });
 
       expect(screen.getByTestId("connect-view-renderer")).toBeInTheDocument();
 

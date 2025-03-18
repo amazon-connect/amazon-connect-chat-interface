@@ -313,23 +313,19 @@ class ChatSession {
      * if using guides, expect the response to be of type INTERACTIVE_RESPONSE
      * else take the no match found branch of the view
      */
-    const lastIncomingMessageIdx = this._findLastMessageInTranscript(Direction.Incoming, this.transcript);
-    if (lastIncomingMessageIdx >= 0) {
-      const lastIncomingMessage = this.transcript[lastIncomingMessageIdx];
-      try {
-        const lastIncomingMessageData = JSON.parse(lastIncomingMessage.content.data);
 
-        if (lastIncomingMessageData.templateType === InteractiveMessageType.VIEW_RESOURCE &&
-          data.type !== ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE) {
-          let temp_message = {
-            action: " ", // empty string is not allowed
-            data: { content: `${data.text}` },
-            templateType: InteractiveMessageType.VIEW_RESOURCE,
-            version: '1.0'
-          };
-          temp_message = JSON.stringify(temp_message);
-          data = { text: temp_message, type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE };
-        }
+    // if the message has type plain/text or plain/markdown, do not alter it and send it as is
+    if (data.type !== ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE) {
+      return modelUtils.createOutgoingTranscriptItem(PARTICIPANT_MESSAGE, { data: data.text, type: data.type || ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN }, this.thisParticipant);
+    }
+
+    // if the message has type interactive.response, mark the view message as responded
+    const lastViewMessageIdx = this._findLastViewMessageInTranscript(Direction.Incoming, this.transcript);
+    if (lastViewMessageIdx >= 0) {
+      const lastViewMessage = this.transcript[lastViewMessageIdx];
+      try {
+        const lastViewMessageData = JSON.parse(lastViewMessage.content.data);
+        this.markViewMessageResponseSent(data, lastViewMessageIdx, lastViewMessageData);
       } catch (e) {
         console.debug(`Unable to parse message.content.data. Skipping check for previous view message`);
       }
@@ -342,12 +338,26 @@ class ChatSession {
     );
   }
 
+  markViewMessageResponseSent(data, lastIncomingMessageIdx, lastIncomingMessageData) {
+    if (lastIncomingMessageIdx >= 0 && lastIncomingMessageData.templateType === InteractiveMessageType.VIEW_RESOURCE
+        && data.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE) {
+      this.transcript[lastIncomingMessageIdx]._viewResponseSent = true;
+    }
+  }
+
+  markViewMessageResponseDelivered() {
+    const lastViewMessageIdx = this._findLastViewMessageInTranscript(Direction.Incoming, this.transcript);
+    if (lastViewMessageIdx >= 0 && this.transcript[lastViewMessageIdx]?._viewResponseSent) {
+      this.transcript[lastViewMessageIdx]._viewResponseDelivered = true;
+    }
+  }
+
   addOutgoingMessage(data) {
     const message = this.alterOutgoingMessageForViewsIfRequired(data);
 
     this.logger && this.logger.info(`Adding outgoing message. ContactId: ${this.contactId}`);
 
-    this._shouldAddToTranscript(message) && this._addItemsToTranscript([message]);
+    this._shouldAddToTranscript(message, true) && this._addItemsToTranscript([message]);
 
     this.isOutgoingMessageInFlight = true;
 
@@ -356,8 +366,15 @@ class ChatSession {
       .then((response) => {
         console.log("send success");
         console.log(response);
-        this._shouldAddToTranscript(message) && this._replaceItemInTranscript(message, modelUtils.createTranscriptItemFromSuccessResponse(message, response));
-
+        this._shouldAddToTranscript(message, true) && this._replaceItemInTranscript(message, modelUtils.createTranscriptItemFromSuccessResponse(message, response));
+        if (message.content?.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE) {
+          this.markViewMessageResponseDelivered();
+          // remove any view messages that are not the latest message
+          this._updateTranscript(this.transcript.filter((item, idx) => {
+            return !(modelUtils.isViewMessage(item))
+          }));
+          window.sessionStorage.removeItem("amazonConnectPendingViewId");
+        }
         this.isOutgoingMessageInFlight = false;
         return response;
       })
@@ -572,15 +589,20 @@ class ChatSession {
       .then(async response => {
         var incomingDataList = response.data.Transcript;
         this.nextToken = response.data.NextToken;
-        const transcriptItems = incomingDataList.map((data) => {
-          var transcriptItem = modelUtils.createItemFromIncoming(data, this.thisParticipant);
-          return transcriptItem;
+        const pendingViewId = window.sessionStorage.getItem("amazonConnectPendingViewId");
+        let transcriptItems = incomingDataList.map((data) => {
+          return modelUtils.createItemFromIncoming(data, this.thisParticipant);
         });
-        // call describeview to get the view if the newest message is a view message
-        let lastItem = transcriptItems.pop();
-        if (modelUtils.isViewMessage(lastItem) && lastItem.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE)
-          await this._describeAndProcessView(lastItem);
-        transcriptItems.push(lastItem);
+        transcriptItems = transcriptItems.filter(transcriptItem => {
+          // short term workaround - using session storage to keep track of the view message that is pending response and remove other view messages on UI
+          // TODO: update logic once the view message from getTranscript includes a status field for whether it has been replied to
+          return !(modelUtils.isViewMessage(transcriptItem) && transcriptItem.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE && pendingViewId !== transcriptItem.id);
+        });
+
+        const pendingViewItem = this._findLastViewMessageInTranscript(Direction.Incoming, transcriptItems);
+        if (pendingViewItem >= 0) {
+          await this._describeAndProcessView(transcriptItems[pendingViewItem]);
+        }
 
         this._addItemsToTranscript(transcriptItems);
       })
@@ -618,6 +640,7 @@ class ChatSession {
         // check if this is a guides message
         if (modelUtils.isViewMessage(item)) {
           return this._describeAndProcessView(item).then(() => {
+            window.sessionStorage.setItem("amazonConnectPendingViewId", item.id);
             this._addItemsToTranscript([item]);
           });
         }
@@ -774,12 +797,6 @@ class ChatSession {
       newTranscript[lastDeliveredMessageIdx].lastDeliveredReceipt = true;
     }
 
-    // remove any view messages that are not the latest message
-    newTranscript = newTranscript.filter((item, idx) => {
-      return (idx === lastIncomingMessageIdx && lastOutgoingMessageIdx <= lastIncomingMessageIdx) || !(modelUtils.isViewMessage(item) &&
-        item.content.type === ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE)
-    });
-
     this._updateTranscript(newTranscript);
   }
 
@@ -852,6 +869,28 @@ class ChatSession {
       }
     }
     return lastReceiptIdx;
+  }
+
+  // locates the last message that's a view message in the transcript, returns -1 if not found
+  _findLastViewMessageInTranscript(direction, transcript) {
+    const size = transcript.length - 1;
+    let lastInteractiveIdx = -1;
+    for (let index = size; index >= 0; index--) {
+      const transportDetails = transcript[index].transportDetails;
+      let incomingMessageData;
+      try {
+        incomingMessageData = JSON.parse(transcript[index].content.data);
+      } catch (e) {
+        continue;
+      }
+      if (transportDetails && transportDetails.direction === direction &&
+          incomingMessageData.templateType === InteractiveMessageType.VIEW_RESOURCE &&
+          !incomingMessageData._viewResponseDelivered) {
+        lastInteractiveIdx = index;
+        break;
+      }
+    }
+    return lastInteractiveIdx;
   }
 
   _isRoundtripMessage(item) {
@@ -945,7 +984,7 @@ class ChatSession {
   }
 
   // The message of clicking "Show more" or "Previous options" in interactive message should not add to transcript
-  _shouldAddToTranscript(message) {
+  _shouldAddToTranscript(message, isOutGoingMessage = false) {
     try {
       if (message.content && message.content.data && !modelUtils.isViewMessage(message)) {
         const str = message.content.data;
@@ -955,6 +994,11 @@ class ChatSession {
             return false;
           }
         }
+      }
+      if (modelUtils.isViewMessage(message) && isOutGoingMessage) {
+        // outGoing message can contain PII data
+        // only display view messages received over websocket.
+        return false;
       }
       return true;
     } catch (err) {

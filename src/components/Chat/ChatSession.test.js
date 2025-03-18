@@ -3,6 +3,7 @@
 
 import ChatSession, {getCurrentChatSessionInstance, setCurrentChatSessionInstance} from "./ChatSession";
 import { AttachmentErrorType, ContentType, InteractiveMessageType } from "./datamodel/Model";
+import { waitFor } from '@testing-library/react';
 
 const ParticipantId = "123";
 const chatDetails = {
@@ -789,7 +790,7 @@ describe("ChatSession", () => {
       });
     });
 
-    test("should alter message if trying to send a non interactive response for a previous view resource interactive message", () => {
+    test("should not alter message if trying to send a non interactive response for a previous view resource interactive message", () => {
       const session = new ChatSession(
         chatDetails,
         "",
@@ -838,50 +839,123 @@ describe("ChatSession", () => {
 
       //expect client to send interactive response
       expect(session.client.session.sendMessage).toBeCalled();
-      expect(session.client.session.sendMessage.mock.calls[0][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE);
+      expect(session.client.session.sendMessage.mock.calls[0][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN);
 
       const message = session.client.session.sendMessage.mock.calls[0][0].message;
-      expect(JSON.parse(message).action).toEqual(" ");
-      expect(JSON.parse(message).data).toEqual({ content: "hi hello" });
+      expect(message).toBe("hi hello");
     });
 
-    test("clear view message after customer interacts with it", () => {
+    it("should be able to send a markdown message and then a response for view resource interactive message", async () => {
       const session = new ChatSession(
-        chatDetails,
-        "",
-        region,
-        stage,
-        true
+          chatDetails,
+          "",
+          region,
+          stage,
+          true
+      );
+      session.openChatSession(true);
+      session.transcript = [
+        {
+          Id: "test",
+          Type: "message",
+          ParticipantId: "456",
+          AbsoluteTime: AbsoluteTime + 1000,
+          ParticipantRole: 'AGENT',
+          transportDetails: {
+            direction: "Incoming",
+            messageReceiptType: "delivered",
+            status: "SendSuccess",
+          },
+          MessageMetadata: {
+            MessageId: "test",
+            Receipts: [
+              {
+                RecipientParticipantId: "RecipientParticipantId",
+                DeliveredTimestamp: new Date().toISOString(),
+                ReadTimestamp: new Date().toISOString(),
+              },
+            ],
+          },
+          lastDeliveredReceipt: true,
+          content: {
+            type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+            data: JSON.stringify({templateType: InteractiveMessageType.VIEW_RESOURCE})
+          },
+        },
+      ]
+
+      // create outgoing plain text
+      const dataInput = {
+        text: "First Text message",
+        type: "text/markdown"
+      }
+
+      //mock return value for sendMessage promise
+      session.client.session.sendMessage.mockReturnValueOnce(Promise.resolve(dataInput));
+
+      // send outgoing plaintext
+      session.addOutgoingMessage(dataInput);
+
+      //expect client to send interactive response
+      expect(session.client.session.sendMessage).toBeCalled();
+      expect(session.client.session.sendMessage.mock.calls[0][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.TEXT_MARKDOWN);
+
+      const message = session.client.session.sendMessage.mock.calls[0][0].message;
+      expect(message).toBe("First Text message");
+
+      //mock return value for sendMessage promise
+      session.client.session.sendMessage.mockReturnValueOnce(Promise.resolve(dataInput));
+      // send outgoing plaintext again
+      const interactiveResponse = {
+        type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE,
+        data: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE })
+      }
+      session.addOutgoingMessage(interactiveResponse);
+
+      //expect client to send markdown text message
+      expect(session.client.session.sendMessage).toBeCalled();
+      await waitFor(() => {
+        expect(session.client.session.sendMessage.mock.calls[1][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE);
+      });
+    });
+
+    it("should remove both the view and view response message after sending the response", async () => {
+      const session = new ChatSession(
+          chatDetails,
+          "",
+          region,
+          stage,
+          true
       );
       session.openChatSession(true);
       const interactiveMessageInTranscript =
-      {
-        Id: "test_1",
-        Type: "message",
-        ParticipantId: "456",
-        AbsoluteTime: AbsoluteTime + 1000,
-        ParticipantRole: 'SYSTEM',
-        transportDetails: {
-          direction: "Incoming",
-          messageReceiptType: "delivered",
-          status: "SendSuccess",
-        },
-        MessageMetadata: {
-          MessageId: "test1",
-          Receipts: [
-            {
-              RecipientParticipantId: "RecipientParticipantId",
-              DeliveredTimestamp: new Date().toISOString(),
-              ReadTimestamp: new Date().toISOString(),
+          {
+            Id: "test_1",
+            Type: "message",
+            ParticipantId: "456",
+            AbsoluteTime: AbsoluteTime + 1000,
+            ParticipantRole: 'SYSTEM',
+            transportDetails: {
+              direction: "Incoming",
+              messageReceiptType: "delivered",
+              status: "SendSuccess",
             },
-          ],
-        },
-        lastDeliveredReceipt: true,
-        content: {
-          type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
-          data: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE })
-        },
-      };
+            MessageMetadata: {
+              MessageId: "test1",
+              Receipts: [
+                {
+                  RecipientParticipantId: "RecipientParticipantId",
+                  DeliveredTimestamp: new Date().toISOString(),
+                  ReadTimestamp: new Date().toISOString(),
+                },
+              ],
+            },
+            lastDeliveredReceipt: true,
+            content: {
+              type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_MESSAGE,
+              data: JSON.stringify({templateType: InteractiveMessageType.VIEW_RESOURCE})
+            },
+          };
 
       session.transcript = [
         {
@@ -908,28 +982,28 @@ describe("ChatSession", () => {
           lastDeliveredReceipt: true,
           content: {
             type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE,
-            data: JSON.stringify({ templateType: InteractiveMessageType.VIEW_RESOURCE })
+            data: JSON.stringify({templateType: InteractiveMessageType.VIEW_RESOURCE})
           },
         },
         interactiveMessageInTranscript
       ]
       // create response
       const dataInput = {
-        text: JSON.stringify({ templateType: 'ViewResource', data: {} }),
+        text: JSON.stringify({templateType: 'ViewResource', data: {}}),
         type: ContentType.MESSAGE_CONTENT_TYPE.INTERACTIVE_RESPONSE
       }
 
       expect(session.transcript.includes(interactiveMessageInTranscript)).toBeTruthy();
 
-      // send outgoing plaintext
+      // send interactive.response
       session.addOutgoingMessage(dataInput);
 
-      // expect client to send interactive response
       expect(session.client.session.sendMessage).toBeCalled();
+      await waitFor(() => {
+        expect(session.transcript.length).toEqual(0);
+      })
 
-      expect(session.transcript.length).toEqual(2);
-
-      // interactive message is removed
+      // interactive message is not removed
       expect(session.transcript.includes(interactiveMessageInTranscript)).not.toBeTruthy();
     });
 
@@ -985,7 +1059,8 @@ describe("ChatSession", () => {
       expect(session.client.session.sendMessage.mock.calls[0][0].contentType).toEqual(ContentType.MESSAGE_CONTENT_TYPE.TEXT_PLAIN);
     });
 
-    test("should remove old views and retain new one when loading transcript", async () => {
+    it("should retain one view message when loading transcript", async () => {
+      window.sessionStorage.setItem("amazonConnectPendingViewId", "view_message_2");
       const session = new ChatSession(chatDetails, region, stage);
       session.openChatSession(true);
       const transcriptLength = transcriptResponse.data.Transcript.length;
@@ -997,6 +1072,21 @@ describe("ChatSession", () => {
       expect(session.transcript.length).toEqual(transcriptLength - 1);
       // should be called for the latest message
       expect(session.client.session.describeView).toBeCalledTimes(1);
-    });
+      window.sessionStorage.removeItem("amazonConnectPendingViewId");
+    })
+
+    it("should remove all view message when loading transcript", async () => {
+      const session = new ChatSession(chatDetails, region, stage);
+      session.openChatSession(true);
+      const transcriptLength = transcriptResponse.data.Transcript.length;
+      const connectionEstablishedCallback =
+        session.client.session.onConnectionEstablished.mock.calls[0][0];
+
+      await connectionEstablishedCallback();
+      // 2 view messages need to be removed when loading transcript
+      expect(session.transcript.length).toEqual(transcriptLength - 2);
+      // should not be called for any view message
+      expect(session.client.session.describeView).toBeCalledTimes(0);
+    })
   });
 });
