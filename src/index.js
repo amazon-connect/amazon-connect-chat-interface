@@ -10,6 +10,7 @@ import { config } from "./utils/log";
 import { setupGuidesRenderer } from './utils/helper';
 
 import defaultTheme from './theme/defaultTheme';
+import packageJson from '../package.json';
 
 (function(connect) {
   connect.LogManager && connect.LogManager.updateLoggerConfig(config);
@@ -26,6 +27,7 @@ import defaultTheme from './theme/defaultTheme';
         throttleTime: 5000
       }
     };
+    config.customUserAgentSuffix = `AmazonConnect-ChatInterface/${packageJson.version}`;
     connect.ChatSession.setGlobalConfig(config);
 
     // Guides in Chat
