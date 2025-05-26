@@ -1,9 +1,12 @@
 # Host Widget Snippet Integrated Custom UI (S3 Bucket/CDN)
 
 ## Overview
-Integrate a fully customized the chat interface UI in the pre-built Hosted Widget, with all configurations available in the Connect Admin Console. The hosted widget can handle all of the logic to render the widget on your website and start chat sessions.
 
-If your intention is to only customize [amazon-connect-chat-interface.js](https://github.com/amazon-connect/amazon-connect-chat-interface) and use it in your chat widget, you can consider this method as a quick way to do it. If you want to customize [amazon-connect-chat.js](https://github.com/amazon-connect/amazon-connect-chatjs), this method is not suitable.
+Fork the open-souce [GitHub Chat Interface](https://github.com/amazon-connect/amazon-connect-chat-interface) and customize your own customer chat UI. Import the custom bundle file into the pre-built [Amazon Connect Hosted Widget](https://docs.aws.amazon.com/connect/latest/adminguide/add-chat-to-website.html). The hosted widget will handle all the backend logic and [StartChatContact](https://docs.aws.amazon.com/connect/latest/APIReference/API_StartChatContact.html) API requests, allowing you to focus on the UI development.
+
+You'll need to fork the [GitHub Chat Interface](https://github.com/amazon-connect/amazon-connect-chat-interface) and generate a custom bundle file: `amazon-connect-chat-interface.js`
+
+> 📍 Please note, [pre-built Hosted Widget](https://docs.aws.amazon.com/connect/latest/adminguide/add-chat-to-website.html) Chat Interface is a different code base than this Github Chat Interface. We try to release the newest feature, but we do not guarantee the latest internal features are available on GitHub. Github Chat Interface is provided as-is, and it's inteded to be a fully-functional boilerplate for an Amazon Connect Chat UI.
 
 ## References
 
@@ -12,10 +15,9 @@ If your intention is to only customize [amazon-connect-chat-interface.js](https:
 
 ## Prerequisites
 
-- Create an Amazon Connect Instance [[guide](https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html)]
-  - OR: enable chat experience for an existing Connect instance. [[guide](../README.md#enabling-chat-in-an-existing-amazon-connect-contact-center)]
+- an Amazon Connect Instance [[guide](https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-instances.html)]
 
-- Create an Amazon Connect Contact Flow, ready to receive chat contacts. [[guide](https://docs.aws.amazon.com/connect/latest/adminguide/chat.html)]
+- an Amazon Connect Contact Flow, ready to receive chat contacts. [[guide](https://docs.aws.amazon.com/connect/latest/adminguide/chat.html)]
 
     - For demo purposes, you can start with the ["Sample Inbound Flow (First Contact)"](https://docs.aws.amazon.com/connect/latest/adminguide/sample-inbound-flow.html)
 
@@ -41,14 +43,14 @@ If your intention is to only customize [amazon-connect-chat-interface.js](https:
         ```
         amazon_connect('customerChatInterfaceUrl', 'https://...'); // TODO: put in your link to amazon-connect-chat-interface.js
         ```
- 
+
 5. You should see the source of `amazon-connect-chat-interface.js` is now your file.
 
     - Before(using Amazon default `amazon-connect-chat-interface.js`):
-    ![Alt text](/.github/screenshots/built-in-script-setup-steps-web-resource.jpg) 
+    ![Alt text](/.github/screenshots/built-in-script-setup-steps-web-resource.jpg)
 
     - After (using your customized  `amazon-connect-chat-interface.js`):
-    ![Alt text](/.github/screenshots/built-in-script-setup-steps-result.jpg) 
+    ![Alt text](/.github/screenshots/built-in-script-setup-steps-result.jpg)
 
 ## Usage
 
@@ -59,7 +61,7 @@ Host your own `amazon-connect-chat-interface.js` bundle file and provide the lin
 
 <script type="text/javascript">
   (function(w, d, x, id){s=d.createElement('script');s.src='https://d2s9x5slbvr0vu.cloudfront.net/amazon-connect-chat-interface-client.js';s.async=1;s.id=id;d.getElementsByTagName('head')[0].appendChild(s);w[x]=w[x]||function(){(w[x].ac=w[x].ac||[]).push(arguments)}})(window, document, 'amazon_connect', 'asdfasdfasdf');
-  
+
   amazon_connect('styles', { openChat: { color: '#ffffff', backgroundColor: '#07b62a'}, closeChat: { color: '#ffffff', backgroundColor: '#07b62a'} });
   amazon_connect('snippetId', 'asdfsadfasdf...');
   amazon_connect('supportedMessagingContentTypes', [ 'text/plain', 'text/markdown' ]);
