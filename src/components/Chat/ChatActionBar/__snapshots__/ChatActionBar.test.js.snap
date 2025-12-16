@@ -97,8 +97,8 @@ exports[`<ChatActionBar /> Style should match the snapshot 1`] = `
 }
 
 .c1 {
-  background: rgba(242,242,242,0.49);
-  height: 85px;
+  background: var(--ac-widget-footer-backgroundcolor,rgba(242,242,242,0.49));
+  height: var(--ac-widget-global-footerheight,85px);
 }
 
 .c0 {
@@ -135,6 +135,10 @@ exports[`<ChatActionBar /> Style should match the snapshot 1`] = `
 .c4 {
   margin: 10px;
   width: 43%;
+  font-size: var(--ac-widget-footer-button-fontsize,inherit);
+  color: var(--ac-widget-footer-button-textcolor,inherit);
+  border-color: var(--ac-widget-footer-button-bordercolor,inherit);
+  background: var(--ac-widget-footer-button-backgroundcolor,inherit);
 }
 
 @media (max-width:640px) {
@@ -147,7 +151,7 @@ exports[`<ChatActionBar /> Style should match the snapshot 1`] = `
 }
 
 <div
-  className="c0"
+  className="c0 footer"
 >
   <div
     className="c1"

@@ -11,8 +11,8 @@ import { CONTACT_STATUS } from "connect-constants";
 export const ACTION_BAR_HEIGHT = "85px";
 
 const Actions = styled.div`
-  background: ${props => props.theme.palette.dustyGray};
-  height: ${ACTION_BAR_HEIGHT};
+  background: var(--ac-widget-footer-backgroundcolor, ${props => props.theme.palette.dustyGray});
+  height: var(--ac-widget-global-footerheight, ${ACTION_BAR_HEIGHT});
 `;
 
 const FooterWrapper = styled.div`
@@ -41,7 +41,10 @@ const ButtonWrapper = styled.div`
 const ActionButton = styled(Button)`
   margin: ${props => props.theme.spacing.small};
   width: ${props => (props.col ? 100 / props.col - 7 + "%" : "")};
-  
+  font-size: var(--ac-widget-footer-button-fontsize, inherit);
+  color: var(--ac-widget-footer-button-textcolor, inherit);
+  border-color: var(--ac-widget-footer-button-bordercolor, inherit);
+  background: var(--ac-widget-footer-button-backgroundcolor, inherit);
 `;
 
 function createMarkup(content) {
@@ -89,7 +92,7 @@ export default class ChatActionBar extends React.Component {
     }
 
     return (
-      <FooterWrapper>
+      <FooterWrapper className="footer">
         <Actions>
           <ButtonWrapper>
             {(contactStatus === CONTACT_STATUS.CONNECTED ||

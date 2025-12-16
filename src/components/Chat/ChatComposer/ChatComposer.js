@@ -75,8 +75,9 @@ const IconButton = styled.button`
 `;
 
 const AttachmentContainer = styled.div`
+  --outgoingMsgBg-background-color: ${(props) => props.theme.chatTranscriptor.outgoingMsgBg};
   display: flex;
-  background-color: ${(props) => props.theme.chatTranscriptor.outgoingMsgBg};
+  background-color: var(--ac-widget-transcript-customer-bubble-color, var(--outgoingMsgBg-background-color));
   border-radius: 5px;
   margin: 5px;
   padding: ${(props) => props.theme.spacing.mini};
@@ -108,7 +109,6 @@ const TextInput = styled(TextareaAutosize)`
   user-select: text;
   word-break: break-word;
   font-family: inherit;
-  font-size: 1rem !important;
   padding: ${(props) => props.theme.spacing.small};
   padding-left: 0;
   padding-right: ${(props) => props.theme.spacing.xxlarge};
@@ -120,7 +120,7 @@ const TextInput = styled(TextareaAutosize)`
   z-index: 2;
   resize: none;
   letter-spacing: ${(props) => props.theme.globals.letterSpacing};
-  font-size: ${(props) => props.theme.fontsSize.regular || "1rem"};
+  font-size: var(--ac-widget-composer-fontsize, var(--ac-widget-global-fontsize, 16px));
   border: none;
 
   &::placeholder {
@@ -396,7 +396,7 @@ export default function ChatComposer({ addMessage, addAttachment, onTyping, cont
   );
 
   return (
-    <ChatComposerWrapper>
+    <ChatComposerWrapper className="composer">
       { contactStatus === CONTACT_STATUS.CONNECTED && (
           composerConfig && composerConfig.richMessagingEnabled
               ? richMessagingComposer
