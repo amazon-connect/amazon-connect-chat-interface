@@ -9,11 +9,9 @@ import ChatContainer from "./components/Chat/ChatContainer";
 
 import defaultTheme from './theme/defaultTheme';
 
-
 const Page = styled.div`
-
   width: 300px;
-  font-family: ${props => props.theme.fonts.regular};
+  font-family: var(--ac-widget-global-typeface, ${props => props.theme.fonts.regular});
 
   margin: ${props => props.theme.spacing.base};
   border-collapse: collapse;

@@ -31,6 +31,7 @@ const ParentHeaderWrapper = styled.div`
   margin: 0;
   padding: 0;
   order: 1;
+  height: var(--ac-widget-global-headerheight, min(115px, 21.2%));
   @media (max-width: 640px) {
     position: absolute;
     left: 0;
@@ -57,13 +58,18 @@ const ChatComposerWrapper = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
-  background: #3F5773;
+  background: var(--ac-widget-header-backgroundcolor, #3F5773);
   text-align: center;
   padding: 16px;
-  color: #fff;
+  color: var(--ac-widget-header-textcolor, #fff);
   border-radius: 3px;
   flex-shrink: 0;
 `
+
+const LogoBanner = styled.img`
+  max-height: var(--ac-widget-logo-max-height, 61px);
+  max-width: var(--ac-widget-logo-max-width, 99%);
+`;
 const WelcomeText  = styled(Text)`
   padding-bottom: 10px;
 `
@@ -71,9 +77,12 @@ const WelcomeText  = styled(Text)`
 
 const defaultHeaderConfig =  {
   isHTML: false,
-  render: () => {
+  render: (config) => {
     return (
       <HeaderWrapper>
+        {!!config.sourceUrl &&
+          <LogoBanner src={config.sourceUrl} alt={config.altText ? config.altText : 'Logo banner'} />
+        }
         <WelcomeText type={'h2'}>
           <FormattedMessage
             id="header.headerText"
@@ -88,17 +97,18 @@ const defaultHeaderConfig =  {
 };
 
 Header.defaultProps = {
-  headerConfig: {}
+  headerConfig: {},
+  logoConfig: {}
 }
 
-function Header({ headerConfig }){
+function Header({ headerConfig, logoConfig }){
 
-  const config = Object.assign({}, defaultHeaderConfig, headerConfig);
+  const config = Object.assign({}, defaultHeaderConfig, headerConfig, logoConfig);
 
   if(config.isHTML){
     return renderHTML(config.render());
   }else{
-    return config.render();
+    return config.render(config);
   }
 }
 
@@ -194,14 +204,14 @@ export default class Chat extends Component {
   -- this prevents overlay from overflowing in mobile browser. 
 */
   render() {
-    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig } = this.props;
+    const {chatSession, headerConfig, transcriptConfig, composerConfig, footerConfig, logoConfig } = this.props;
     console.log('MESSAGES', this.state.transcript);
 
     return (
       <ChatWrapper data-testid="amazon-connect-chat-wrapper">
         {(this.state.contactStatus === CONTACT_STATUS.CONNECTED ||
           this.state.contactStatus === CONTACT_STATUS.CONNECTING || this.state.contactStatus === CONTACT_STATUS.ENDED) && 
-          <ParentHeaderWrapper ref={this.parentHeaderRef}><Header headerConfig={headerConfig}/></ParentHeaderWrapper>
+          <ParentHeaderWrapper className="header" ref={this.parentHeaderRef}><Header headerConfig={headerConfig} logoConfig={logoConfig}/></ParentHeaderWrapper>
         }
         <ChatComposerWrapper  parentHeaderWrapperHeight={this.state.parentHeaderWrapperHeight}>
           <ChatTranscriptor

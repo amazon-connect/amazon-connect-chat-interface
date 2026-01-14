@@ -93,7 +93,6 @@ Object {
   user-select: text;
   word-break: break-word;
   font-family: inherit;
-  font-size: 1rem !important;
   padding: 10px;
   padding-left: 0;
   padding-right: 44px;
@@ -104,7 +103,7 @@ Object {
   min-height: 39px;
   z-index: 2;
   resize: none;
-  font-size: 0.875rem;
+  font-size: var(--ac-widget-composer-fontsize,var(--ac-widget-global-fontsize,16px));
   border: none;
 }
 
@@ -155,7 +154,7 @@ Object {
 
 <div>
       <div
-        class="c0"
+        class="c0 composer"
       >
         <div
           class="c1"
@@ -240,7 +239,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-kGXeez bsulgI"
+      class="sc-kGXeez bsulgI composer"
     >
       <div
         class="sc-kpOJdX yKUIE"
@@ -288,7 +287,7 @@ Object {
         </div>
         <textarea
           aria-label="Type a message"
-          class="sc-hMqMXs hOdWwg"
+          class="sc-hMqMXs iSQVRJ"
           data-testid="customer-chat-text-input"
           placeholder="Type a message"
           spellcheck="true"
@@ -468,7 +467,6 @@ Object {
   user-select: text;
   word-break: break-word;
   font-family: inherit;
-  font-size: 1rem !important;
   padding: 10px;
   padding-left: 0;
   padding-right: 44px;
@@ -479,7 +477,7 @@ Object {
   min-height: 39px;
   z-index: 2;
   resize: none;
-  font-size: 0.875rem;
+  font-size: var(--ac-widget-composer-fontsize,var(--ac-widget-global-fontsize,16px));
   border: none;
 }
 
@@ -531,7 +529,7 @@ Object {
 <body>
     <div>
       <div
-        class="c0"
+        class="c0 composer"
       >
         <div
           class="c1"
@@ -616,7 +614,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-kGXeez bsulgI"
+      class="sc-kGXeez bsulgI composer"
     >
       <div
         class="sc-kpOJdX yKUIE"
@@ -664,7 +662,7 @@ Object {
         </div>
         <textarea
           aria-label="Type a message"
-          class="sc-hMqMXs hOdWwg"
+          class="sc-hMqMXs iSQVRJ"
           data-testid="customer-chat-text-input"
           placeholder="Type a message"
           spellcheck="true"

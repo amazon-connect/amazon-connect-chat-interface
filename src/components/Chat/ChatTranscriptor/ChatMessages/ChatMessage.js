@@ -55,10 +55,24 @@ Footer.MessageReceipt = styled.div`
 `;
 
 const Body = styled.div`
+  --incomingMsgBg-background-color: ${(props) => props.theme.chatTranscriptor.incomingMsgBg};
+  --outgoingMsgBg-background-color: ${(props) => props.theme.chatTranscriptor.outgoingMsgBg};
+  
   ${(props) =>
     props.direction === Direction.Outgoing
       ? props.theme.chatTranscriptor.outgoingMsg
       : props.theme.chatTranscriptor.incomingMsg};
+
+  ${(props) =>
+    props.direction === Direction.Outgoing
+      ? `
+        background-color: var(--ac-widget-transcript-customer-bubble-color, var(--outgoingMsgBg-background-color));
+        color: var(--ac-widget-transcript-customer-textcolor);
+      `
+      : `
+        background-color: var(--ac-widget-transcript-agent-bubble-color, var(--incomingMsgBg-background-color));
+        color: var(--ac-widget-transcript-agent-textcolor);
+      `};
 
   ${(props) => (props.messageStyle ? props.messageStyle : "")};
 
@@ -80,7 +94,7 @@ const Body = styled.div`
       border-radius: 2px;
       border-left: 12px solid transparent;
       border-right: 10px solid transparent;
-      border-bottom: 9px solid ${props.theme.chatTranscriptor.outgoingMsgBg};
+      border-bottom: 9px solid var(--ac-widget-transcript-customer-bubble-color, var(--outgoingMsgBg-background-color));
     `
         : `
       content: " ";
@@ -90,7 +104,7 @@ const Body = styled.div`
       border-radius: 2px;
       border-left: 10px solid transparent;
       border-right: 12px solid transparent;
-      border-bottom: 9px solid ${props.theme.chatTranscriptor.incomingMsgBg};`}
+      border-bottom: 9px solid var(--ac-widget-transcript-agent-bubble-color, var(--incomingMsgBg-background-color));`}
   }
 `;
 const ErrorText = styled.div`

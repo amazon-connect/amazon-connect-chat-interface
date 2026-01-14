@@ -23,7 +23,7 @@ const TranscriptBody = styled.div`
 `;
 
 const TranscriptWrapper = styled(ChatTranscriptScroller)`
-  background: ${props => props.theme.chatTranscriptor.background};
+  background: var(--ac-widget-transcript-backgroundcolor, ${props => props.theme.chatTranscriptor.background || props.theme.palette.white});
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
   flex: 12 1 auto;
@@ -160,6 +160,7 @@ export default class ChatTranscriptor extends PureComponent {
 
     return (
       <TranscriptWrapper
+        className="transcript"
         contactId={this.props.contactId}
         type={this.props.contactStatus}
         loadPreviousTranscript={this.loadTranscript}
