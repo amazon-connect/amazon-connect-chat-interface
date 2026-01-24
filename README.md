@@ -66,6 +66,8 @@ Host your own `amazon-connect-chat-interface.js` bundle file and provide the lin
 
 To get help setting up your own start chat backend and calling your own backend to start the chat contact instead of the Amazon-hosted backend, follow the instructions in the [startChatContactAPI](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI) section of the Git repository README to create an API to call the StartChatContact API. Once the API is created, you can call it in the CustomStartChat callback function and send the response back in the widget script.
 
+> **Important**: When implementing a custom StartChat backend, ensure your Lambda response includes `featurePermissions` to enable UI features like rich messaging and attachments. See the [startChatContactAPI documentation](https://github.com/amazon-connect/amazon-connect-chat-ui-examples/tree/master/cloudformationTemplates/startChatContactAPI#using-custom-startchat-implementation) for implementation details.
+
 ```diff
 <script type="text/javascript">
     (function(w, d, x, id){s=d.createElement('script');s.src='https://${apiId}.cloudfront.net/amazon-connect-chat-interface-client.js';s.async=1;s.id=id;d.getElementsByTagName('head')[0].appendChild(s);w[x]=w[x]||function(){(w[x].ac=w[x].ac||[]).push(arguments)}})(window, document, 'amazon_connect', '360f3075-asfd-asfd-asdf-asdf');
