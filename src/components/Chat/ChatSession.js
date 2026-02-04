@@ -597,7 +597,7 @@ class ChatSession {
     console.log(item);
 
     if (item) {
-      if (!this._isRoundtripMessage(data)) {
+      if (!this._isRoundtripMessage(data) && (item.messageCompleted === undefined || item.messageCompleted === true)) {
         this._updateTypingParticipantsUsingIncoming(item);
       }
       console.log("_handleIncomingData item created");
