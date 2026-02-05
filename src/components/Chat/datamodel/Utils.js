@@ -50,6 +50,9 @@ function createItemFromIncoming(item, thisParticipant) {
     const receipt = item.MessageMetadata.Receipts.find(receipt => receipt.RecipientParticipantId !== transcriptItem.participantId) || {};
     transportDetails.messageReceiptType =  receipt.ReadTimestamp ? "read" : (receipt.DeliveredTimestamp ? "delivered" : "");
   }
+  if (item.MessageMetadata && item.MessageMetadata.MessageCompleted !== null && item.MessageMetadata.MessageCompleted !== undefined) {
+    transcriptItem.messageCompleted = item.MessageMetadata.MessageCompleted;
+  }
   transcriptItem.transportDetails = transportDetails;
   transcriptItem.version = 0;
   transcriptItem.Attachments = item.Attachments;
