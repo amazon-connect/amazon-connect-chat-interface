@@ -42,9 +42,11 @@ Add a chat widget to your website that is hosted by Amazon Connect. You can conf
 
 > ❗ IMPORTANT: follow steps listed in [HostedSnippetCustomBundleFileSetup.md](/.github/docs/HostedSnippetCustomBundleFileSetup.md) for a full setup walkthrough
 
-Integrate a fully customized the chat interface UI in the pre-built Hosted Widget, with all configurations available in the Connect Admin Console. The hosted widget can handle all of the logic to render the widget on your website and start chat sessions.
+Fork the open-souce [GitHub Chat Interface](https://github.com/amazon-connect/amazon-connect-chat-interface) and customize your own customer chat UI. Import the custom bundle file into the pre-built [Amazon Connect Hosted Widget](https://docs.aws.amazon.com/connect/latest/adminguide/add-chat-to-website.html). The hosted widget will handle all the backend logic.
 
-Host your own `amazon-connect-chat-interface.js` bundle file and provide the link in the widget snippet configuration. 
+> 📍 Please note, [pre-built Hosted Widget](https://docs.aws.amazon.com/connect/latest/adminguide/add-chat-to-website.html) Chat Interface is a different code base than this Github Chat Interface. We try to release the newest feature, but we do not guarantee the latest internal features are available on GitHub.
+
+Host your own `amazon-connect-chat-interface.js` bundle file and add this line to your Hosted Widget code snippet:
 
 ```diff
 <!-- EXAMPLE SNIPPET -->
