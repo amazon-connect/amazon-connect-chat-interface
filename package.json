@@ -196,6 +196,7 @@
   },
   "overrides": {
     "glob-parent": "^5.1.2",
+    "sha.js": "^2.4.12",
     "css-loader": {
       "webpack": "^4.46.0"
     }
